@@ -6,6 +6,9 @@ AUTHOR = u'Ben Hanna'
 SITENAME = u'Ben Hanna'
 SITEURL = ''
 
+SITEIMAGE = 'https://avatars3.githubusercontent.com/u/994859?s=460&v=4'
+SITESUBTITLE = 'Full-Stack Software Architect and Engineer'
+
 PATH = 'content'
 
 TIMEZONE = 'America/Detroit'
@@ -20,16 +23,21 @@ AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
 # Blogroll
-LINKS = (('Pelican', 'http://getpelican.com/'),
-         ('Python.org', 'http://python.org/'),
-         ('Jinja2', 'http://jinja.pocoo.org/'),
-         ('You can modify those links in your config file', '#'),)
+#LINKS = ()
 
 # Social widget
 SOCIAL = (('You can add links in your config file', '#'),
           ('Another social link', '#'),)
+          
+ICONS = (('github', 'https://github.com/benthepoet'),
+         ('twitter', 'https://twitter.com/benpaulhanna'),
+         ('linkedin', 'https://www.linkedin.com/in/ben-hanna-0a275135'),)
 
 DEFAULT_PAGINATION = 10
+
+DISPLAY_CATEGORIES_ON_MENU = True
+
+THEME = 'themes/pelican-alchemy/alchemy'
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
