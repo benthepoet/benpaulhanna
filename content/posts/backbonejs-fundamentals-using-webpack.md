@@ -55,7 +55,7 @@ Before we can load our application we need to create our shell. We'll save this 
 </html>
 ```
 
-Now let's scaffold out the most basic use of Backbone with Browserify. Let's save this file 
+Now let's scaffold out the most basic use of Backbone with `webpack`. Let's save this file 
 as `app/app.js`.
 
 ```js
