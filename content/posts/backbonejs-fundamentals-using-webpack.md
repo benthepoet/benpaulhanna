@@ -1,6 +1,6 @@
 Title: Backbone.js Fundamentals: Using Webpack
 Category: blog
-Date: 12-15-2015 23:38:00
+Date: 05-14-2018 23:38:00
 Series: Backbone.js Fundamentals
 
 Have you ever wanted to write Backbone.js in the same module format as Node.js? Well here's how 
