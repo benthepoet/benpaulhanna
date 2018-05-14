@@ -6,7 +6,7 @@ AUTHOR = u'Ben Hanna'
 SITENAME = u'Ben Hanna'
 SITEURL = ''
 
-SITEIMAGE = 'https://avatars3.githubusercontent.com/u/994859?s=460&v=4'
+#SITEIMAGE = 'https://avatars3.githubusercontent.com/u/994859?s=460&v=4'
 SITESUBTITLE = 'Software Craftsman and Functional Programmer'
 
 PATH = 'content'
@@ -30,6 +30,7 @@ SOCIAL = (('You can add links in your config file', '#'),
           ('Another social link', '#'),)
           
 ICONS = (('github', 'https://github.com/benthepoet'),
+         ('stack-overflow', 'https://stackoverflow.com/users/8171618/ben-hanna'),
          ('twitter', 'https://twitter.com/benpaulhanna'),
          ('linkedin', 'https://www.linkedin.com/in/ben-hanna-0a275135'),)
 
