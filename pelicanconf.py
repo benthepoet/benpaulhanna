@@ -7,7 +7,7 @@ SITENAME = u'Ben Hanna'
 SITEURL = ''
 
 SITEIMAGE = 'https://avatars3.githubusercontent.com/u/994859?s=460&v=4'
-SITESUBTITLE = 'Full-Stack Software Architect and Engineer'
+SITESUBTITLE = 'Software Craftsman and Functional Programmer'
 
 PATH = 'content'
 
