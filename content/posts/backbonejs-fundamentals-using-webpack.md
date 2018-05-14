@@ -40,18 +40,6 @@ npm install --save-dev webpack-dev-server
 
 Now let's setup a configuration.
 
-This build file sets up three tasks. When we run `grunt` the following will happen.
-
-* `browserify` generates the bundled file and places it in `dist/app.js`
-* `copy` copies the `index.html` file to the `dist` folder
-* `connect` starts a local web server that serves up the files in the `dist` folder
-
-Thus after we run that task we can point a browser to `http://localhost:8080` to see 
-our application running.
-
-Also as long as we leave the task running, `browserify` will automatically rebuild the 
-bundle whenever our project files are modified.
-
 ## Bootstrapping the application
 Before we can load our application we need to create our shell. We'll save this file as 
 `app/index.html`.
