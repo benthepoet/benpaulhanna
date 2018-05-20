@@ -77,6 +77,6 @@ stack setup
 Now open `src/Lib.hs` and modify the code. You should see type errors come up as you change 
 the file.
 
-For more information on the functionality that `intero` provides see their [repository](https://github.com/commercialhaskell/intero).
+For more information on the rest of the features `intero` provides see the [repository](https://github.com/commercialhaskell/intero).
 
 <br>
