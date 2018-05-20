@@ -124,9 +124,31 @@ const Backbone = require('backbone');
 
 // Declare our options we'll use to extend the base view
 const viewOptions = {
+  el: 'body',
   
+  render() {
+    this.$el.text('App Ready');
+  }
 };
 
 // Export our extended view
 module.exports = Backbone.View.extend(viewOptions);
+```
+
+Back in `src/index.js`, we'll need to import our view module, create an instance, and attach 
+it to the DOM.
+
+```js
+// Import the Backbone module and its dependencies
+var Backbone = require('backbone');
+var AppView = require('./app.view');
+
+// Execute after the DOM has loaded
+Backbone.$(function () {
+  // Start Backbone
+  Backbone.history.start();
+  
+  // Create an instance of our view
+  new AppView();
+});
 ```
