@@ -1,5 +1,5 @@
 Title: Backbone.js Fundamentals: Using Webpack
-Category: blog
+Category: Blog
 Date: 05-14-2018 08:34:00
 Series: Backbone.js Fundamentals
 Status: draft

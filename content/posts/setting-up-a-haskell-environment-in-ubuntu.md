@@ -1,5 +1,5 @@
 Title: Setting up a Haskell Environment in Ubuntu
-Category: blog
+Category: Blog
 Tags: haskell
 Date: 05-14-2018 23:38:00
 Modified: 05-19-2018 20:36:00
@@ -65,5 +65,18 @@ Next place the following into `~/.emacs.d/init.el`.
 With that file place, just open `emacs` in a terminal and `intero` should start installing.
 
 # Create a Test Project
+
+To verify that everything is working, create a new project with `stack`.
+
+```bash
+stack new test-project
+cd test-project
+stack setup
+```
+
+Now open `src/Lib.hs` and modify the code. You should see type errors come up as you change 
+the file.
+
+For more information on the functionality that `intero` provides see their [repository](https://github.com/commercialhaskell/intero).
 
 <br>
