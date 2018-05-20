@@ -8,7 +8,7 @@ These instructions have been tested against Kubuntu 18.04 LTS.
 
 In the process of learning Haskell, I've recently gone through the various editors to 
 try and see which one has the ideal tooling. There's many different opinions on the matter, 
-but for me I've settled on Emacs with intero. I went with intero because it has 
+but for me I've settled on Emacs with `intero`. I went with intero because it has 
 solid type-checking, an interactive REPL, and doesn't require a whole lot of configuration 
 to get going. With that said, I'll show you how to setup this environment in the context of 
 an Ubuntu system.

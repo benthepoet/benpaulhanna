@@ -37,6 +37,7 @@ ICONS = (('github', 'https://github.com/benthepoet'),
 DEFAULT_PAGINATION = 10
 
 DISPLAY_CATEGORIES_ON_MENU = True
+HIDE_AUTHORS = True
 
 THEME = 'themes/pelican-alchemy/alchemy'
 
