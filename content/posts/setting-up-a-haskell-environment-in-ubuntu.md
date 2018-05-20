@@ -2,6 +2,7 @@ Title: Setting up a Haskell Environment in Ubuntu
 Category: blog
 Tags: haskell
 Date: 05-14-2018 23:38:00
+Modified: 05-19-2018 20:36:00
 
 These instructions have been tested against Kubuntu 18.04 LTS.
 
@@ -12,11 +13,7 @@ solid type-checking, an interactive REPL, and doesn't require a whole lot of con
 to get going. With that said, I'll show you how to setup this environment in the context of 
 an Ubuntu system.
 
-# Installation
-  
-<br>
-  
-### Stack
+# Install Stack
 
 The first thing we need to install is stack. If you come from a Node.js background then stack 
 is somewhat akin to the functionality `nvm` and `npm` provide. Some of the most prominent features 
@@ -30,7 +27,7 @@ wget -qO- https://get.haskellstack.org/ | sh
 
 Once installed, the `stack` binary will be available to use in your terminal. 
 
-### Emacs
+# Install Emacs
 
 Installing Emacs in Ubuntu is a fairly trivial task that can be performed with the following command.
 
@@ -40,7 +37,7 @@ sudo apt-get install emacs
 
 After installation, startup `emacs` at least once so that it initializes your `emacs.d` folder.
 
-### Intero
+# Install Intero
 
 Now before we install `intero` we also need install `libtinfo-dev`, without this package 
 `intero` will fail to build with stack lts-11.
