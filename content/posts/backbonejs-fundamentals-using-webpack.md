@@ -87,22 +87,40 @@ Before we can load our application we need to create our shell. We'll save this 
 </html>
 ```
 
-Now let's scaffold out the most basic use of Backbone with `webpack`. Let's save this file 
-as `src/index.js`.
+Now let's scaffold out a basic use of Backbone with `webpack`. 
+
+First we'll create a view for our application in `src/app.view.js`;
 
 ```js
 // Import the Backbone module and its dependencies
 var Backbone = require('backbone');
 
+// Declare our options we'll use to extend the base view
+var viewOptions = {
+  el: 'body',
+  
+  render: function () {
+    this.$el.text('App Ready');
+  }
+};
+
+// Export our extended view
+module.exports = Backbone.View.extend(viewOptions);
+```
+
+Now let's create our entry module that bootstraps the application at `src/index.js`.
+
+```js
+// Import the Backbone module and its dependencies
+var Backbone = require('backbone');
+
+// Import our view
+var AppView = require('./app.view');
+
 // Execute after the DOM has loaded
 Backbone.$(function () {
-  // Start Backbone
-  Backbone.history.start();
-  
-  // Display a simple message
-  Backbone
-    .$('body')
-    .text('App Ready');
+  // Create an instance of our view
+  new AppView();
 });
 ```
 
@@ -114,41 +132,7 @@ npm start
 
 Navigate to `http://localhost:8080` in a browser and you should see the message displayed.
 
-# Add a View
-Displaying a message is neat, but let's expand out the application to utilize a view. For that 
-let's create the following as `src/view.js`.
-
-```js
-// Import the Backbone module and its dependencies
-const Backbone = require('backbone');
-
-// Declare our options we'll use to extend the base view
-const viewOptions = {
-  el: 'body',
-  
-  render() {
-    this.$el.text('App Ready');
-  }
-};
-
-// Export our extended view
-module.exports = Backbone.View.extend(viewOptions);
-```
-
-Back in `src/index.js`, we'll need to import our view module, create an instance, and attach 
-it to the DOM.
-
-```js
-// Import the Backbone module and its dependencies
-var Backbone = require('backbone');
-var AppView = require('./app.view');
-
-// Execute after the DOM has loaded
-Backbone.$(function () {
-  // Start Backbone
-  Backbone.history.start();
-  
-  // Create an instance of our view
-  new AppView();
-});
-```
+Hopefully this article gave you a good overview on how to use `webpack` with Backbone. If 
+you'd like to see a slightly more involved example with routing and templates then please see my 
+[backbone-fundamentals-webpack](https://github.com/benthepoet/backbone-fundamentals-webpack) 
+repository.
