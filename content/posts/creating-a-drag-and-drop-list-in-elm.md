@@ -1,6 +1,6 @@
 Title: Native HTML5 Drag and Drop with Elm
 Category: Blog
-Date: 05-21-2018 22:50:00
+Date: 06-18-2018 13:37:00
 Series: Practical Elm
 Status: draft
 
@@ -71,14 +71,22 @@ a button is clicked. Let's make some modifications so that instead of clicking t
 button, we drag the item to the list in order to add a new one.
 
 First we need to add a new property to our `Model` for tracking the item that is 
-being dragged.
+being dragged. I'm also going to add a list of draggable items to the model so that 
+we can compose our list of different items. 
 
 ```elm
 type alias Model =
-    { dragged : String
+    { beingDragged : Maybe String
+    , draggableItems: List String
     , items : List String
     }
     
     
-model = Model "" []
+model =
+    { beingDragged = Nothing
+    , draggableItems =
+        List.range 1 5
+            |> List.map toString
+    , items = []
+    }
 ```
