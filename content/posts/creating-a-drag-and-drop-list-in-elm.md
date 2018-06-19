@@ -14,6 +14,8 @@ With that said I'm going to construct an application that allows you to add buil
 a list by dragging an element one or more times onto the list. We'll start with a 
 `beginnerProgram` since we won't need `init` or `subscriptions`.
 
+https://ellie-app.com/y7qfpb8R7za1
+
 ```elm
 import Html exposing (Html)
 import Html.Events as Events
@@ -74,6 +76,8 @@ First we need to add a new property to our `Model` for tracking the item that is
 being dragged. I'm also going to add a list of draggable items to the model so that 
 we can compose our list of different items. 
 
+https://ellie-app.com/y7qBcZKG2Wa1
+
 ```elm
 type alias Model =
     { beingDragged : Maybe String
@@ -89,4 +93,152 @@ model =
             |> List.map toString
     , items = []
     }
+```
+
+Now let's update our `view` to render the draggable items.
+
+https://ellie-app.com/y7srmMFyX6a1
+
+```elm
+draggableItemView : String -> Html Msg
+draggableItemView item =
+    Html.li [] [ Html.text item ]
+
+
+itemView : String -> Html Msg
+itemView item =
+    Html.li [] [ Html.text item ]
+
+
+view : Model -> Html Msg
+view model =
+    Html.div [] 
+        [ Html.ul []
+            <| List.map draggableItemView model.draggableItems
+        , Html.ul []
+            <| List.map itemView model.items
+        ]
+```
+
+Next we need to leverage a few events to achieve drag and drop functionality.
+
+### dragstart
+An event that fires when an element starts being dragged. We'll use this event 
+to set `beingDragged` on our model.
+
+### dragend
+An event that fires when dragging stops without being droppped on a valid dropzone.
+
+### dragover
+An event that fires when an element enters a potential dropzone. In order to use 
+an element as a dropzone we have to prevent the default the behavior for this event. 
+
+### drop
+An event that fires when an elment is released over a valid dropzone. We'll use 
+this event to take the value from `beingDragged` and add it to `items`.
+
+Handlers for these aren't provided in `Html.Events` so we'll need to roll our own.
+
+https://ellie-app.com/y98znSNhRpa1
+
+```elm
+import Json.Decode as Decode
+
+
+onDragStart msg =
+    Events.on "dragstart" 
+        <| Decode.succeed msg
+
+
+onDragEnd msg =
+    Events.on "dragend"
+        <| Decode.succeed msg
+
+
+onDragOver msg =
+    Events.onWithOptions "dragover"
+        { stopPropagation = False
+        , preventDefault = True
+        }
+        <| Decode.succeed msg
+
+
+onDrop msg =
+    Events.onWithOptions "drop"
+        { stopPropagation = False
+        , preventDefault = True
+        }
+        <| Decode.succeed msg
+```
+
+To deal with these events in our `update` function let's change up our message type.
+
+https://ellie-app.com/y9xgkhWJCFa1
+
+```elm
+type Msg
+    = Drag String
+    | DragEnd
+    | DragOver
+    | Drop
+
+
+update : Msg -> Model -> Model
+update msg model =
+    case msg of
+        Drag item ->
+            { model | beingDragged = Just item }
+            
+        DragEnd ->
+            { model | beingDragged = Nothing }
+            
+        DragOver ->
+            model
+            
+        Drop ->
+            case model.beingDragged of
+                Nothing ->
+                    model
+                    
+                Just item ->
+                    { model
+                        | beingDragged = Nothing
+                        , items = item :: model.items 
+                    }
+```
+
+All that's left now is for us to wire up the events in our `view`.
+
+https://ellie-app.com/y9QYcS55WKa1
+
+```elm
+import Html.Attributes as Attributes
+
+
+draggableItemView : String -> Html Msg
+draggableItemView item =
+    Html.li 
+        [ Attributes.draggable "true"
+        , onDragStart <| Drag item
+        , onDragEnd DragEnd 
+        ] 
+        [ Html.text item ]
+
+
+itemView : String -> Html Msg
+itemView item =
+    Html.li [] [ Html.text item ]
+
+
+view : Model -> Html Msg
+view model =
+    Html.div [] 
+        [ Html.ul []
+            <| List.map draggableItemView model.draggableItems
+        , Html.ul 
+            [ onDragOver DragOver
+            , onDrop Drop
+            ]
+            <| List.map itemView model.items
+        ]
 ```
