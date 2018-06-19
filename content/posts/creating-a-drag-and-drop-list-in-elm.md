@@ -2,17 +2,18 @@ Title: Native HTML5 Drag and Drop with Elm
 Category: Blog
 Date: 06-18-2018 13:37:00
 Series: Practical Elm
-Status: draft
 
 In doing some research for a potential project I decided to see how drag and drop 
 functionality can be implemented in Elm.
 
 Thankfully, it looks like it's not too hard to achieve since drag and drop is now 
-part of the HTML5 standard.
+part of the HTML5 standard. To demonstrate this I'll show you how to build an application 
+that allows you to construct a list by dragging items onto it.
 
-With that said I'm going to construct an application that allows you to add build 
-a list by dragging an element one or more times onto the list. We'll start with a 
-`beginnerProgram` since we won't need `init` or `subscriptions`.
+# Bootstrap the application
+
+To get things started we'll start with a `beginnerProgram` since we won't need `init` 
+or `subscriptions`.
 
 https://ellie-app.com/y7qfpb8R7za1
 
@@ -72,6 +73,8 @@ Right now this application allows you add an element to the `items` list when
 a button is clicked. Let's make some modifications so that instead of clicking the 
 button, we drag the item to the list in order to add a new one.
 
+# Re-factor the model
+
 First we need to add a new property to our `Model` for tracking the item that is 
 being dragged. I'm also going to add a list of draggable items to the model so that 
 we can compose our list of different items. 
@@ -120,20 +123,22 @@ view model =
         ]
 ```
 
-Next we need to leverage a few events to achieve drag and drop functionality.
+# Add event handlers and messages
 
-### dragstart
+Next we need to leverage the following events to achieve drag and drop functionality.
+
+##### dragstart
 An event that fires when an element starts being dragged. We'll use this event 
 to set `beingDragged` on our model.
 
-### dragend
+##### dragend
 An event that fires when dragging stops without being droppped on a valid dropzone.
 
-### dragover
+##### dragover
 An event that fires when an element enters a potential dropzone. In order to use 
 an element as a dropzone we have to prevent the default the behavior for this event. 
 
-### drop
+##### drop
 An event that fires when an elment is released over a valid dropzone. We'll use 
 this event to take the value from `beingDragged` and add it to `items`.
 
@@ -207,6 +212,8 @@ update msg model =
                     }
 ```
 
+# Wrapping up
+
 All that's left now is for us to wire up the events in our `view`.
 
 https://ellie-app.com/y9QYcS55WKa1
@@ -242,3 +249,10 @@ view model =
             <| List.map itemView model.items
         ]
 ```
+
+And with that you should now be able to drag items into the list as in the application 
+below.
+
+https://ellie-app.com/ybztRbFbzZa1
+
+<iframe src="https://ellie-app.com/embed/ybztRbFbzZa1" style="width:100%; height:400px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
