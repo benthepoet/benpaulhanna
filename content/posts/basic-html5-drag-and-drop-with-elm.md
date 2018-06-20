@@ -1,6 +1,7 @@
 Title: Basic HTML5 Drag and Drop with Elm
 Category: Blog
 Date: 06-18-2018 13:37:00
+Modified: 06-20-2018 15:57:00
 Series: Practical Elm
 
 In doing some research for a potential project I decided to see how drag and drop 
