@@ -237,9 +237,10 @@ onDrop msg =
         <| Decode.succeed msg
 ```
 
-Then all that's left now is for us to wire up the events in our `view`.
+Then all that's left now is for us to wire up the events in our `view`. Note this 
+currently contains a `dataTransfer` hack in order for Firefox to work correctly.
 
-<!-- https://ellie-app.com/y9QYcS55WKa1 -->
+<!-- https://ellie-app.com/yFqTMSKjHQa1 -->
 
 ```elm
 draggableItemView : String -> Html Msg
@@ -247,6 +248,8 @@ draggableItemView item =
     Html.div
         [ Attributes.class "card fluid warning"
         , Attributes.draggable "true"
+        , Attributes.attribute "ondragstart"
+            "event.dataTransfer.setData(\"text/plain\", \"dummy\")"
         , onDragStart <| Drag item
         , onDragEnd DragEnd 
         ] 
@@ -292,6 +295,6 @@ view model =
 With everything in place now, you should have a solution like below that allows you to drag 
 items from the left list onto the right list.
 
-<iframe src="https://ellie-app.com/embed/yCCNWHM53fa1" style="width:100%; height:400px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://ellie-app.com/embed/yFqTMSKjHQa1" style="width:100%; height:400px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 And that's all it takes to implement basic HTML5 drag and drop in Elm. Happy hacking!
