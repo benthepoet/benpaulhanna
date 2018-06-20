@@ -77,6 +77,21 @@ For styling I'm using the [mini.css](https://minicss.org) so you'll want to add 
 </head>
 ```
 
+Now there's a potential issue in that Firefox requires `event.dataTransfer.setData()` to be called during the `dragstart` event 
+in order to drag an element. To address this we'll add an event listener on the `main` element.
+
+```html
+<script>
+    var main = document.querySelector('main');
+    
+    main.addEventListener('dragstart', function (event) {
+      event.dataTransfer.setData('text/plain', null);
+    });
+    
+    var app = Elm.Main.embed(main);
+</script>
+```
+
 At this point running the application should display the shell that we've setup. Now we can move onto adding 
 in the fun stuff.
 
@@ -237,10 +252,9 @@ onDrop msg =
         <| Decode.succeed msg
 ```
 
-Then all that's left now is for us to wire up the events in our `view`. Note this 
-currently contains a `dataTransfer` hack in order for Firefox to work correctly.
+Then all that's left now is for us to wire up the events in our `view`.
 
-<!-- https://ellie-app.com/yFqTMSKjHQa1 -->
+<!-- https://ellie-app.com/yGJLryTwL3a1 -->
 
 ```elm
 draggableItemView : String -> Html Msg
@@ -248,8 +262,6 @@ draggableItemView item =
     Html.div
         [ Attributes.class "card fluid warning"
         , Attributes.draggable "true"
-        , Attributes.attribute "ondragstart"
-            "event.dataTransfer.setData(\"text/plain\", \"dummy\")"
         , onDragStart <| Drag item
         , onDragEnd DragEnd 
         ] 
@@ -295,6 +307,6 @@ view model =
 With everything in place now, you should have a solution like below that allows you to drag 
 items from the left list onto the right list.
 
-<iframe src="https://ellie-app.com/embed/yFqTMSKjHQa1" style="width:100%; height:400px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://ellie-app.com/embed/yGJLryTwL3a1" style="width:100%; height:400px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 And that's all it takes to implement basic HTML5 drag and drop in Elm. Happy hacking!
