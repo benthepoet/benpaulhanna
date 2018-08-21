@@ -1,7 +1,7 @@
 Title: Basic HTML5 Drag and Drop with Elm
 Category: Blog
 Date: 06-18-2018 13:37:00
-Modified: 06-20-2018 15:57:00
+Modified: 08-21-2018 15:54:00
 Series: Practical Elm
 
 In doing some research for a potential project I decided to see how drag and drop 
@@ -15,20 +15,21 @@ To follow along with this tutorial I recommend building an application with [Ell
 
 # Getting Started
 
-To get things started we'll start with a `beginnerProgram` since we won't need `init` 
-or `subscriptions`.
+To get things started we'll start with a `Browser.sandbox` since we we're not doing 
+anything fancy.
 
 <!-- https://ellie-app.com/yCv5t7PhHMa1 -->
 
 ```elm
+import Browser
 import Html exposing (Html)
 import Html.Attributes as Attributes
 
 
-main : Program Never Model Msg
+main : Program () Model Msg
 main =
-    Html.beginnerProgram
-        { model = model
+    Browser.sandbox
+        { init = initialModel
         , update = update
         , view = view
         }
@@ -39,8 +40,8 @@ type alias Model =
     }
 
 
-model : Model
-model = Model []
+initialModel : Model
+initialModel = Model []
 
 
 type Msg 
@@ -79,17 +80,15 @@ For styling I'm using the [mini.css](https://minicss.org) so you'll want to add 
 ```
 
 Now there's a potential issue in that Firefox requires `event.dataTransfer.setData()` to be called during the `dragstart` event 
-in order to drag an element. To address this we'll add an event listener on the `main` element.
+in order to drag an element. To address this we'll add an event listener on the `body` element.
 
 ```html
 <script>
-    var main = document.querySelector('main');
-    
-    main.addEventListener('dragstart', function (event) {
+    document.body.addEventListener('dragstart', function (event) {
       event.dataTransfer.setData('text/plain', null);
     });
     
-    var app = Elm.Main.embed(main);
+    var app = Elm.Main.init({ node: document.querySelector('main') });
 </script>
 ```
 
@@ -112,11 +111,12 @@ type alias Model =
     }
     
     
-model =
+initialModel : Model
+initialModel =
     { beingDragged = Nothing
     , draggableItems =
         List.range 1 5
-            |> List.map toString
+            |> List.map Debug.toString
     , items = []
     }
 ```
@@ -238,19 +238,13 @@ onDragEnd msg =
 
 
 onDragOver msg =
-    Events.onWithOptions "dragover"
-        { stopPropagation = False
-        , preventDefault = True
-        }
-        <| Decode.succeed msg
+    Events.preventDefaultOn "dragover"
+        <| Decode.succeed (msg, True)
 
 
 onDrop msg =
-    Events.onWithOptions "drop"
-        { stopPropagation = False
-        , preventDefault = True
-        }
-        <| Decode.succeed msg
+    Events.preventDefaultOn "drop"
+        <| Decode.succeed (msg, True)
 ```
 
 Then all that's left now is for us to wire up the events in our `view`.
@@ -308,6 +302,6 @@ view model =
 With everything in place now, you should have a solution like below that allows you to drag 
 items from the left list onto the right list.
 
-<iframe src="https://ellie-app.com/embed/yGJLryTwL3a1" style="width:100%; height:400px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://ellie-app.com/embed/37f8hrctq4Ma1" style="width:100%; height:400px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 And that's all it takes to implement basic HTML5 drag and drop in Elm. Happy hacking!
