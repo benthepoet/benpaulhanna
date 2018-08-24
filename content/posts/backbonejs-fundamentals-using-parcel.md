@@ -1,15 +1,13 @@
-Title: Building a Backbone.js project with Webpack
+Title: Building a Backbone.js project with Parcel
 Category: Blog
-Date: 05-21-2018 22:50:00
+Date: 08-24-2018 08:26:00
 Series: Backbone.js Fundamentals
 
-Have you ever wanted to write Backbone.js in the same module format as Node.js? Well here's how 
-you can do it with `webpack`.
+Do you loathe configuring `webpack` every time you setup a new application? Well, you may be 
+better served by `parcel`, an alternative bundler that touts zero-configuration. Quite simply, 
+it just works.
 
-In short `webpack` allows you to write browser JavaScript using the CommonJS module format. 
-The main benefit to this is that `webpack` will bundle all your modules together in a single file 
-so that you don't need to manually manage `<script>` tags. And on top of that you can require NPM packages 
-as you would in a Node.js application.
+In this article I'll demonstrate how setup a basic Backbone project using `parcel`.
 
 # Create the project
 Starting from scratch let's first create a new folder and initialize `npm`.
@@ -28,49 +26,26 @@ npm install --save backbone jquery underscore
 
 We're going to use the following folder structure.
 
-* `src` - This is where we'll put all our JavaScript.
-* `public` - This where we'll put any static files (index.html, assets).
+* `src` - This is where we'll put all our JavaScript, HTML, and CSS.
 
-# Install and configure Webpack
-We'll install `webpack` along with `webpack-dev-server`. The latter allows you 
-to run a local web server that will also watch your source files for changes.
+# Install Parcel
+Since the main advantage of `parcel` is that it requires zero-configuration all we really 
+need to do use it is install `parcel-bundler`.
 
 ```bash
-npm install --save webpack webpack-cli
-npm install --save-dev webpack-dev-server
+npm install --save parcel-bundler
 ```
 
-Now let's setup a basic configuration in `webpack.config.js`.
+`parcel` performs both the functions of building your bundle and then watching it for changes 
+while serving it on a local HTTP server. The latter is similar to what is provided when using 
+`webpack-dev-server` with `webpack`.
 
-```js
-const { resolve } = require('path');
-
-const PUBLIC_PATH = resolve(__dirname, 'public');
-const SRC_PATH = resolve(__dirname, 'src');
-
-module.exports = {
-  entry: `${SRC_PATH}/index.js`,
-  output: {
-    filename: 'bundle.js',
-    path: PUBLIC_PATH
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(js)$/,
-        exclude: /node_modules/
-      }
-    ]
-  },
-  devServer: {
-    contentBase: PUBLIC_PATH
-  }
-};
-```
+When you run `parcel` you just tell it what your entry file is (usually `index.html`) and then 
+it will automatically find any assets (i.e. scripts, stylesheets) that you're using and bundle them all together.
 
 # Create an application
 Before we can load our application we need to create our shell. We'll save this file as 
-`public/index.html`.
+`src/index.html`.
 
 ```html
 <!DOCTYPE html>
@@ -78,14 +53,14 @@ Before we can load our application we need to create our shell. We'll save this 
 <html>
   <head>
     <!-- Using the 'async' attribute will keep our script from blocking the page load. -->
-    <script src="bundle.js" async></script>
+    <script src="index.js" async></script>
   </head>
   <body>
   </body>
 </html>
 ```
 
-Now let's scaffold out a basic use of Backbone with `webpack`. 
+Now let's scaffold out a basic use of Backbone with `parcel`. 
 
 First we'll create a view for our application in `src/app.view.js`;
 
@@ -129,14 +104,14 @@ Backbone.$(function () {
 With all the base components stubbed out we can now start up the application.
 
 ```bash
-npx webpack-dev-server
+npx parcel src/index.html --port 8080
 ```
 
 Navigate to `http://localhost:8080` in a browser and you should see the message displayed.
 
 # Wrapping up
 
-Hopefully this article gave you a good overview on how to use `webpack` with Backbone. If 
+Hopefully this article demonstrated how easy it is to use `parcel` with Backbone. If 
 you'd like to see a slightly more involved example with routing and templates then please see my 
-[backbone-fundamentals-webpack](https://github.com/benthepoet/backbone-fundamentals-webpack) 
+[backbone-fundamentals-parcel](https://github.com/benthepoet/backbone-fundamentals-parcel) 
 repository.
