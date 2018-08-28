@@ -35,8 +35,8 @@ update msg model =
 view : Model -> Svg Msg
 view model =
     Svg.svg 
-        [ Attributes.width "320" 
-        , Attributes.height "240"
+        [ Attributes.width "400" 
+        , Attributes.height "400"
         ]
         []
 
@@ -104,6 +104,34 @@ We now have three key properties on our model.
 
 For the sake of simplicity we only have one type of shape, but in the end it'll
 be fairly trivial to add any ones.
+
+Now let's update our `initialModel` with some relevant test data.
+
+```elm
+initialModel : Model
+initialModel = 
+    { document =
+        { width = 400
+        , height = 400
+        }
+    , pointer = Idle
+    , shapes = 
+        Array.fromList
+            [ Circle 
+                { cx = 50
+                , cy = 50
+                , r = 40 
+                , fill = "yellow" 
+                } 
+            , Circle 
+                { cx = 250
+                , cy = 250
+                , r = 20 
+                , fill = "orange"
+                } 
+            ]
+    }
+```
 
 # Add update messages
 Let's define a few messages that we'll use in our `update` function.
