@@ -190,7 +190,7 @@ I figured the game should be responsible for handling that conversion.
 # Fixing the empty string issue
 Even though I'm never expecting my game to read an empty string in from an s-expression, I didn't want that to be a limitation 
 of the parser. To fix that issue meant I was going to have to abandon `fscanf`. The limitation of using `fscanf` for 
-reading strings is that it's format pattern expects there to be at least one character between the quotes. With the case of the 
+reading strings is that its format pattern expects there to be at least one character between the quotes. With the case of the 
 empty string, there's nothing in between the quotes for it to capture so it winds up parsing the rest of expression incorrectly.
 
 The solution I came up with in the end is a little longer but it probably performs better than `fscanf`.
