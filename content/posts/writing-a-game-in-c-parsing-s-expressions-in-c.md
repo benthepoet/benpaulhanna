@@ -174,10 +174,10 @@ if (fscanf(fp, "%511[^()\t\r\n\v\f ]", buffer)) {
   node = calloc(strlen(buffer) + 1, sizeof(struct SNode));
   strcpy(node->value, buffer);
 
-  if (is_float(node->value)) {
-    node->type = FLOAT;
-  } else if (is_integer(node->value)) {
+  if (is_integer(node->value)) {
     node->type = INTEGER;
+  } else if (is_float(node->value)) {
+    node->type = FLOAT;
   } else {
     node->type = SYMBOL;
   }
@@ -232,10 +232,10 @@ To stay consistent with this means of parsing I also updated the logic for parsi
   node->value = calloc(length + 1, sizeof(char));
   strcpy(node->value, buffer);
 
-  if (is_float(node->value)) {
-    node->type = FLOAT;
-  } else if (is_integer(node->value)) {
+  if (is_integer(node->value)) {
     node->type = INTEGER;
+  } else if (is_float(node->value)) {
+    node->type = FLOAT;
   } else {
     node->type = SYMBOL;
   }
@@ -293,10 +293,10 @@ struct SNode *parse_sexpr_file(FILE *fp) {
       node->value = calloc(length + 1, sizeof(char));
       strcpy(node->value, buffer);
 
-      if (is_float(node->value)) {
-        node->type = FLOAT;
-      } else if (is_integer(node->value)) {
+      if (is_integer(node->value)) {
         node->type = INTEGER;
+      } else if (is_float(node->value)) {
+        node->type = FLOAT;
       } else {
         node->type = SYMBOL;
       }
