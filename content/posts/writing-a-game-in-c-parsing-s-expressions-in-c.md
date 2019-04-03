@@ -187,7 +187,7 @@ if (fscanf(fp, "%511[^()\t\r\n\v\f ]", buffer)) {
 After that the parser was able to successfully tag number types. The value itself is still stored as a string though as 
 I figured the game should be responsible for handling that conversion.
 
-# Fixing the empty string
+# Fixing the empty string issue
 Even though I'm never expecting my game to read an empty string in from an s-expression, I didn't want that to be a limitation 
 of the parser. To fix that issue meant I was going to have to abandon `fscanf`. The limitation of using `fscanf` for 
 reading strings is that it's format pattern expects there to be at least one character between the quotes. With the case of the 
