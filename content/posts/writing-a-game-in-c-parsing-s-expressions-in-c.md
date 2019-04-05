@@ -214,7 +214,9 @@ The solution I came up with in the end is a little longer but it probably perfor
 }
 ```
 
-To stay consistent with this means of parsing I also updated the logic for parsing numbers and symbols.
+To stay consistent with this means of parsing I also updated the logic for parsing numbers and symbols. One key issue I found with when 
+doing this was that I had to remember to put the terminator back, otherwise the parser wouldn't close the current list and subsequent symbols 
+would wind up in the wrong list.
 
 ```c
 } else if (!isspace(c)) {
@@ -227,6 +229,9 @@ To stay consistent with this means of parsing I also updated the logic for parsi
     length++;
   }
   buffer[length] = '\0';
+
+  // Put the terminator back
+  ungetc(c, fp);
 
   node = calloc(1, sizeof(struct SNode));
   node->value = calloc(length + 1, sizeof(char));
@@ -288,6 +293,9 @@ struct SNode *parse_sexpr_file(FILE *fp) {
         length++;
       }
       buffer[length] = '\0';
+      
+      // Put the terminator back
+      ungetc(c, fp);
 
       node = calloc(1, sizeof(struct SNode));
       node->value = calloc(length + 1, sizeof(char));
