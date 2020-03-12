@@ -21,6 +21,8 @@ anything fancy.
 <!-- https://ellie-app.com/yCv5t7PhHMa1 -->
 
 ```elm
+module Main exposing (..)
+
 import Browser
 import Html exposing (Html)
 import Html.Attributes as Attributes
