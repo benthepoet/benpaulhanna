@@ -6,7 +6,7 @@ AUTHOR = u'Ben Hanna'
 SITENAME = u'(\u03BBx.x) Ben Hanna'
 SITEURL = ''
 
-SITESUBTITLE = 'Software Engineer and Functional Programming Enthusiast'
+SITESUBTITLE = 'Software Craftsman and Game Programming Enthusiast'
 
 PATH = 'content'
 
