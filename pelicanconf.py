@@ -22,7 +22,8 @@ TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
-LINKS = (('blog', '/category/blog.html'),)
+LINKS = (('blog', '/category/blog.html'),
+         (u'résumé', 'https://my.indeed.com/p/benh-h32eywo'),)
 
 ICONS = (('github', 'https://github.com/benthepoet'),
          ('stack-overflow', 'https://stackoverflow.com/users/8171618/ben-hanna'),
