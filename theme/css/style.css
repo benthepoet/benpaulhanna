@@ -43,6 +43,9 @@ hr {
 
 .header img {
   margin-bottom: 1rem;
+  max-height: 200px;
+  border-radius: 25%;
+  box-shadow: 2px 2px 2px rgba(0,0,0,0.25);
 }
 
 .header .title {
