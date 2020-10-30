@@ -3,10 +3,10 @@
 from __future__ import unicode_literals
 
 AUTHOR = u'Ben Hanna'
-SITENAME = u'(\u03BBx.x) Ben Hanna'
+SITENAME = u'Ben Hanna'
 SITEURL = ''
 
-SITEIMAGE = 'images/header.jpg'
+SITEIMAGE = '/images/header.jpg'
 SITESUBTITLE = 'Software Craftsman and Game Programming Enthusiast'
 
 PATH = 'content'
