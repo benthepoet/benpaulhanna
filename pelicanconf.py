@@ -6,14 +6,13 @@ AUTHOR = u'Ben Hanna'
 SITENAME = u'(\u03BBx.x) Ben Hanna'
 SITEURL = ''
 
-#SITEIMAGE = 'https://avatars3.githubusercontent.com/u/994859?s=460&v=4'
 SITESUBTITLE = 'Software Engineer and Functional Programming Enthusiast'
 
 PATH = 'content'
 
 TIMEZONE = 'America/Detroit'
 
-DEFAULT_LANG = u'C'
+DEFAULT_LANG = u'en'
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
@@ -21,9 +20,6 @@ CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
-
-# Blogroll
-#LINKS = ()
 
 # Social widget
 SOCIAL = (('You can add links in your config file', '#'),
@@ -41,5 +37,3 @@ HIDE_AUTHORS = True
 
 THEME = 'themes/pelican-alchemy/alchemy'
 
-# Uncomment following line if you want document-relative URLs when developing
-#RELATIVE_URLS = True
