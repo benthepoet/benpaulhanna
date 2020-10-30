@@ -22,6 +22,8 @@ TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
+LINKS = (('blog', '/category/blog.html'),)
+
 # Social widget
 SOCIAL = (('You can add links in your config file', '#'),
           ('Another social link', '#'),)
