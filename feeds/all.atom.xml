@@ -1,0 +1,1011 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>(λx.x) Ben Hanna</title><link href="https://benpaulhanna.com/" rel="alternate"></link><link href="https://benpaulhanna.com/feeds/all.atom.xml" rel="self"></link><id>https://benpaulhanna.com/</id><updated>2020-03-12T11:07:00-04:00</updated><subtitle>Software Engineer and Functional Programming Enthusiast</subtitle><entry><title>Writing a Game in C: Parsing S-expressions</title><link href="https://benpaulhanna.com/writing-a-game-in-c-parsing-s-expressions.html" rel="alternate"></link><published>2019-04-03T12:49:00-04:00</published><updated>2019-04-03T12:49:00-04:00</updated><author><name>Ben Hanna</name></author><id>tag:benpaulhanna.com,2019-04-03:/writing-a-game-in-c-parsing-s-expressions.html</id><summary type="html">&lt;p&gt;Over the past couple weeks I've been trying to work out how 
+I want to store my game configuration. At first I started playing with XML, which 
+was nice because I could stream a file rather than loading the entire thing into memory but
+I turned away from XML because …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Over the past couple weeks I've been trying to work out how 
+I want to store my game configuration. At first I started playing with XML, which 
+was nice because I could stream a file rather than loading the entire thing into memory but
+I turned away from XML because I'd rather be as library independent as possible, ideally 
+with my SDL being my only cross-platform dependency to worry about.&lt;/p&gt;
+&lt;p&gt;So for a while I switched my game configuration over to a plain text format that looks like this. This format 
+really doesn't have a specific structure to it and I basically mimicked the idea of XML namespaces 
+so I could still read it in as a stream and not have to worry about collisions between like named properties. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;sp&lt;/span&gt;:&lt;span class="nv"&gt;sprite&lt;/span&gt;
+  &lt;span class="nv"&gt;sp&lt;/span&gt;:&lt;span class="nv"&gt;x&lt;/span&gt; &lt;span class="mi"&gt;32&lt;/span&gt;
+  &lt;span class="nv"&gt;sp&lt;/span&gt;:&lt;span class="nv"&gt;y&lt;/span&gt; &lt;span class="mi"&gt;104&lt;/span&gt;
+  &lt;span class="nv"&gt;an&lt;/span&gt;:&lt;span class="nv"&gt;animation&lt;/span&gt;
+    &lt;span class="nv"&gt;an&lt;/span&gt;:&lt;span class="nv"&gt;texture&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;assets/idle.bmp&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="nv"&gt;an&lt;/span&gt;:&lt;span class="nv"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;length&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+    &lt;span class="nv"&gt;an&lt;/span&gt;:&lt;span class="nv"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;width&lt;/span&gt; &lt;span class="mi"&gt;24&lt;/span&gt;
+    &lt;span class="nv"&gt;an&lt;/span&gt;:&lt;span class="nv"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;height&lt;/span&gt; &lt;span class="mi"&gt;24&lt;/span&gt;
+    &lt;span class="nv"&gt;an&lt;/span&gt;:&lt;span class="nv"&gt;frame&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;span&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;
+    &lt;span class="nv"&gt;an&lt;/span&gt;:&lt;span class="k"&gt;loop&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It felt a little lacking though and over the past few months I've really taken a liking to Common Lisp. 
+In the end I really wanted to see my data structured more like this.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:sprites&lt;/span&gt;
+  &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="ss"&gt;:sprite&lt;/span&gt;
+      &lt;span class="ss"&gt;:x&lt;/span&gt; &lt;span class="mi"&gt;32&lt;/span&gt;
+      &lt;span class="ss"&gt;:y&lt;/span&gt; &lt;span class="mi"&gt;104&lt;/span&gt;
+      &lt;span class="ss"&gt;:animations&lt;/span&gt;
+        &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="ss"&gt;:animation&lt;/span&gt;
+            &lt;span class="ss"&gt;:texture&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;assets/idle.bmp&amp;quot;&lt;/span&gt;
+            &lt;span class="ss"&gt;:frame-length&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+            &lt;span class="ss"&gt;:frame-width&lt;/span&gt; &lt;span class="mi"&gt;24&lt;/span&gt;
+            &lt;span class="ss"&gt;:frame-height&lt;/span&gt; &lt;span class="mi"&gt;24&lt;/span&gt;
+            &lt;span class="ss"&gt;:frame-span&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;
+            &lt;span class="ss"&gt;:loop&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)))))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So I figured I'd stretch my mind and build an s-expression parser. Below is an account of how 
+I worked through the solution.&lt;/p&gt;
+&lt;h1&gt;Modeling the structure&lt;/h1&gt;
+&lt;p&gt;I'll admit I'm largely a self-taught programmer and don't have a formal background in computer science. Thus, 
+I tend to learn about data structures and algorithms when they're useful to a particular problem that I'm trying 
+to solve.&lt;/p&gt;
+&lt;p&gt;With that said, my understanding of how an s-expression is structured led me to implement a linked list. Below is the basic structure.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;enum&lt;/span&gt; &lt;span class="n"&gt;SNodeType&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;LIST&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="n"&gt;STRING&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="n"&gt;SYMBOL&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;next&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;enum&lt;/span&gt; &lt;span class="n"&gt;SNodeType&lt;/span&gt; &lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;union&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;list&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In my program a parsed s-expression is a linked list consisting of &lt;code&gt;SNode&lt;/code&gt;. The &lt;code&gt;SNode&lt;/code&gt; struct is a tagged union 
+that either contains a value (&lt;code&gt;STRING&lt;/code&gt; or &lt;code&gt;SYMBOL&lt;/code&gt; to begin with) or another list of &lt;code&gt;SNode&lt;/code&gt;. This structure makes for a traversable 
+in-memory tree. &lt;/p&gt;
+&lt;h1&gt;Recursing the s-expression&lt;/h1&gt;
+&lt;p&gt;So for actually parsing out the expression I decided to utilize &lt;code&gt;fscanf&lt;/code&gt; as it allows for basic pattern matching.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nf"&gt;parse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;FILE&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;tail&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fgetc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;EOF&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;)&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="c1"&gt;// Stop recursion at the end of an expression&lt;/span&gt;
+      &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;(&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="c1"&gt;// Begin recursion at the start of an expression&lt;/span&gt;
+      &lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;calloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+      &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;LIST&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;list&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;parse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;isspace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;ungetc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+      &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;512&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="c1"&gt;// Read a string terminated by double quote&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fscanf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;%511[^&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;]&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+          &lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;calloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;strlen&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+          &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;STRING&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+          &lt;span class="n"&gt;strcpy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="c1"&gt;// Read a symbol terminated by whitespace or parentheses&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fscanf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;%511[^()&lt;/span&gt;&lt;span class="se"&gt;\t\r\n\v\f&lt;/span&gt;&lt;span class="s"&gt; ]&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+          &lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;calloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;strlen&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+          &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SYMBOL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+          &lt;span class="n"&gt;strcpy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="c1"&gt;// Append a node&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="c1"&gt;// Initialize the head&lt;/span&gt;
+        &lt;span class="n"&gt;head&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tail&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="c1"&gt;// Append the node to the tail&lt;/span&gt;
+        &lt;span class="n"&gt;tail&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tail&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;next&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// Return the head of the list&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This worked fairly well. I did however notice later on that this iteration of the parser couldn't read empty strings correctly. I also 
+wanted to introduce the &lt;code&gt;FLOAT&lt;/code&gt; and &lt;code&gt;INTEGER&lt;/code&gt; data types as these currently just get tagged as &lt;code&gt;SYMBOL&lt;/code&gt;.&lt;/p&gt;
+&lt;h1&gt;Adding number data types&lt;/h1&gt;
+&lt;p&gt;For basic number support I added &lt;code&gt;FLOAT&lt;/code&gt; and &lt;code&gt;INTEGER&lt;/code&gt; to the &lt;code&gt;SNodeType&lt;/code&gt; enumeration.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;enum&lt;/span&gt; &lt;span class="n"&gt;SNodeType&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;LIST&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="n"&gt;FLOAT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="n"&gt;INTEGER&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="n"&gt;STRING&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="n"&gt;SYMBOL&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next I created a couple functions for determining whether a string is a float or an integer.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;is_float&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;ptr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;strtod&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;ptr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;!*&lt;/span&gt;&lt;span class="n"&gt;ptr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;is_integer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;ptr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;strtol&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;ptr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;!*&lt;/span&gt;&lt;span class="n"&gt;ptr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I then updated the &lt;code&gt;parse&lt;/code&gt; function to try and determine the type before falling back to a &lt;code&gt;SYMBOL&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// Read a symbol terminated by whitespace or parentheses&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fscanf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;%511[^()&lt;/span&gt;&lt;span class="se"&gt;\t\r\n\v\f&lt;/span&gt;&lt;span class="s"&gt; ]&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;calloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;strlen&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;strcpy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;is_integer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;INTEGER&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;is_float&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;FLOAT&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SYMBOL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After that the parser was able to successfully tag number types. The value itself is still stored as a string though as 
+I figured the game should be responsible for handling that conversion.&lt;/p&gt;
+&lt;h1&gt;Fixing the empty string issue&lt;/h1&gt;
+&lt;p&gt;Even though I'm never expecting my game to read an empty string in from an s-expression, I didn't want that to be a limitation 
+of the parser. To fix that issue meant I was going to have to abandon &lt;code&gt;fscanf&lt;/code&gt;. The limitation of using &lt;code&gt;fscanf&lt;/code&gt; for 
+reading strings is that its format pattern expects there to be at least one character between the quotes. With the case of the 
+empty string, there's nothing in between the quotes for it to capture so it winds up parsing the rest of expression incorrectly.&lt;/p&gt;
+&lt;p&gt;The solution I came up with in the end is a little longer but it probably performs better than &lt;code&gt;fscanf&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;512&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// Read until string terminator&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fgetc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;511&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;\0&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;calloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;STRING&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;calloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;strcpy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To stay consistent with this means of parsing I also updated the logic for parsing numbers and symbols. One key issue I found with when 
+doing this was that I had to remember to put the terminator back, otherwise the parser wouldn't close the current list and subsequent symbols 
+would wind up in the wrong list.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;isspace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;512&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="p"&gt;};&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// Read until whitespace or list terminator&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;is_terminator&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fgetc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;511&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;\0&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// Put the terminator back&lt;/span&gt;
+  &lt;span class="n"&gt;ungetc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;calloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;calloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;strcpy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;is_integer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;INTEGER&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;is_float&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;FLOAT&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SYMBOL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With those changes made, the &lt;code&gt;parse&lt;/code&gt; function is now fairly robust in its current form.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// Recursively parse an s-expression from a file stream&lt;/span&gt;
+&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nf"&gt;parse_sexpr_file&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;FILE&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// Using a linked list, nodes are appended to the list tail until we &lt;/span&gt;
+  &lt;span class="c1"&gt;// reach a list terminator at which point we return the list head.&lt;/span&gt;
+  &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;tail&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fgetc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;EOF&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;)&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="c1"&gt;// Terminate list recursion&lt;/span&gt;
+      &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;(&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="c1"&gt;// Begin list recursion&lt;/span&gt;
+      &lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;calloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+      &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;LIST&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;list&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;parse_sexpr_file&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;BUFFER_SIZE&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+
+      &lt;span class="c1"&gt;// Read until string terminator&lt;/span&gt;
+      &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fgetc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;BUFFER_SIZE&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;\0&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+      &lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;calloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+      &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;STRING&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;calloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+      &lt;span class="n"&gt;strcpy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;isspace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;BUFFER_SIZE&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="p"&gt;};&lt;/span&gt;
+
+      &lt;span class="c1"&gt;// Read until whitespace or list terminator&lt;/span&gt;
+      &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;is_terminator&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fgetc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;BUFFER_SIZE&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;\0&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+      &lt;span class="c1"&gt;// Put the terminator back&lt;/span&gt;
+      &lt;span class="n"&gt;ungetc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+      &lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;calloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+      &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;calloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+      &lt;span class="n"&gt;strcpy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;is_integer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;INTEGER&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;is_float&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;FLOAT&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SYMBOL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="c1"&gt;// Initialize the list head&lt;/span&gt;
+        &lt;span class="n"&gt;head&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tail&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="c1"&gt;// Append the node to the list tail&lt;/span&gt;
+        &lt;span class="n"&gt;tail&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tail&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;next&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Deallocating memory&lt;/h1&gt;
+&lt;p&gt;The last thing I needed to do is write a recursive function for freeing the memory that is dynamically 
+allocated by the &lt;code&gt;SNode&lt;/code&gt; tree. This is how that looks.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// Recursively free memory allocated by a node&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;snode_free&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;SNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;tmp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;LIST&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;snode_free&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;list&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="c1"&gt;// Free current value&lt;/span&gt;
+      &lt;span class="n"&gt;free&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;next&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="c1"&gt;// Free current node&lt;/span&gt;
+    &lt;span class="n"&gt;free&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;tmp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Wrapping up&lt;/h1&gt;
+&lt;p&gt;In the end I'm really satisfied with how the parser turned out and I dissassembled the 
+solution down to a level where I could easily implement it in other languages if I need 
+to (or I'm just bored). If you'd like to use or fork the parser then please 
+see my &lt;a href="https://github.com/benthepoet/c-sexpr-parser"&gt;c-sexpr-parser&lt;/a&gt; repository.&lt;/p&gt;</content><category term="Blog"></category></entry><entry><title>Building an Elm project with Parcel</title><link href="https://benpaulhanna.com/building-an-elm-project-with-parcel.html" rel="alternate"></link><published>2018-09-26T08:28:00-04:00</published><updated>2018-09-26T08:28:00-04:00</updated><author><name>Ben Hanna</name></author><id>tag:benpaulhanna.com,2018-09-26:/building-an-elm-project-with-parcel.html</id><summary type="html">&lt;p&gt;Do you loathe setting up the same &lt;code&gt;webpack&lt;/code&gt; configuration for every new &lt;code&gt;elm&lt;/code&gt; project 
+you start? Well, worry no more because &lt;code&gt;parcel&lt;/code&gt;, a zero-configuration bundler, now 
+officially supports &lt;code&gt;elm&lt;/code&gt; assets.&lt;/p&gt;
+&lt;p&gt;In this tutorial we'll setup a new project from scratch to demonstrate just how easy the process is.&lt;/p&gt;
+&lt;h1&gt;Create the …&lt;/h1&gt;</summary><content type="html">&lt;p&gt;Do you loathe setting up the same &lt;code&gt;webpack&lt;/code&gt; configuration for every new &lt;code&gt;elm&lt;/code&gt; project 
+you start? Well, worry no more because &lt;code&gt;parcel&lt;/code&gt;, a zero-configuration bundler, now 
+officially supports &lt;code&gt;elm&lt;/code&gt; assets.&lt;/p&gt;
+&lt;p&gt;In this tutorial we'll setup a new project from scratch to demonstrate just how easy the process is.&lt;/p&gt;
+&lt;h1&gt;Create the project&lt;/h1&gt;
+&lt;p&gt;Starting from scratch let's first create a new folder and initialize &lt;code&gt;npm&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir my-elm-app
+&lt;span class="nb"&gt;cd&lt;/span&gt; my-elm-app
+npm init
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next let's install &lt;code&gt;parcel&lt;/code&gt;. Note this is only dependency we'll explicitly have to install. Development 
+dependencies like &lt;code&gt;elm&lt;/code&gt; and &lt;code&gt;node-elm-compiler&lt;/code&gt; will automatically be added to your &lt;code&gt;package.json&lt;/code&gt; when you 
+run &lt;code&gt;parcel&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;npm install --save parcel
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's create a new folder where we'll place all our source files (HTML, CSS, JavaScript, Elm).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir src
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The first file we'll create is &lt;code&gt;src/index.html&lt;/code&gt;. This will serve as our entry point for the bundler. When run, &lt;code&gt;parcel&lt;/code&gt;
+will automatically resolve any dependencies contained within.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;html&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;head&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;script&lt;/span&gt; &lt;span class="na"&gt;defer&lt;/span&gt; &lt;span class="na"&gt;src&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;main.js&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;script&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;head&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;main&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;main&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;html&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next let's create a simple Elm application and save it as &lt;code&gt;src/Main.elm&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import &lt;/span&gt;&lt;span class="nc"&gt;Html&lt;/span&gt;
+
+&lt;span class="kr"&gt;main &lt;/span&gt;&lt;span class="nf"&gt;=&lt;/span&gt;
+  &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;text&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Hello World&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And lastly we'll create &lt;code&gt;src/main.js&lt;/code&gt; which is responsible for pulling in and initializing our Elm application.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nx"&gt;Elm&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;./Main.elm&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="nx"&gt;Elm&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;Main&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;init&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+  &lt;span class="nx"&gt;node&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;document&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;querySelector&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;main&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Serving for development&lt;/h1&gt;
+&lt;p&gt;Now that all our files are in place, serving the project for development is quite easy.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;npx parcel src/index.html
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then just navigate to the address presented in the terminal and you should see &lt;code&gt;Hello World&lt;/code&gt; displayed.&lt;/p&gt;
+&lt;p&gt;The initial load will take a little longer as it will install the dependencies for &lt;code&gt;elm&lt;/code&gt; and also initialize the &lt;code&gt;elm.json&lt;/code&gt; file.
+Once it's up and running, you can make changes to any of the source files and the bundle will automatically be rebuilt.&lt;/p&gt;
+&lt;h1&gt;Building for production&lt;/h1&gt;
+&lt;p&gt;When you're ready to build the application for production all you do is run the following.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;npx parcel build src/index.html
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Upon completion, the compiled production assets can be found in the &lt;code&gt;dist&lt;/code&gt; folder.&lt;/p&gt;
+&lt;h1&gt;Wrapping up&lt;/h1&gt;
+&lt;p&gt;Hopefully this article gave you a good overview on how to use &lt;code&gt;parcel&lt;/code&gt; with &lt;code&gt;elm&lt;/code&gt;. The complete code for this tutorial is 
+available at my &lt;a href="https://github.com/benthepoet/elm-parcel-example"&gt;elm-parcel-example&lt;/a&gt; repository.&lt;/p&gt;</content><category term="Blog"></category></entry><entry><title>Building a Backbone.js project with Parcel</title><link href="https://benpaulhanna.com/building-a-backbonejs-project-with-parcel.html" rel="alternate"></link><published>2018-08-24T08:26:00-04:00</published><updated>2018-08-24T08:26:00-04:00</updated><author><name>Ben Hanna</name></author><id>tag:benpaulhanna.com,2018-08-24:/building-a-backbonejs-project-with-parcel.html</id><summary type="html">&lt;p&gt;Do you loathe configuring &lt;code&gt;webpack&lt;/code&gt; every time you setup a new application? Well, you may be 
+better served by &lt;code&gt;parcel&lt;/code&gt;, an alternative bundler that touts zero-configuration. Quite simply, 
+it just works.&lt;/p&gt;
+&lt;p&gt;In this article I'll demonstrate how setup a basic Backbone project using &lt;code&gt;parcel&lt;/code&gt;.&lt;/p&gt;
+&lt;h1&gt;Create the project&lt;/h1&gt;
+&lt;p&gt;Starting from scratch …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Do you loathe configuring &lt;code&gt;webpack&lt;/code&gt; every time you setup a new application? Well, you may be 
+better served by &lt;code&gt;parcel&lt;/code&gt;, an alternative bundler that touts zero-configuration. Quite simply, 
+it just works.&lt;/p&gt;
+&lt;p&gt;In this article I'll demonstrate how setup a basic Backbone project using &lt;code&gt;parcel&lt;/code&gt;.&lt;/p&gt;
+&lt;h1&gt;Create the project&lt;/h1&gt;
+&lt;p&gt;Starting from scratch let's first create a new folder and initialize &lt;code&gt;npm&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir my-backbone-app
+&lt;span class="nb"&gt;cd&lt;/span&gt; my-backbone-app
+npm init
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next let's install &lt;code&gt;backbone&lt;/code&gt; and it's dependencies, which are &lt;code&gt;jquery&lt;/code&gt; and &lt;code&gt;underscore&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;npm install --save backbone jquery underscore
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We're going to use the following folder structure.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;src&lt;/code&gt; - This is where we'll put all our JavaScript, HTML, and CSS.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Install Parcel&lt;/h1&gt;
+&lt;p&gt;Since the main advantage of &lt;code&gt;parcel&lt;/code&gt; is that it requires zero-configuration all we really 
+need to do use it is install &lt;code&gt;parcel-bundler&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;npm install --save parcel-bundler
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;code&gt;parcel&lt;/code&gt; performs both the functions of building your bundle and then watching it for changes 
+while serving it on a local HTTP server. The latter is similar to what is provided when using 
+&lt;code&gt;webpack-dev-server&lt;/code&gt; with &lt;code&gt;webpack&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;When you run &lt;code&gt;parcel&lt;/code&gt; you just tell it what your entry file is (usually &lt;code&gt;index.html&lt;/code&gt;) and then 
+it will automatically find any assets (i.e. scripts, stylesheets) that you're using and bundle them all together.&lt;/p&gt;
+&lt;h1&gt;Create an application&lt;/h1&gt;
+&lt;p&gt;Before we can load our application we need to create our shell. We'll save this file as 
+&lt;code&gt;src/index.html&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+
+&lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;html&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;head&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="c"&gt;&amp;lt;!-- Using the &amp;#39;async&amp;#39; attribute will keep our script from blocking the page load. --&amp;gt;&lt;/span&gt;
+    &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;script&lt;/span&gt; &lt;span class="na"&gt;src&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;index.js&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;async&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;script&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;head&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;html&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now let's scaffold out a basic use of Backbone with &lt;code&gt;parcel&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;First we'll create a view for our application in &lt;code&gt;src/app.view.js&lt;/code&gt;;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// Import the Backbone module and its dependencies&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;Backbone&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;backbone&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Declare our options we&amp;#39;ll use to extend the base view&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;viewOptions&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nx"&gt;el&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;body&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+  &lt;span class="nx"&gt;initialize&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="p"&gt;},&lt;/span&gt;
+
+  &lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;$el&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;App Ready&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Export our extended view&lt;/span&gt;
+&lt;span class="nx"&gt;module&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;exports&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;Backbone&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;View&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;extend&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;viewOptions&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now let's create our entry module that bootstraps the application at &lt;code&gt;src/index.js&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// Import the Backbone module and its dependencies&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;Backbone&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;backbone&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Import our view&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;AppView&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;./app.view&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Execute after the DOM has loaded&lt;/span&gt;
+&lt;span class="nx"&gt;Backbone&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;$&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// Create an instance of our view&lt;/span&gt;
+  &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nx"&gt;AppView&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With all the base components stubbed out we can now start up the application.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;npx parcel src/index.html --port &lt;span class="m"&gt;8080&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Navigate to &lt;code&gt;http://localhost:8080&lt;/code&gt; in a browser and you should see the message displayed.&lt;/p&gt;
+&lt;h1&gt;Wrapping up&lt;/h1&gt;
+&lt;p&gt;Hopefully this article demonstrated how easy it is to use &lt;code&gt;parcel&lt;/code&gt; with Backbone. If 
+you'd like to see a slightly more involved example with routing and templates then please see my 
+&lt;a href="https://github.com/benthepoet/backbone-fundamentals-parcel"&gt;backbone-fundamentals-parcel&lt;/a&gt; 
+repository.&lt;/p&gt;</content><category term="Blog"></category></entry><entry><title>Basic HTML5 Drag and Drop with Elm</title><link href="https://benpaulhanna.com/basic-html5-drag-and-drop-with-elm.html" rel="alternate"></link><published>2018-06-18T13:37:00-04:00</published><updated>2020-03-12T11:07:00-04:00</updated><author><name>Ben Hanna</name></author><id>tag:benpaulhanna.com,2018-06-18:/basic-html5-drag-and-drop-with-elm.html</id><summary type="html">&lt;p&gt;In doing some research for a potential project I decided to see how drag and drop 
+functionality can be implemented in Elm.&lt;/p&gt;
+&lt;p&gt;Thankfully, it looks like it's not too hard to achieve since drag and drop is now 
+part of the HTML5 standard. To demonstrate this I'll show you how …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In doing some research for a potential project I decided to see how drag and drop 
+functionality can be implemented in Elm.&lt;/p&gt;
+&lt;p&gt;Thankfully, it looks like it's not too hard to achieve since drag and drop is now 
+part of the HTML5 standard. To demonstrate this I'll show you how to build an application 
+that allows you to construct a list by dragging items onto it.&lt;/p&gt;
+&lt;p&gt;To follow along with this tutorial I recommend building an application with &lt;a href="https://ellie-app.com"&gt;Ellie&lt;/a&gt;.&lt;/p&gt;
+&lt;h1&gt;Getting Started&lt;/h1&gt;
+&lt;p&gt;To get things started we'll start with a &lt;code&gt;Browser.sandbox&lt;/code&gt; since we we're not doing 
+anything fancy.&lt;/p&gt;
+&lt;!-- https://ellie-app.com/yCv5t7PhHMa1 --&gt;
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;module &lt;/span&gt;&lt;span class="nc"&gt;Main&lt;/span&gt; &lt;span class="nv"&gt;exposing&lt;/span&gt; &lt;span class="nf"&gt;(..)&lt;/span&gt;
+
+&lt;span class="kn"&gt;import &lt;/span&gt;&lt;span class="nc"&gt;Browser&lt;/span&gt;
+&lt;span class="kn"&gt;import &lt;/span&gt;&lt;span class="nc"&gt;Html&lt;/span&gt; &lt;span class="nv"&gt;exposing&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="kn"&gt;import &lt;/span&gt;&lt;span class="nc"&gt;Html.Attributes&lt;/span&gt; &lt;span class="kr"&gt;as&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;
+
+
+&lt;span class="kr"&gt;main &lt;/span&gt;&lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;Program&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="kt"&gt;Model&lt;/span&gt; &lt;span class="kt"&gt;Msg&lt;/span&gt;
+&lt;span class="kr"&gt;main &lt;/span&gt;&lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="kt"&gt;Browser&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;sandbox&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nv"&gt;init&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;initialModel&lt;/span&gt;
+        &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;update&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;update&lt;/span&gt;
+        &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;view&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;view&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+
+
+&lt;span class="kr"&gt;type&lt;/span&gt; &lt;span class="kr"&gt;alias&lt;/span&gt; &lt;span class="kt"&gt;Model&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nv"&gt;items&lt;/span&gt; &lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;List&lt;/span&gt; &lt;span class="kt"&gt;String&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+
+&lt;span class="nv"&gt;initialModel&lt;/span&gt; &lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;Model&lt;/span&gt;
+&lt;span class="nv"&gt;initialModel&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;Model&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+
+
+&lt;span class="kr"&gt;type&lt;/span&gt; &lt;span class="kt"&gt;Msg&lt;/span&gt; 
+    &lt;span class="nf"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;Noop&lt;/span&gt;
+
+
+&lt;span class="nv"&gt;update&lt;/span&gt; &lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;Msg&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;Model&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;Model&lt;/span&gt;
+&lt;span class="nv"&gt;update&lt;/span&gt; &lt;span class="nv"&gt;msg&lt;/span&gt; &lt;span class="nv"&gt;model&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="kr"&gt;case&lt;/span&gt; &lt;span class="nv"&gt;msg&lt;/span&gt; &lt;span class="kr"&gt;of&lt;/span&gt;
+        &lt;span class="kt"&gt;Noop&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt; 
+            &lt;span class="nv"&gt;model&lt;/span&gt;
+
+
+&lt;span class="nv"&gt;view&lt;/span&gt; &lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;Model&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt; &lt;span class="kt"&gt;Msg&lt;/span&gt;
+&lt;span class="nv"&gt;view&lt;/span&gt; &lt;span class="nv"&gt;model&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt;
+        &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;container&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt; 
+            &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;row&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt; 
+            &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt; 
+                &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;col-sm-6&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+                &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;h4&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;text&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Draggable&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+            &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt; 
+                &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;col-sm-6&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+                &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;h4&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;text&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Drop Zone&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+            &lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For styling I'm using the &lt;a href="https://minicss.org"&gt;mini.css&lt;/a&gt; so you'll want to add the stylesheet for that.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;head&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;link&lt;/span&gt; &lt;span class="na"&gt;rel&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;stylesheet&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;href&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;https://unpkg.com/mini.css@3.0.0/dist/mini-default.min.css&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;head&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now there's a potential issue in that Firefox requires &lt;code&gt;event.dataTransfer.setData()&lt;/code&gt; to be called during the &lt;code&gt;dragstart&lt;/code&gt; event 
+in order to drag an element. To address this we'll add an event listener on the &lt;code&gt;body&lt;/code&gt; element.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;script&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="nb"&gt;document&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;body&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;addEventListener&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;dragstart&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;dataTransfer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;setData&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;text/plain&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;});&lt;/span&gt;
+
+    &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;Elm&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;Main&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;init&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt; &lt;span class="nx"&gt;node&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;document&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;querySelector&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;main&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;script&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;At this point running the application should display the shell that we've setup. Now we can move onto adding 
+in the fun stuff.&lt;/p&gt;
+&lt;h1&gt;Create a list of draggable items&lt;/h1&gt;
+&lt;p&gt;First we need to add a new property to our &lt;code&gt;Model&lt;/code&gt; for tracking the item that is 
+being dragged. I'm also going to add a list of draggable items to the model so that 
+we can compose our list of different items. &lt;/p&gt;
+&lt;!-- https://ellie-app.com/yCwjh5zF5Ca1 --&gt;
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;type&lt;/span&gt; &lt;span class="kr"&gt;alias&lt;/span&gt; &lt;span class="kt"&gt;Model&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nv"&gt;beingDragged&lt;/span&gt; &lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;Maybe&lt;/span&gt; &lt;span class="kt"&gt;String&lt;/span&gt;
+    &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;draggableItems&lt;/span&gt;&lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;List&lt;/span&gt; &lt;span class="kt"&gt;String&lt;/span&gt;
+    &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;items&lt;/span&gt; &lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;List&lt;/span&gt; &lt;span class="kt"&gt;String&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+
+&lt;span class="nv"&gt;initialModel&lt;/span&gt; &lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;Model&lt;/span&gt;
+&lt;span class="nv"&gt;initialModel&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nv"&gt;beingDragged&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;Nothing&lt;/span&gt;
+    &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;draggableItems&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+        &lt;span class="kt"&gt;List&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;range&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;
+            &lt;span class="nf"&gt;|&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;List&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;map&lt;/span&gt; &lt;span class="kt"&gt;Debug&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;toString&lt;/span&gt;
+    &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;items&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now let's update our &lt;code&gt;view&lt;/code&gt; to render the draggable items.&lt;/p&gt;
+&lt;!-- https://ellie-app.com/yCyW9TXhW3a1 --&gt;
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;draggableItemView&lt;/span&gt; &lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;String&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt; &lt;span class="kt"&gt;Msg&lt;/span&gt;
+&lt;span class="nv"&gt;draggableItemView&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt;
+        &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;card fluid warning&amp;quot;&lt;/span&gt;
+        &lt;span class="p"&gt;]&lt;/span&gt; 
+        &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt; 
+            &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;section&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt; 
+            &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;text&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt; 
+        &lt;span class="p"&gt;]&lt;/span&gt;
+
+
+&lt;span class="nv"&gt;itemView&lt;/span&gt; &lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;String&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt; &lt;span class="kt"&gt;Msg&lt;/span&gt;
+&lt;span class="nv"&gt;itemView&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt;
+        &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;card fluid error&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt; 
+        &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt; 
+            &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;section&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt; 
+            &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;text&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="p"&gt;]&lt;/span&gt;
+
+
+&lt;span class="nv"&gt;view&lt;/span&gt; &lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;Model&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt; &lt;span class="kt"&gt;Msg&lt;/span&gt;
+&lt;span class="nv"&gt;view&lt;/span&gt; &lt;span class="nv"&gt;model&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt;
+        &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;container&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt; 
+            &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;row&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt; 
+            &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt; 
+                &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;col-sm-6&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+                &lt;span class="nf"&gt;&amp;lt;|&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;List&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;map&lt;/span&gt; &lt;span class="nv"&gt;draggableItemView&lt;/span&gt; &lt;span class="nv"&gt;model&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;draggableItems&lt;/span&gt;
+                    &lt;span class="nf"&gt;|&amp;gt;&lt;/span&gt; &lt;span class="nf"&gt;(::)&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;h4&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;text&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Draggable&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]))&lt;/span&gt;
+            &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt; 
+                &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;col-sm-6&amp;quot;&lt;/span&gt;
+                &lt;span class="p"&gt;]&lt;/span&gt;
+                &lt;span class="nf"&gt;&amp;lt;|&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;List&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;map&lt;/span&gt; &lt;span class="nv"&gt;itemView&lt;/span&gt; &lt;span class="nv"&gt;model&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;items&lt;/span&gt;
+                    &lt;span class="nf"&gt;|&amp;gt;&lt;/span&gt; &lt;span class="nf"&gt;(::)&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;h4&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;text&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Drop Zone&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]))&lt;/span&gt;
+            &lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Add update messages&lt;/h1&gt;
+&lt;p&gt;Next we need to setup some messages for handling actions in the application. These messages 
+will be passed by the event handlers we're going to setup in the next section.&lt;/p&gt;
+&lt;!-- https://ellie-app.com/yCzmNzPY7ga1 --&gt;
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;type&lt;/span&gt; &lt;span class="kt"&gt;Msg&lt;/span&gt;
+    &lt;span class="nf"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;Drag&lt;/span&gt; &lt;span class="kt"&gt;String&lt;/span&gt;
+    &lt;span class="nf"&gt;|&lt;/span&gt; &lt;span class="kt"&gt;DragEnd&lt;/span&gt;
+    &lt;span class="nf"&gt;|&lt;/span&gt; &lt;span class="kt"&gt;DragOver&lt;/span&gt;
+    &lt;span class="nf"&gt;|&lt;/span&gt; &lt;span class="kt"&gt;Drop&lt;/span&gt;
+
+
+&lt;span class="nv"&gt;update&lt;/span&gt; &lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;Msg&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;Model&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;Model&lt;/span&gt;
+&lt;span class="nv"&gt;update&lt;/span&gt; &lt;span class="nv"&gt;msg&lt;/span&gt; &lt;span class="nv"&gt;model&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="kr"&gt;case&lt;/span&gt; &lt;span class="nv"&gt;msg&lt;/span&gt; &lt;span class="kr"&gt;of&lt;/span&gt;
+        &lt;span class="kt"&gt;Drag&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt;
+            &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nv"&gt;model&lt;/span&gt; &lt;span class="nf"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;beingDragged&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;Just&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+
+        &lt;span class="kt"&gt;DragEnd&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt;
+            &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nv"&gt;model&lt;/span&gt; &lt;span class="nf"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;beingDragged&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;Nothing&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+
+        &lt;span class="kt"&gt;DragOver&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt;
+            &lt;span class="nv"&gt;model&lt;/span&gt;
+
+        &lt;span class="kt"&gt;Drop&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt;
+            &lt;span class="kr"&gt;case&lt;/span&gt; &lt;span class="nv"&gt;model&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;beingDragged&lt;/span&gt; &lt;span class="kr"&gt;of&lt;/span&gt;
+                &lt;span class="kt"&gt;Nothing&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt;
+                    &lt;span class="nv"&gt;model&lt;/span&gt;
+
+                &lt;span class="kt"&gt;Just&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt;
+                    &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nv"&gt;model&lt;/span&gt;
+                        &lt;span class="nf"&gt;|&lt;/span&gt; &lt;span class="nv"&gt;beingDragged&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;Nothing&lt;/span&gt;
+                        &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;items&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt; &lt;span class="nf"&gt;::&lt;/span&gt; &lt;span class="nv"&gt;model&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;items&lt;/span&gt; 
+                    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Add event handlers&lt;/h1&gt;
+&lt;p&gt;Next we need to leverage the following events to achieve drag and drop functionality.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Event&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;dragstart&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Fires when an element starts being dragged.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;dragend&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Fires when dragging stops without being dropped on a dropzone.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;dragover&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Fires when an dragging over an element. Cancelling this event allows an element to be a dropzone.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;drop&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Fires when dragging stops over a dropzone.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;Handlers for these events aren't provided in &lt;code&gt;Html.Events&lt;/code&gt;. Thankfully, these are fairly trivial to setup.&lt;/p&gt;
+&lt;!-- https://ellie-app.com/yCC93bXx2ma1 --&gt;
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import &lt;/span&gt;&lt;span class="nc"&gt;Html.Events&lt;/span&gt; &lt;span class="kr"&gt;as&lt;/span&gt; &lt;span class="kt"&gt;Events&lt;/span&gt;
+&lt;span class="kn"&gt;import &lt;/span&gt;&lt;span class="nc"&gt;Json.Decode&lt;/span&gt; &lt;span class="kr"&gt;as&lt;/span&gt; &lt;span class="kt"&gt;Decode&lt;/span&gt;
+
+
+&lt;span class="nv"&gt;onDragStart&lt;/span&gt; &lt;span class="nv"&gt;msg&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="kt"&gt;Events&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;on&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;dragstart&amp;quot;&lt;/span&gt; 
+        &lt;span class="nf"&gt;&amp;lt;|&lt;/span&gt; &lt;span class="kt"&gt;Decode&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;succeed&lt;/span&gt; &lt;span class="nv"&gt;msg&lt;/span&gt;
+
+
+&lt;span class="nv"&gt;onDragEnd&lt;/span&gt; &lt;span class="nv"&gt;msg&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="kt"&gt;Events&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;on&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;dragend&amp;quot;&lt;/span&gt;
+        &lt;span class="nf"&gt;&amp;lt;|&lt;/span&gt; &lt;span class="kt"&gt;Decode&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;succeed&lt;/span&gt; &lt;span class="nv"&gt;msg&lt;/span&gt;
+
+
+&lt;span class="nv"&gt;onDragOver&lt;/span&gt; &lt;span class="nv"&gt;msg&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="kt"&gt;Events&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;preventDefaultOn&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;dragover&amp;quot;&lt;/span&gt;
+        &lt;span class="nf"&gt;&amp;lt;|&lt;/span&gt; &lt;span class="kt"&gt;Decode&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;succeed&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="nv"&gt;onDrop&lt;/span&gt; &lt;span class="nv"&gt;msg&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="kt"&gt;Events&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;preventDefaultOn&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;drop&amp;quot;&lt;/span&gt;
+        &lt;span class="nf"&gt;&amp;lt;|&lt;/span&gt; &lt;span class="kt"&gt;Decode&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;succeed&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then all that's left now is for us to wire up the events in our &lt;code&gt;view&lt;/code&gt;.&lt;/p&gt;
+&lt;!-- https://ellie-app.com/yGJLryTwL3a1 --&gt;
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;draggableItemView&lt;/span&gt; &lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;String&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt; &lt;span class="kt"&gt;Msg&lt;/span&gt;
+&lt;span class="nv"&gt;draggableItemView&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt;
+        &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;card fluid warning&amp;quot;&lt;/span&gt;
+        &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;draggable&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;true&amp;quot;&lt;/span&gt;
+        &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;onDragStart&lt;/span&gt; &lt;span class="nf"&gt;&amp;lt;|&lt;/span&gt; &lt;span class="kt"&gt;Drag&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt;
+        &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;onDragEnd&lt;/span&gt; &lt;span class="kt"&gt;DragEnd&lt;/span&gt; 
+        &lt;span class="p"&gt;]&lt;/span&gt; 
+        &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt; 
+            &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;section&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt; 
+            &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;text&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt; 
+        &lt;span class="p"&gt;]&lt;/span&gt;
+
+
+&lt;span class="nv"&gt;itemView&lt;/span&gt; &lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;String&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt; &lt;span class="kt"&gt;Msg&lt;/span&gt;
+&lt;span class="nv"&gt;itemView&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt;
+        &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;card fluid error&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt; 
+        &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt; 
+            &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;section&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt; 
+            &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;text&lt;/span&gt; &lt;span class="nv"&gt;item&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="p"&gt;]&lt;/span&gt;
+
+
+&lt;span class="nv"&gt;view&lt;/span&gt; &lt;span class="nf"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;Model&lt;/span&gt; &lt;span class="nf"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt; &lt;span class="kt"&gt;Msg&lt;/span&gt;
+&lt;span class="nv"&gt;view&lt;/span&gt; &lt;span class="nv"&gt;model&lt;/span&gt; &lt;span class="nf"&gt;=&lt;/span&gt;
+    &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt;
+        &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;container&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt; 
+            &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;row&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt; 
+            &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt; 
+                &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;col-sm-6&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+                &lt;span class="nf"&gt;&amp;lt;|&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;List&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;map&lt;/span&gt; &lt;span class="nv"&gt;draggableItemView&lt;/span&gt; &lt;span class="nv"&gt;model&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;draggableItems&lt;/span&gt;
+                    &lt;span class="nf"&gt;|&amp;gt;&lt;/span&gt; &lt;span class="nf"&gt;(::)&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;h4&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;text&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Draggable&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]))&lt;/span&gt;
+            &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;div&lt;/span&gt; 
+                &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Attributes&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;col-sm-6&amp;quot;&lt;/span&gt;
+                &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;onDragOver&lt;/span&gt; &lt;span class="kt"&gt;DragOver&lt;/span&gt;
+                &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;onDrop&lt;/span&gt; &lt;span class="kt"&gt;Drop&lt;/span&gt;
+                &lt;span class="p"&gt;]&lt;/span&gt;
+                &lt;span class="nf"&gt;&amp;lt;|&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;List&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;map&lt;/span&gt; &lt;span class="nv"&gt;itemView&lt;/span&gt; &lt;span class="nv"&gt;model&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;items&lt;/span&gt;
+                    &lt;span class="nf"&gt;|&amp;gt;&lt;/span&gt; &lt;span class="nf"&gt;(::)&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;h4&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="kt"&gt;Html&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;text&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Drop Zone&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]))&lt;/span&gt;
+            &lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Putting it all together&lt;/h1&gt;
+&lt;p&gt;With everything in place now, you should have a solution like below that allows you to drag 
+items from the left list onto the right list.&lt;/p&gt;
+&lt;iframe src="https://ellie-app.com/embed/8hrQSHMkpD6a1" style="width:100%; height:400px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"&gt;&lt;/iframe&gt;
+
+&lt;p&gt;And that's all it takes to implement basic HTML5 drag and drop in Elm. Happy hacking!&lt;/p&gt;</content><category term="Blog"></category></entry><entry><title>Building a Backbone.js project with Webpack</title><link href="https://benpaulhanna.com/building-a-backbonejs-project-with-webpack.html" rel="alternate"></link><published>2018-05-21T22:50:00-04:00</published><updated>2018-05-21T22:50:00-04:00</updated><author><name>Ben Hanna</name></author><id>tag:benpaulhanna.com,2018-05-21:/building-a-backbonejs-project-with-webpack.html</id><summary type="html">&lt;p&gt;Have you ever wanted to write Backbone.js in the same module format as Node.js? Well here's how 
+you can do it with &lt;code&gt;webpack&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;In short &lt;code&gt;webpack&lt;/code&gt; allows you to write browser JavaScript using the CommonJS module format. 
+The main benefit to this is that &lt;code&gt;webpack&lt;/code&gt; will bundle all …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Have you ever wanted to write Backbone.js in the same module format as Node.js? Well here's how 
+you can do it with &lt;code&gt;webpack&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;In short &lt;code&gt;webpack&lt;/code&gt; allows you to write browser JavaScript using the CommonJS module format. 
+The main benefit to this is that &lt;code&gt;webpack&lt;/code&gt; will bundle all your modules together in a single file 
+so that you don't need to manually manage &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt; tags. And on top of that you can require NPM packages 
+as you would in a Node.js application.&lt;/p&gt;
+&lt;h1&gt;Create the project&lt;/h1&gt;
+&lt;p&gt;Starting from scratch let's first create a new folder and initialize &lt;code&gt;npm&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir my-backbone-app
+&lt;span class="nb"&gt;cd&lt;/span&gt; my-backbone-app
+npm init
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next let's install &lt;code&gt;backbone&lt;/code&gt; and it's dependencies, which are &lt;code&gt;jquery&lt;/code&gt; and &lt;code&gt;underscore&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;npm install --save backbone jquery underscore
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We're going to use the following folder structure.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;src&lt;/code&gt; - This is where we'll put all our JavaScript.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;public&lt;/code&gt; - This where we'll put any static files (index.html, assets).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Install and configure Webpack&lt;/h1&gt;
+&lt;p&gt;We'll install &lt;code&gt;webpack&lt;/code&gt; along with &lt;code&gt;webpack-dev-server&lt;/code&gt;. The latter allows you 
+to run a local web server that will also watch your source files for changes.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;npm install --save webpack webpack-cli
+npm install --save-dev webpack-dev-server
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now let's setup a basic configuration in &lt;code&gt;webpack.config.js&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nx"&gt;resolve&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;path&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;PUBLIC_PATH&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;resolve&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;__dirname&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;public&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;SRC_PATH&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;resolve&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;__dirname&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;src&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="nx"&gt;module&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;exports&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nx"&gt;entry&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;SRC_PATH&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;/index.js`&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="nx"&gt;output&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;filename&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;bundle.js&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;path&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;PUBLIC_PATH&lt;/span&gt;
+  &lt;span class="p"&gt;},&lt;/span&gt;
+  &lt;span class="nx"&gt;module&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;rules&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+      &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;test&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="sr"&gt;/\.(js)$/&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nx"&gt;exclude&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="sr"&gt;/node_modules/&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;]&lt;/span&gt;
+  &lt;span class="p"&gt;},&lt;/span&gt;
+  &lt;span class="nx"&gt;devServer&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;contentBase&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;PUBLIC_PATH&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Create an application&lt;/h1&gt;
+&lt;p&gt;Before we can load our application we need to create our shell. We'll save this file as 
+&lt;code&gt;public/index.html&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+
+&lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;html&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;head&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="c"&gt;&amp;lt;!-- Using the &amp;#39;async&amp;#39; attribute will keep our script from blocking the page load. --&amp;gt;&lt;/span&gt;
+    &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;script&lt;/span&gt; &lt;span class="na"&gt;src&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;bundle.js&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;async&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;script&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;head&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;html&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now let's scaffold out a basic use of Backbone with &lt;code&gt;webpack&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;First we'll create a view for our application in &lt;code&gt;src/app.view.js&lt;/code&gt;;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// Import the Backbone module and its dependencies&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;Backbone&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;backbone&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Declare our options we&amp;#39;ll use to extend the base view&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;viewOptions&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nx"&gt;el&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;body&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+  &lt;span class="nx"&gt;initialize&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="p"&gt;},&lt;/span&gt;
+
+  &lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;$el&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;App Ready&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Export our extended view&lt;/span&gt;
+&lt;span class="nx"&gt;module&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;exports&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;Backbone&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;View&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;extend&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;viewOptions&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now let's create our entry module that bootstraps the application at &lt;code&gt;src/index.js&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// Import the Backbone module and its dependencies&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;Backbone&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;backbone&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Import our view&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;AppView&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;./app.view&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Execute after the DOM has loaded&lt;/span&gt;
+&lt;span class="nx"&gt;Backbone&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;$&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// Create an instance of our view&lt;/span&gt;
+  &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nx"&gt;AppView&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With all the base components stubbed out we can now start up the application.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;npx webpack-dev-server
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Navigate to &lt;code&gt;http://localhost:8080&lt;/code&gt; in a browser and you should see the message displayed.&lt;/p&gt;
+&lt;h1&gt;Wrapping up&lt;/h1&gt;
+&lt;p&gt;Hopefully this article gave you a good overview on how to use &lt;code&gt;webpack&lt;/code&gt; with Backbone. If 
+you'd like to see a slightly more involved example with routing and templates then please see my 
+&lt;a href="https://github.com/benthepoet/backbone-fundamentals-webpack"&gt;backbone-fundamentals-webpack&lt;/a&gt; 
+repository.&lt;/p&gt;</content><category term="Blog"></category></entry><entry><title>Setting up a Haskell Environment in Ubuntu</title><link href="https://benpaulhanna.com/setting-up-a-haskell-environment-in-ubuntu.html" rel="alternate"></link><published>2018-05-14T23:38:00-04:00</published><updated>2018-05-19T20:36:00-04:00</updated><author><name>Ben Hanna</name></author><id>tag:benpaulhanna.com,2018-05-14:/setting-up-a-haskell-environment-in-ubuntu.html</id><summary type="html">&lt;p&gt;These instructions have been tested against Kubuntu 18.04 LTS.&lt;/p&gt;
+&lt;p&gt;In the process of learning Haskell, I've recently gone through the various editors to 
+try and see which one has the ideal tooling. There's many different opinions on the matter, 
+but for me I've settled on Emacs with &lt;code&gt;intero&lt;/code&gt;. I …&lt;/p&gt;</summary><content type="html">&lt;p&gt;These instructions have been tested against Kubuntu 18.04 LTS.&lt;/p&gt;
+&lt;p&gt;In the process of learning Haskell, I've recently gone through the various editors to 
+try and see which one has the ideal tooling. There's many different opinions on the matter, 
+but for me I've settled on Emacs with &lt;code&gt;intero&lt;/code&gt;. I went with intero because it has 
+solid type-checking, an interactive REPL, and doesn't require a whole lot of configuration 
+to get going. With that said, I'll show you how to setup this environment in the context of 
+an Ubuntu system.&lt;/p&gt;
+&lt;h1&gt;Install Stack&lt;/h1&gt;
+&lt;p&gt;The first thing we need to install is stack. If you come from a Node.js background then stack 
+is somewhat akin to the functionality &lt;code&gt;nvm&lt;/code&gt; and &lt;code&gt;npm&lt;/code&gt; provide. Some of the most prominent features 
+stack provides are dependency installation, scaffolding for new projects, and GHC version management.&lt;/p&gt;
+&lt;p&gt;To install stack, run the following command.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;wget -qO- https://get.haskellstack.org/ &lt;span class="p"&gt;|&lt;/span&gt; sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Once installed, the &lt;code&gt;stack&lt;/code&gt; binary will be available to use in your terminal. &lt;/p&gt;
+&lt;h1&gt;Install Emacs&lt;/h1&gt;
+&lt;p&gt;Installing Emacs in Ubuntu is a fairly trivial task that can be performed with the following command.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install emacs
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After installation, startup &lt;code&gt;emacs&lt;/code&gt; at least once so that it initializes your &lt;code&gt;emacs.d&lt;/code&gt; folder.&lt;/p&gt;
+&lt;h1&gt;Install Intero&lt;/h1&gt;
+&lt;p&gt;Now before we install &lt;code&gt;intero&lt;/code&gt; we also need install &lt;code&gt;libtinfo-dev&lt;/code&gt;, without this package 
+&lt;code&gt;intero&lt;/code&gt; will fail to build with stack lts-11.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install libtinfo-dev
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next place the following into &lt;code&gt;~/.emacs.d/init.el&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;;; If you don&amp;#39;t have MELPA in your package archives:&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="ss"&gt;&amp;#39;package&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;add-to-list&lt;/span&gt;
+  &lt;span class="ss"&gt;&amp;#39;package-archives&lt;/span&gt;
+  &lt;span class="o"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;melpa&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;http://melpa.org/packages/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="no"&gt;t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;package-initialize&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;package-refresh-contents&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;;; Install Intero&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;package-install&lt;/span&gt; &lt;span class="ss"&gt;&amp;#39;intero&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;add-hook&lt;/span&gt; &lt;span class="ss"&gt;&amp;#39;haskell-mode-hook&lt;/span&gt; &lt;span class="ss"&gt;&amp;#39;intero-mode&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With that file place, just open &lt;code&gt;emacs&lt;/code&gt; in a terminal and &lt;code&gt;intero&lt;/code&gt; should start installing.&lt;/p&gt;
+&lt;h1&gt;Create a Test Project&lt;/h1&gt;
+&lt;p&gt;To verify that everything is working, create a new project with &lt;code&gt;stack&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;stack new test-project
+&lt;span class="nb"&gt;cd&lt;/span&gt; test-project
+stack setup
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now open &lt;code&gt;src/Lib.hs&lt;/code&gt; and modify the code. You should see type errors come up as you change 
+the file.&lt;/p&gt;
+&lt;p&gt;For more information on the rest of the features &lt;code&gt;intero&lt;/code&gt; provides see the &lt;a href="https://github.com/commercialhaskell/intero"&gt;repository&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;</content><category term="Blog"></category><category term="haskell"></category></entry></feed>

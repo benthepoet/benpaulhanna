@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Setting up a Haskell Environment in Ubuntu | (λx.x) Ben Hanna
+</title>
+  <link rel="canonical" href="https://benpaulhanna.com/setting-up-a-haskell-environment-in-ubuntu.html">
+
+  <link rel="alternate" type="application/atom+xml" href="https://benpaulhanna.com/feeds/all.atom.xml" title="Full Atom Feed">
+  <link rel="alternate" type="application/atom+xml" href="https://benpaulhanna.com/feeds/blog.atom.xml" title="Categories Atom Feed">
+
+
+  <link rel="stylesheet" href="https://benpaulhanna.com/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://benpaulhanna.com/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://benpaulhanna.com/theme/css/pygments/default.min.css">
+  <link rel="stylesheet" href="https://benpaulhanna.com/theme/css/style.css">
+
+
+<meta name="description" content="These instructions have been tested against Kubuntu 18.04 LTS. In the process of learning Haskell, I've recently gone through the various editors to try and see which one has the ideal tooling. There's many different opinions on the matter, but for me I've settled on Emacs with intero. I …">
+<script>
+  (function(i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function() {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+    a = s.createElement(o);
+    a.async = 1;
+    a.src = g;
+    m = s.getElementsByTagName(o)[0];
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+  ga('create', 'UA-25795278-5', 'auto');
+  ga('send', 'pageview');
+</script>
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <h1 class="title"><a href="https://benpaulhanna.com/">(λx.x) Ben Hanna</a></h1>
+          <p class="text-muted">Software Engineer and Functional Programming Enthusiast</p>
+          <ul class="list-inline">
+            <li class="list-inline-item"><a href="https://benpaulhanna.com/category/blog.html">Blog</a></li>
+            <li class="list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a href="https://benpaulhanna.com/pages/about.html">About</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/benthepoet" target="_blank"></a></li>
+            <li class="list-inline-item"><a class="fa fa-stack-overflow" href="https://stackoverflow.com/users/8171618/ben-hanna" target="_blank"></a></li>
+            <li class="list-inline-item"><a class="fa fa-twitter" href="https://twitter.com/benpaulhanna" target="_blank"></a></li>
+            <li class="list-inline-item"><a class="fa fa-linkedin" href="https://www.linkedin.com/in/ben-hanna-0a275135" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Setting up a Haskell Environment in Ubuntu
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-05-14T23:38:00-04:00">
+        <i class="fa fa-clock-o"></i>
+        Mon 14 May 2018
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://benpaulhanna.com/category/blog.html">Blog</a>
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-files-o"></i>
+        <a href="https://benpaulhanna.com/tag/haskell.html">#haskell</a>      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <p>These instructions have been tested against Kubuntu 18.04 LTS.</p>
+<p>In the process of learning Haskell, I've recently gone through the various editors to 
+try and see which one has the ideal tooling. There's many different opinions on the matter, 
+but for me I've settled on Emacs with <code>intero</code>. I went with intero because it has 
+solid type-checking, an interactive REPL, and doesn't require a whole lot of configuration 
+to get going. With that said, I'll show you how to setup this environment in the context of 
+an Ubuntu system.</p>
+<h1>Install Stack</h1>
+<p>The first thing we need to install is stack. If you come from a Node.js background then stack 
+is somewhat akin to the functionality <code>nvm</code> and <code>npm</code> provide. Some of the most prominent features 
+stack provides are dependency installation, scaffolding for new projects, and GHC version management.</p>
+<p>To install stack, run the following command.</p>
+<div class="highlight"><pre><span></span>wget -qO- https://get.haskellstack.org/ <span class="p">|</span> sh
+</pre></div>
+
+
+<p>Once installed, the <code>stack</code> binary will be available to use in your terminal. </p>
+<h1>Install Emacs</h1>
+<p>Installing Emacs in Ubuntu is a fairly trivial task that can be performed with the following command.</p>
+<div class="highlight"><pre><span></span>sudo apt-get install emacs
+</pre></div>
+
+
+<p>After installation, startup <code>emacs</code> at least once so that it initializes your <code>emacs.d</code> folder.</p>
+<h1>Install Intero</h1>
+<p>Now before we install <code>intero</code> we also need install <code>libtinfo-dev</code>, without this package 
+<code>intero</code> will fail to build with stack lts-11.</p>
+<div class="highlight"><pre><span></span>sudo apt-get install libtinfo-dev
+</pre></div>
+
+
+<p>Next place the following into <code>~/.emacs.d/init.el</code>.</p>
+<div class="highlight"><pre><span></span><span class="c1">;; If you don&#39;t have MELPA in your package archives:</span>
+<span class="p">(</span><span class="nb">require</span> <span class="ss">&#39;package</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">add-to-list</span>
+  <span class="ss">&#39;package-archives</span>
+  <span class="o">&#39;</span><span class="p">(</span><span class="s">&quot;melpa&quot;</span> <span class="o">.</span> <span class="s">&quot;http://melpa.org/packages/&quot;</span><span class="p">)</span> <span class="no">t</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">package-initialize</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">package-refresh-contents</span><span class="p">)</span>
+
+<span class="c1">;; Install Intero</span>
+<span class="p">(</span><span class="nv">package-install</span> <span class="ss">&#39;intero</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">add-hook</span> <span class="ss">&#39;haskell-mode-hook</span> <span class="ss">&#39;intero-mode</span><span class="p">)</span>
+</pre></div>
+
+
+<p>With that file place, just open <code>emacs</code> in a terminal and <code>intero</code> should start installing.</p>
+<h1>Create a Test Project</h1>
+<p>To verify that everything is working, create a new project with <code>stack</code>.</p>
+<div class="highlight"><pre><span></span>stack new test-project
+<span class="nb">cd</span> test-project
+stack setup
+</pre></div>
+
+
+<p>Now open <code>src/Lib.hs</code> and modify the code. You should see type errors come up as you change 
+the file.</p>
+<p>For more information on the rest of the features <code>intero</code> provides see the <a href="https://github.com/commercialhaskell/intero">repository</a>.</p>
+<p><br></p>
+  </div>
+</article>
+<hr>
+<div id="disqus_thread"></div>
+<script>
+  var disqus_config = function() {
+    this.page.url = 'https://benpaulhanna.com/setting-up-a-haskell-environment-in-ubuntu.html';
+    this.page.identifier = 'setting-up-a-haskell-environment-in-ubuntu';
+  };
+  (function() {
+    var d = document;
+    var s = d.createElement('script');
+    s.src = '//benpaulhanna.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript class="text-muted">
+  Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://benpaulhanna.com/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://benpaulhanna.com/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://benpaulhanna.com/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          Generated by <a href="https://github.com/getpelican/pelican" target="_blank">Pelican</a> / <a href="https://github.com/nairobilug/pelican-alchemy" target="_blank">&#x2728;</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

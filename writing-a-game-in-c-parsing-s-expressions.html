@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Writing a Game in C: Parsing S-expressions | (λx.x) Ben Hanna
+</title>
+  <link rel="canonical" href="https://benpaulhanna.com/writing-a-game-in-c-parsing-s-expressions.html">
+
+  <link rel="alternate" type="application/atom+xml" href="https://benpaulhanna.com/feeds/all.atom.xml" title="Full Atom Feed">
+  <link rel="alternate" type="application/atom+xml" href="https://benpaulhanna.com/feeds/blog.atom.xml" title="Categories Atom Feed">
+
+
+  <link rel="stylesheet" href="https://benpaulhanna.com/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://benpaulhanna.com/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://benpaulhanna.com/theme/css/pygments/default.min.css">
+  <link rel="stylesheet" href="https://benpaulhanna.com/theme/css/style.css">
+
+
+<meta name="description" content="Over the past couple weeks I've been trying to work out how I want to store my game configuration. At first I started playing with XML, which was nice because I could stream a file rather than loading the entire thing into memory but I turned away from XML because …">
+<script>
+  (function(i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function() {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+    a = s.createElement(o);
+    a.async = 1;
+    a.src = g;
+    m = s.getElementsByTagName(o)[0];
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+  ga('create', 'UA-25795278-5', 'auto');
+  ga('send', 'pageview');
+</script>
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <h1 class="title"><a href="https://benpaulhanna.com/">(λx.x) Ben Hanna</a></h1>
+          <p class="text-muted">Software Engineer and Functional Programming Enthusiast</p>
+          <ul class="list-inline">
+            <li class="list-inline-item"><a href="https://benpaulhanna.com/category/blog.html">Blog</a></li>
+            <li class="list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a href="https://benpaulhanna.com/pages/about.html">About</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/benthepoet" target="_blank"></a></li>
+            <li class="list-inline-item"><a class="fa fa-stack-overflow" href="https://stackoverflow.com/users/8171618/ben-hanna" target="_blank"></a></li>
+            <li class="list-inline-item"><a class="fa fa-twitter" href="https://twitter.com/benpaulhanna" target="_blank"></a></li>
+            <li class="list-inline-item"><a class="fa fa-linkedin" href="https://www.linkedin.com/in/ben-hanna-0a275135" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Writing a Game in C: Parsing S-expressions
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2019-04-03T12:49:00-04:00">
+        <i class="fa fa-clock-o"></i>
+        Wed 03 April 2019
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://benpaulhanna.com/category/blog.html">Blog</a>
+      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <p>Over the past couple weeks I've been trying to work out how 
+I want to store my game configuration. At first I started playing with XML, which 
+was nice because I could stream a file rather than loading the entire thing into memory but
+I turned away from XML because I'd rather be as library independent as possible, ideally 
+with my SDL being my only cross-platform dependency to worry about.</p>
+<p>So for a while I switched my game configuration over to a plain text format that looks like this. This format 
+really doesn't have a specific structure to it and I basically mimicked the idea of XML namespaces 
+so I could still read it in as a stream and not have to worry about collisions between like named properties. </p>
+<div class="highlight"><pre><span></span><span class="nv">sp</span>:<span class="nv">sprite</span>
+  <span class="nv">sp</span>:<span class="nv">x</span> <span class="mi">32</span>
+  <span class="nv">sp</span>:<span class="nv">y</span> <span class="mi">104</span>
+  <span class="nv">an</span>:<span class="nv">animation</span>
+    <span class="nv">an</span>:<span class="nv">texture</span> <span class="s2">&quot;</span><span class="s">assets/idle.bmp</span><span class="s2">&quot;</span>
+    <span class="nv">an</span>:<span class="nv">frame</span><span class="o">-</span><span class="nv">length</span> <span class="mi">2</span>
+    <span class="nv">an</span>:<span class="nv">frame</span><span class="o">-</span><span class="nv">width</span> <span class="mi">24</span>
+    <span class="nv">an</span>:<span class="nv">frame</span><span class="o">-</span><span class="nv">height</span> <span class="mi">24</span>
+    <span class="nv">an</span>:<span class="nv">frame</span><span class="o">-</span><span class="nv">span</span> <span class="mi">5</span>
+    <span class="nv">an</span>:<span class="k">loop</span> <span class="mi">0</span>
+</pre></div>
+
+
+<p>It felt a little lacking though and over the past few months I've really taken a liking to Common Lisp. 
+In the end I really wanted to see my data structured more like this.</p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="ss">:sprites</span>
+  <span class="p">((</span><span class="ss">:sprite</span>
+      <span class="ss">:x</span> <span class="mi">32</span>
+      <span class="ss">:y</span> <span class="mi">104</span>
+      <span class="ss">:animations</span>
+        <span class="p">((</span><span class="ss">:animation</span>
+            <span class="ss">:texture</span> <span class="s">&quot;assets/idle.bmp&quot;</span>
+            <span class="ss">:frame-length</span> <span class="mi">2</span>
+            <span class="ss">:frame-width</span> <span class="mi">24</span>
+            <span class="ss">:frame-height</span> <span class="mi">24</span>
+            <span class="ss">:frame-span</span> <span class="mi">5</span>
+            <span class="ss">:loop</span> <span class="mi">0</span><span class="p">)))))</span>
+</pre></div>
+
+
+<p>So I figured I'd stretch my mind and build an s-expression parser. Below is an account of how 
+I worked through the solution.</p>
+<h1>Modeling the structure</h1>
+<p>I'll admit I'm largely a self-taught programmer and don't have a formal background in computer science. Thus, 
+I tend to learn about data structures and algorithms when they're useful to a particular problem that I'm trying 
+to solve.</p>
+<p>With that said, my understanding of how an s-expression is structured led me to implement a linked list. Below is the basic structure.</p>
+<div class="highlight"><pre><span></span><span class="k">enum</span> <span class="n">SNodeType</span> <span class="p">{</span>
+  <span class="n">LIST</span><span class="p">,</span>
+  <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">SYMBOL</span>
+<span class="p">}</span>
+
+<span class="k">struct</span> <span class="n">SNode</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">SNode</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+  <span class="k">enum</span> <span class="n">SNodeType</span> <span class="n">type</span><span class="p">;</span>
+  <span class="k">union</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">SNode</span> <span class="o">*</span><span class="n">list</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">value</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>In my program a parsed s-expression is a linked list consisting of <code>SNode</code>. The <code>SNode</code> struct is a tagged union 
+that either contains a value (<code>STRING</code> or <code>SYMBOL</code> to begin with) or another list of <code>SNode</code>. This structure makes for a traversable 
+in-memory tree. </p>
+<h1>Recursing the s-expression</h1>
+<p>So for actually parsing out the expression I decided to utilize <code>fscanf</code> as it allows for basic pattern matching.</p>
+<div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">SNode</span> <span class="o">*</span><span class="nf">parse</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">SNode</span> <span class="o">*</span><span class="n">tail</span><span class="p">,</span> <span class="o">*</span><span class="n">head</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>
+
+  <span class="k">while</span> <span class="p">((</span><span class="n">c</span> <span class="o">=</span> <span class="n">fgetc</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span> <span class="o">!=</span> <span class="n">EOF</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">SNode</span> <span class="o">*</span><span class="n">node</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;)&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// Stop recursion at the end of an expression</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;(&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// Begin recursion at the start of an expression</span>
+      <span class="n">node</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">SNode</span><span class="p">));</span>
+      <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">LIST</span><span class="p">;</span>
+      <span class="n">node</span><span class="o">-&gt;</span><span class="n">list</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">fp</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">isspace</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="p">{</span>
+      <span class="n">ungetc</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">);</span>
+
+      <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">512</span><span class="p">];</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;&quot;&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Read a string terminated by double quote</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">fscanf</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">%511[^</span><span class="se">\&quot;</span><span class="s">]</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">))</span> <span class="p">{</span>
+          <span class="n">node</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">SNode</span><span class="p">));</span>
+          <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">STRING</span><span class="p">;</span>
+          <span class="n">strcpy</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">,</span> <span class="n">buffer</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">// Read a symbol terminated by whitespace or parentheses</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">fscanf</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s">&quot;%511[^()</span><span class="se">\t\r\n\v\f</span><span class="s"> ]&quot;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">))</span> <span class="p">{</span>
+          <span class="n">node</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">SNode</span><span class="p">));</span>
+          <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">SYMBOL</span><span class="p">;</span>
+          <span class="n">strcpy</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">,</span> <span class="n">buffer</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Append a node</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">node</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Initialize the head</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">// Append the node to the tail</span>
+        <span class="n">tail</span> <span class="o">=</span> <span class="n">tail</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Return the head of the list</span>
+  <span class="k">return</span> <span class="n">head</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>This worked fairly well. I did however notice later on that this iteration of the parser couldn't read empty strings correctly. I also 
+wanted to introduce the <code>FLOAT</code> and <code>INTEGER</code> data types as these currently just get tagged as <code>SYMBOL</code>.</p>
+<h1>Adding number data types</h1>
+<p>For basic number support I added <code>FLOAT</code> and <code>INTEGER</code> to the <code>SNodeType</code> enumeration.</p>
+<div class="highlight"><pre><span></span><span class="k">enum</span> <span class="n">SNodeType</span> <span class="p">{</span>
+  <span class="n">LIST</span><span class="p">,</span>
+  <span class="n">FLOAT</span><span class="p">,</span>
+  <span class="n">INTEGER</span><span class="p">,</span>
+  <span class="n">STRING</span><span class="p">,</span>
+  <span class="n">SYMBOL</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Next I created a couple functions for determining whether a string is a float or an integer.</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">is_float</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">ptr</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="n">strtod</span><span class="p">(</span><span class="n">str</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ptr</span><span class="p">);</span>
+  <span class="k">return</span> <span class="o">!*</span><span class="n">ptr</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">is_integer</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">ptr</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="n">strtol</span><span class="p">(</span><span class="n">str</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ptr</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+  <span class="k">return</span> <span class="o">!*</span><span class="n">ptr</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>I then updated the <code>parse</code> function to try and determine the type before falling back to a <code>SYMBOL</code>.</p>
+<div class="highlight"><pre><span></span><span class="c1">// Read a symbol terminated by whitespace or parentheses</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">fscanf</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s">&quot;%511[^()</span><span class="se">\t\r\n\v\f</span><span class="s"> ]&quot;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">))</span> <span class="p">{</span>
+  <span class="n">node</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">SNode</span><span class="p">));</span>
+  <span class="n">strcpy</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">,</span> <span class="n">buffer</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">is_integer</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">INTEGER</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">is_float</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">FLOAT</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">SYMBOL</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>After that the parser was able to successfully tag number types. The value itself is still stored as a string though as 
+I figured the game should be responsible for handling that conversion.</p>
+<h1>Fixing the empty string issue</h1>
+<p>Even though I'm never expecting my game to read an empty string in from an s-expression, I didn't want that to be a limitation 
+of the parser. To fix that issue meant I was going to have to abandon <code>fscanf</code>. The limitation of using <code>fscanf</code> for 
+reading strings is that its format pattern expects there to be at least one character between the quotes. With the case of the 
+empty string, there's nothing in between the quotes for it to capture so it winds up parsing the rest of expression incorrectly.</p>
+<p>The solution I came up with in the end is a little longer but it probably performs better than <code>fscanf</code>.</p>
+<div class="highlight"><pre><span></span><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;&quot;&#39;</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">512</span><span class="p">];</span>
+
+  <span class="c1">// Read until string terminator</span>
+  <span class="k">while</span> <span class="p">((</span><span class="n">c</span> <span class="o">=</span> <span class="n">fgetc</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span> <span class="o">!=</span> <span class="sc">&#39;&quot;&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="mi">511</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">buffer</span><span class="p">[</span><span class="n">length</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
+    <span class="n">length</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">buffer</span><span class="p">[</span><span class="n">length</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
+
+  <span class="n">node</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">SNode</span><span class="p">));</span>
+  <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">STRING</span><span class="p">;</span>
+  <span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="n">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">));</span>
+  <span class="n">strcpy</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">,</span> <span class="n">buffer</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>To stay consistent with this means of parsing I also updated the logic for parsing numbers and symbols. One key issue I found with when 
+doing this was that I had to remember to put the terminator back, otherwise the parser wouldn't close the current list and subsequent symbols 
+would wind up in the wrong list.</p>
+<div class="highlight"><pre><span></span><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">isspace</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">512</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">c</span> <span class="p">};</span>
+
+  <span class="c1">// Read until whitespace or list terminator</span>
+  <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">is_terminator</span><span class="p">(</span><span class="n">c</span> <span class="o">=</span> <span class="n">fgetc</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="mi">511</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">buffer</span><span class="p">[</span><span class="n">length</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
+    <span class="n">length</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">buffer</span><span class="p">[</span><span class="n">length</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
+
+  <span class="c1">// Put the terminator back</span>
+  <span class="n">ungetc</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">);</span>
+
+  <span class="n">node</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">SNode</span><span class="p">));</span>
+  <span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="n">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">));</span>
+  <span class="n">strcpy</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">,</span> <span class="n">buffer</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">is_integer</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">INTEGER</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">is_float</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">FLOAT</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">SYMBOL</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>With those changes made, the <code>parse</code> function is now fairly robust in its current form.</p>
+<div class="highlight"><pre><span></span><span class="c1">// Recursively parse an s-expression from a file stream</span>
+<span class="k">struct</span> <span class="n">SNode</span> <span class="o">*</span><span class="nf">parse_sexpr_file</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Using a linked list, nodes are appended to the list tail until we </span>
+  <span class="c1">// reach a list terminator at which point we return the list head.</span>
+  <span class="k">struct</span> <span class="n">SNode</span> <span class="o">*</span><span class="n">tail</span><span class="p">,</span> <span class="o">*</span><span class="n">head</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">c</span><span class="p">;</span>
+
+  <span class="k">while</span> <span class="p">((</span><span class="n">c</span> <span class="o">=</span> <span class="n">fgetc</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span> <span class="o">!=</span> <span class="n">EOF</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">SNode</span> <span class="o">*</span><span class="n">node</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;)&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// Terminate list recursion</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;(&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// Begin list recursion</span>
+      <span class="n">node</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">SNode</span><span class="p">));</span>
+      <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">LIST</span><span class="p">;</span>
+      <span class="n">node</span><span class="o">-&gt;</span><span class="n">list</span> <span class="o">=</span> <span class="n">parse_sexpr_file</span><span class="p">(</span><span class="n">fp</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;&quot;&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="n">BUFFER_SIZE</span><span class="p">];</span>
+
+      <span class="c1">// Read until string terminator</span>
+      <span class="k">while</span> <span class="p">((</span><span class="n">c</span> <span class="o">=</span> <span class="n">fgetc</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span> <span class="o">!=</span> <span class="sc">&#39;&quot;&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="n">BUFFER_SIZE</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">buffer</span><span class="p">[</span><span class="n">length</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
+        <span class="n">length</span><span class="o">++</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="n">buffer</span><span class="p">[</span><span class="n">length</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
+
+      <span class="n">node</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">SNode</span><span class="p">));</span>
+      <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">STRING</span><span class="p">;</span>
+      <span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="n">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">));</span>
+      <span class="n">strcpy</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">,</span> <span class="n">buffer</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">isspace</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="n">BUFFER_SIZE</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">c</span> <span class="p">};</span>
+
+      <span class="c1">// Read until whitespace or list terminator</span>
+      <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">is_terminator</span><span class="p">(</span><span class="n">c</span> <span class="o">=</span> <span class="n">fgetc</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="n">BUFFER_SIZE</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">buffer</span><span class="p">[</span><span class="n">length</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
+        <span class="n">length</span><span class="o">++</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="n">buffer</span><span class="p">[</span><span class="n">length</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
+
+      <span class="c1">// Put the terminator back</span>
+      <span class="n">ungetc</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">);</span>
+
+      <span class="n">node</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">SNode</span><span class="p">));</span>
+      <span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="n">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">));</span>
+      <span class="n">strcpy</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">,</span> <span class="n">buffer</span><span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="n">is_integer</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">INTEGER</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">is_float</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">FLOAT</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">SYMBOL</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">node</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Initialize the list head</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">// Append the node to the list tail</span>
+        <span class="n">tail</span> <span class="o">=</span> <span class="n">tail</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">head</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h1>Deallocating memory</h1>
+<p>The last thing I needed to do is write a recursive function for freeing the memory that is dynamically 
+allocated by the <code>SNode</code> tree. This is how that looks.</p>
+<div class="highlight"><pre><span></span><span class="c1">// Recursively free memory allocated by a node</span>
+<span class="kt">void</span> <span class="nf">snode_free</span><span class="p">(</span><span class="k">struct</span> <span class="n">SNode</span> <span class="o">*</span><span class="n">node</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">SNode</span> <span class="o">*</span><span class="n">tmp</span><span class="p">;</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="n">node</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">==</span> <span class="n">LIST</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">snode_free</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">list</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="c1">// Free current value</span>
+      <span class="n">free</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">);</span>
+      <span class="n">node</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+
+    <span class="c1">// Free current node</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h1>Wrapping up</h1>
+<p>In the end I'm really satisfied with how the parser turned out and I dissassembled the 
+solution down to a level where I could easily implement it in other languages if I need 
+to (or I'm just bored). If you'd like to use or fork the parser then please 
+see my <a href="https://github.com/benthepoet/c-sexpr-parser">c-sexpr-parser</a> repository.</p>
+  </div>
+</article>
+<hr>
+<div id="disqus_thread"></div>
+<script>
+  var disqus_config = function() {
+    this.page.url = 'https://benpaulhanna.com/writing-a-game-in-c-parsing-s-expressions.html';
+    this.page.identifier = 'writing-a-game-in-c-parsing-s-expressions';
+  };
+  (function() {
+    var d = document;
+    var s = d.createElement('script');
+    s.src = '//benpaulhanna.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript class="text-muted">
+  Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://benpaulhanna.com/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://benpaulhanna.com/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://benpaulhanna.com/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          Generated by <a href="https://github.com/getpelican/pelican" target="_blank">Pelican</a> / <a href="https://github.com/nairobilug/pelican-alchemy" target="_blank">&#x2728;</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

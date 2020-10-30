@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags always come first -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Building a Backbone.js project with Webpack | (λx.x) Ben Hanna
+</title>
+  <link rel="canonical" href="https://benpaulhanna.com/building-a-backbonejs-project-with-webpack.html">
+
+  <link rel="alternate" type="application/atom+xml" href="https://benpaulhanna.com/feeds/all.atom.xml" title="Full Atom Feed">
+  <link rel="alternate" type="application/atom+xml" href="https://benpaulhanna.com/feeds/blog.atom.xml" title="Categories Atom Feed">
+
+
+  <link rel="stylesheet" href="https://benpaulhanna.com/theme/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://benpaulhanna.com/theme/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://benpaulhanna.com/theme/css/pygments/default.min.css">
+  <link rel="stylesheet" href="https://benpaulhanna.com/theme/css/style.css">
+
+
+<meta name="description" content="Have you ever wanted to write Backbone.js in the same module format as Node.js? Well here's how you can do it with webpack. In short webpack allows you to write browser JavaScript using the CommonJS module format. The main benefit to this is that webpack will bundle all …">
+<script>
+  (function(i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function() {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+    a = s.createElement(o);
+    a.async = 1;
+    a.src = g;
+    m = s.getElementsByTagName(o)[0];
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+  ga('create', 'UA-25795278-5', 'auto');
+  ga('send', 'pageview');
+</script>
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <h1 class="title"><a href="https://benpaulhanna.com/">(λx.x) Ben Hanna</a></h1>
+          <p class="text-muted">Software Engineer and Functional Programming Enthusiast</p>
+          <ul class="list-inline">
+            <li class="list-inline-item"><a href="https://benpaulhanna.com/category/blog.html">Blog</a></li>
+            <li class="list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a href="https://benpaulhanna.com/pages/about.html">About</a></li>
+            <li class=" list-inline-item text-muted">|</li>
+            <li class="list-inline-item"><a class="fa fa-github" href="https://github.com/benthepoet" target="_blank"></a></li>
+            <li class="list-inline-item"><a class="fa fa-stack-overflow" href="https://stackoverflow.com/users/8171618/ben-hanna" target="_blank"></a></li>
+            <li class="list-inline-item"><a class="fa fa-twitter" href="https://twitter.com/benpaulhanna" target="_blank"></a></li>
+            <li class="list-inline-item"><a class="fa fa-linkedin" href="https://www.linkedin.com/in/ben-hanna-0a275135" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="container">
+      <h1>Building a Backbone.js project with Webpack
+</h1>
+      <hr>
+<article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2018-05-21T22:50:00-04:00">
+        <i class="fa fa-clock-o"></i>
+        Mon 21 May 2018
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://benpaulhanna.com/category/blog.html">Blog</a>
+      </li>
+    </ul>
+  </header>
+  <div class="content">
+    <p>Have you ever wanted to write Backbone.js in the same module format as Node.js? Well here's how 
+you can do it with <code>webpack</code>.</p>
+<p>In short <code>webpack</code> allows you to write browser JavaScript using the CommonJS module format. 
+The main benefit to this is that <code>webpack</code> will bundle all your modules together in a single file 
+so that you don't need to manually manage <code>&lt;script&gt;</code> tags. And on top of that you can require NPM packages 
+as you would in a Node.js application.</p>
+<h1>Create the project</h1>
+<p>Starting from scratch let's first create a new folder and initialize <code>npm</code>.</p>
+<div class="highlight"><pre><span></span>mkdir my-backbone-app
+<span class="nb">cd</span> my-backbone-app
+npm init
+</pre></div>
+
+
+<p>Next let's install <code>backbone</code> and it's dependencies, which are <code>jquery</code> and <code>underscore</code>.</p>
+<div class="highlight"><pre><span></span>npm install --save backbone jquery underscore
+</pre></div>
+
+
+<p>We're going to use the following folder structure.</p>
+<ul>
+<li><code>src</code> - This is where we'll put all our JavaScript.</li>
+<li><code>public</code> - This where we'll put any static files (index.html, assets).</li>
+</ul>
+<h1>Install and configure Webpack</h1>
+<p>We'll install <code>webpack</code> along with <code>webpack-dev-server</code>. The latter allows you 
+to run a local web server that will also watch your source files for changes.</p>
+<div class="highlight"><pre><span></span>npm install --save webpack webpack-cli
+npm install --save-dev webpack-dev-server
+</pre></div>
+
+
+<p>Now let's setup a basic configuration in <code>webpack.config.js</code>.</p>
+<div class="highlight"><pre><span></span><span class="kr">const</span> <span class="p">{</span> <span class="nx">resolve</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">PUBLIC_PATH</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;public&#39;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">SRC_PATH</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;src&#39;</span><span class="p">);</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">entry</span><span class="o">:</span> <span class="sb">`</span><span class="si">${</span><span class="nx">SRC_PATH</span><span class="si">}</span><span class="sb">/index.js`</span><span class="p">,</span>
+  <span class="nx">output</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">filename</span><span class="o">:</span> <span class="s1">&#39;bundle.js&#39;</span><span class="p">,</span>
+    <span class="nx">path</span><span class="o">:</span> <span class="nx">PUBLIC_PATH</span>
+  <span class="p">},</span>
+  <span class="nx">module</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">rules</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nx">test</span><span class="o">:</span> <span class="sr">/\.(js)$/</span><span class="p">,</span>
+        <span class="nx">exclude</span><span class="o">:</span> <span class="sr">/node_modules/</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">},</span>
+  <span class="nx">devServer</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">contentBase</span><span class="o">:</span> <span class="nx">PUBLIC_PATH</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+
+
+<h1>Create an application</h1>
+<p>Before we can load our application we need to create our shell. We'll save this file as 
+<code>public/index.html</code>.</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="c">&lt;!-- Using the &#39;async&#39; attribute will keep our script from blocking the page load. --&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;bundle.js&quot;</span> <span class="na">async</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+
+
+<p>Now let's scaffold out a basic use of Backbone with <code>webpack</code>. </p>
+<p>First we'll create a view for our application in <code>src/app.view.js</code>;</p>
+<div class="highlight"><pre><span></span><span class="c1">// Import the Backbone module and its dependencies</span>
+<span class="kd">var</span> <span class="nx">Backbone</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">);</span>
+
+<span class="c1">// Declare our options we&#39;ll use to extend the base view</span>
+<span class="kd">var</span> <span class="nx">viewOptions</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">el</span><span class="o">:</span> <span class="s1">&#39;body&#39;</span><span class="p">,</span>
+
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+  <span class="p">},</span>
+
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s1">&#39;App Ready&#39;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">// Export our extended view</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">viewOptions</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Now let's create our entry module that bootstraps the application at <code>src/index.js</code>.</p>
+<div class="highlight"><pre><span></span><span class="c1">// Import the Backbone module and its dependencies</span>
+<span class="kd">var</span> <span class="nx">Backbone</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">);</span>
+
+<span class="c1">// Import our view</span>
+<span class="kd">var</span> <span class="nx">AppView</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./app.view&#39;</span><span class="p">);</span>
+
+<span class="c1">// Execute after the DOM has loaded</span>
+<span class="nx">Backbone</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// Create an instance of our view</span>
+  <span class="k">new</span> <span class="nx">AppView</span><span class="p">();</span>
+<span class="p">});</span>
+</pre></div>
+
+
+<p>With all the base components stubbed out we can now start up the application.</p>
+<div class="highlight"><pre><span></span>npx webpack-dev-server
+</pre></div>
+
+
+<p>Navigate to <code>http://localhost:8080</code> in a browser and you should see the message displayed.</p>
+<h1>Wrapping up</h1>
+<p>Hopefully this article gave you a good overview on how to use <code>webpack</code> with Backbone. If 
+you'd like to see a slightly more involved example with routing and templates then please see my 
+<a href="https://github.com/benthepoet/backbone-fundamentals-webpack">backbone-fundamentals-webpack</a> 
+repository.</p>
+  </div>
+</article>
+<hr>
+<div id="disqus_thread"></div>
+<script>
+  var disqus_config = function() {
+    this.page.url = 'https://benpaulhanna.com/building-a-backbonejs-project-with-webpack.html';
+    this.page.identifier = 'building-a-backbonejs-project-with-webpack';
+  };
+  (function() {
+    var d = document;
+    var s = d.createElement('script');
+    s.src = '//benpaulhanna.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript class="text-muted">
+  Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+       <ul class="col-sm-6 list-inline">
+          <li class="list-inline-item"><a href="https://benpaulhanna.com/archives.html">Archives</a></li>
+          <li class="list-inline-item"><a href="https://benpaulhanna.com/categories.html">Categories</a></li>
+          <li class="list-inline-item"><a href="https://benpaulhanna.com/tags.html">Tags</a></li>
+        </ul>
+        <p class="col-sm-6 text-sm-right text-muted">
+          Generated by <a href="https://github.com/getpelican/pelican" target="_blank">Pelican</a> / <a href="https://github.com/nairobilug/pelican-alchemy" target="_blank">&#x2728;</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
