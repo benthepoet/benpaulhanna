@@ -27,7 +27,6 @@ SOCIAL = (('You can add links in your config file', '#'),
           
 ICONS = (('github', 'https://github.com/benthepoet'),
          ('stack-overflow', 'https://stackoverflow.com/users/8171618/ben-hanna'),
-         ('twitter', 'https://twitter.com/benpaulhanna'),
          ('linkedin', 'https://www.linkedin.com/in/ben-hanna-0a275135'),)
 
 DEFAULT_PAGINATION = 10
