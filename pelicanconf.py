@@ -6,6 +6,7 @@ AUTHOR = u'Ben Hanna'
 SITENAME = u'(\u03BBx.x) Ben Hanna'
 SITEURL = ''
 
+SITEIMAGE = 'images/header.jpg'
 SITESUBTITLE = 'Software Craftsman and Game Programming Enthusiast'
 
 PATH = 'content'
@@ -33,6 +34,15 @@ DEFAULT_PAGINATION = 10
 
 DISPLAY_CATEGORIES_ON_MENU = True
 HIDE_AUTHORS = True
+
+STATIC_PATHS = [
+    'extra',
+    'images'
+]
+
+EXTRA_PATH_METADATA = {
+    'extra/CNAME': {'path': 'CNAME'}
+}
 
 THEME = 'themes/pelican-alchemy/alchemy'
 
