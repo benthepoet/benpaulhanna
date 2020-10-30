@@ -24,10 +24,6 @@ AUTHOR_FEED_RSS = None
 
 LINKS = (('blog', '/category/blog.html'),)
 
-# Social widget
-SOCIAL = (('You can add links in your config file', '#'),
-          ('Another social link', '#'),)
-          
 ICONS = (('github', 'https://github.com/benthepoet'),
          ('stack-overflow', 'https://stackoverflow.com/users/8171618/ben-hanna'),
          ('linkedin', 'https://www.linkedin.com/in/ben-hanna-0a275135'),)
