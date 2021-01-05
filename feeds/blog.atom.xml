@@ -11,7 +11,7 @@ and see if I could improve my typing skills further.&lt;/p&gt;
 the keys in a manner that reduces overall hand movement and thus leads to more comfortable 
 typing. Those that switch to Dvorak often note that they're able to type faster and more 
 accurately.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Dvorak Layout" src="/images/learning-dvorak-the-first-two-weeks-00.svg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/learning-dvorak-the-first-two-weeks-00.svg" alt="Dvorak Layout" style="width: 100%;" /&gt;&lt;/p&gt;
 &lt;h1&gt;Learning the Layout&lt;/h1&gt;
 &lt;p&gt;I decided the best way for me to learn was to go cold turkey and make it my default layout on both my home and 
 work computers. Over the first few days I focused on using &lt;a href="https://learn.dvorak.nl/"&gt;Dvorak Keyboard Training&lt;/a&gt; and &lt;a href="https://www.typingclub.com/dvorak"&gt;Typing Club&lt;/a&gt; 
@@ -31,7 +31,7 @@ the left hand.&lt;/p&gt;
 &lt;h1&gt;Current Progress&lt;/h1&gt;
 &lt;p&gt;I've been using &lt;a href="https://www.monkeytype.com"&gt;Monkeytype&lt;/a&gt; to benchmark my general speed and accuracy. I took a couple quick baseline 
 tests in Qwerty right at the beginning just so I have a target of where I need to work back to.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Monkeytype" src="/images/learning-dvorak-the-first-two-weeks-01.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/learning-dvorak-the-first-two-weeks-01.png" alt="Monkeytype" style="width: 100%;" /&gt;&lt;/p&gt;
 &lt;p&gt;As you can see I'm almost halfway back to my Qwerty speed on the test but my typing speed for everyday tasks is slower than this. Realistically 
 I'm expecting it to be at least a few months before I'm back at full speed.&lt;/p&gt;</content><category term="Blog"></category></entry><entry><title>Writing a Game in C: Parsing S-expressions</title><link href="https://benpaulhanna.com/writing-a-game-in-c-parsing-s-expressions.html" rel="alternate"></link><published>2019-04-03T12:49:00-04:00</published><updated>2019-04-03T12:49:00-04:00</updated><author><name>Ben Hanna</name></author><id>tag:benpaulhanna.com,2019-04-03:/writing-a-game-in-c-parsing-s-expressions.html</id><summary type="html">&lt;p&gt;Over the past couple weeks I've been trying to work out how 
 I want to store my game configuration. At first I started playing with XML, which 
