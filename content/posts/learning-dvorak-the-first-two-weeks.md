@@ -25,7 +25,7 @@ to familarize myself with the locations of all the keys. Along with that I start
 and [10 Fast Fingers](https://10fastfingers.com).
 
 Pain Points
-----------
+-----------
 From a programming perspective, the most jarring thing about the layout to me is the repositioning of punctuation characters. 
 These felt very awkward to type at first but slowly I'm getting better accustomed to their new locations. 
 
@@ -40,9 +40,12 @@ I had developed a bad habit of not using my pinky fingers on the top row when ty
 corrected through training was that I was hitting the `B` key (`X` in Dvorak) with my right hand which is actually the responsibility of 
 the left hand.
 
-My Progress so far
-------------------
+Current Progress
+----------------
 I've been using [Monkeytype](https://www.monkeytype.com) to benchmark my general speed and accuracy. I took a couple quick baseline 
 tests in Qwerty right at the beginning just so I have a target of where I need to work back to.
 
 ![Monkeytype](/images/learning-dvorak-the-first-two-weeks-01.png)
+
+As you can see I'm almost halfway back to my Qwerty speed on the test but my typing speed for everyday tasks is slower than this. Realistically 
+I'm expecting it to be at least a few months before I'm back at full speed.
