@@ -91,16 +91,14 @@ it just works.</p>
 <p>In this article I'll demonstrate how setup a basic Backbone project using <code>parcel</code>.</p>
 <h1>Create the project</h1>
 <p>Starting from scratch let's first create a new folder and initialize <code>npm</code>.</p>
-<div class="highlight"><pre><span></span>mkdir my-backbone-app
+<div class="highlight"><pre><span></span><code>mkdir my-backbone-app
 <span class="nb">cd</span> my-backbone-app
 npm init
-</pre></div>
-
+</code></pre></div>
 
 <p>Next let's install <code>backbone</code> and it's dependencies, which are <code>jquery</code> and <code>underscore</code>.</p>
-<div class="highlight"><pre><span></span>npm install --save backbone jquery underscore
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>npm install --save backbone jquery underscore
+</code></pre></div>
 
 <p>We're going to use the following folder structure.</p>
 <ul>
@@ -109,9 +107,8 @@ npm init
 <h1>Install Parcel</h1>
 <p>Since the main advantage of <code>parcel</code> is that it requires zero-configuration all we really 
 need to do use it is install <code>parcel-bundler</code>.</p>
-<div class="highlight"><pre><span></span>npm install --save parcel-bundler
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>npm install --save parcel-bundler
+</code></pre></div>
 
 <p><code>parcel</code> performs both the functions of building your bundle and then watching it for changes 
 while serving it on a local HTTP server. The latter is similar to what is provided when using 
@@ -121,7 +118,7 @@ it will automatically find any assets (i.e. scripts, stylesheets) that you're us
 <h1>Create an application</h1>
 <p>Before we can load our application we need to create our shell. We'll save this file as 
 <code>src/index.html</code>.</p>
-<div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
 
 <span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
   <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
@@ -131,12 +128,11 @@ it will automatically find any assets (i.e. scripts, stylesheets) that you're us
   <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
   <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
 <span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Now let's scaffold out a basic use of Backbone with <code>parcel</code>. </p>
 <p>First we'll create a view for our application in <code>src/app.view.js</code>;</p>
-<div class="highlight"><pre><span></span><span class="c1">// Import the Backbone module and its dependencies</span>
+<div class="highlight"><pre><span></span><code><span class="c1">// Import the Backbone module and its dependencies</span>
 <span class="kd">var</span> <span class="nx">Backbone</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">);</span>
 
 <span class="c1">// Declare our options we&#39;ll use to extend the base view</span>
@@ -154,11 +150,10 @@ it will automatically find any assets (i.e. scripts, stylesheets) that you're us
 
 <span class="c1">// Export our extended view</span>
 <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">viewOptions</span><span class="p">);</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Now let's create our entry module that bootstraps the application at <code>src/index.js</code>.</p>
-<div class="highlight"><pre><span></span><span class="c1">// Import the Backbone module and its dependencies</span>
+<div class="highlight"><pre><span></span><code><span class="c1">// Import the Backbone module and its dependencies</span>
 <span class="kd">var</span> <span class="nx">Backbone</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">);</span>
 
 <span class="c1">// Import our view</span>
@@ -169,13 +164,11 @@ it will automatically find any assets (i.e. scripts, stylesheets) that you're us
   <span class="c1">// Create an instance of our view</span>
   <span class="k">new</span> <span class="nx">AppView</span><span class="p">();</span>
 <span class="p">});</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>With all the base components stubbed out we can now start up the application.</p>
-<div class="highlight"><pre><span></span>npx parcel src/index.html --port <span class="m">8080</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>npx parcel src/index.html --port <span class="m">8080</span>
+</code></pre></div>
 
 <p>Navigate to <code>http://localhost:8080</code> in a browser and you should see the message displayed.</p>
 <h1>Wrapping up</h1>

@@ -96,7 +96,7 @@ that allows you to construct a list by dragging items onto it.</p>
 anything fancy.</p>
 <!-- https://ellie-app.com/yCv5t7PhHMa1 -->
 
-<div class="highlight"><pre><span></span><span class="kn">module </span><span class="nc">Main</span> <span class="nv">exposing</span> <span class="nf">(..)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">module </span><span class="nc">Main</span> <span class="nv">exposing</span> <span class="nf">(..)</span>
 
 <span class="kn">import </span><span class="nc">Browser</span>
 <span class="kn">import </span><span class="nc">Html</span> <span class="nv">exposing</span> <span class="p">(</span><span class="kt">Html</span><span class="p">)</span>
@@ -146,27 +146,24 @@ anything fancy.</p>
                 <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span> <span class="p">[]</span> <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span> <span class="s">&quot;Drop Zone&quot;</span> <span class="p">]</span> <span class="p">]</span>
             <span class="p">]</span>
         <span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>For styling I'm using the <a href="https://minicss.org">mini.css</a> so you'll want to add the stylesheet for that.</p>
-<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
     <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;https://unpkg.com/mini.css@3.0.0/dist/mini-default.min.css&quot;</span><span class="p">&gt;</span>
 <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Now there's a potential issue in that Firefox requires <code>event.dataTransfer.setData()</code> to be called during the <code>dragstart</code> event 
 in order to drag an element. To address this we'll add an event listener on the <code>body</code> element.</p>
-<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
     <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;dragstart&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">event</span><span class="p">.</span><span class="nx">dataTransfer</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span><span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
     <span class="p">});</span>
 
     <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">Elm</span><span class="p">.</span><span class="nx">Main</span><span class="p">.</span><span class="nx">init</span><span class="p">({</span> <span class="nx">node</span><span class="o">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;main&#39;</span><span class="p">)</span> <span class="p">});</span>
 <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>At this point running the application should display the shell that we've setup. Now we can move onto adding 
 in the fun stuff.</p>
@@ -176,7 +173,7 @@ being dragged. I'm also going to add a list of draggable items to the model so t
 we can compose our list of different items. </p>
 <!-- https://ellie-app.com/yCwjh5zF5Ca1 -->
 
-<div class="highlight"><pre><span></span><span class="kr">type</span> <span class="kr">alias</span> <span class="kt">Model</span> <span class="nf">=</span>
+<div class="highlight"><pre><span></span><code><span class="kr">type</span> <span class="kr">alias</span> <span class="kt">Model</span> <span class="nf">=</span>
     <span class="p">{</span> <span class="nv">beingDragged</span> <span class="nf">:</span> <span class="kt">Maybe</span> <span class="kt">String</span>
     <span class="p">,</span> <span class="nv">draggableItems</span><span class="nf">:</span> <span class="kt">List</span> <span class="kt">String</span>
     <span class="p">,</span> <span class="nv">items</span> <span class="nf">:</span> <span class="kt">List</span> <span class="kt">String</span>
@@ -191,13 +188,12 @@ we can compose our list of different items. </p>
             <span class="nf">|&gt;</span> <span class="kt">List</span><span class="nf">.</span><span class="nv">map</span> <span class="kt">Debug</span><span class="nf">.</span><span class="nv">toString</span>
     <span class="p">,</span> <span class="nv">items</span> <span class="nf">=</span> <span class="p">[]</span>
     <span class="p">}</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Now let's update our <code>view</code> to render the draggable items.</p>
 <!-- https://ellie-app.com/yCyW9TXhW3a1 -->
 
-<div class="highlight"><pre><span></span><span class="nv">draggableItemView</span> <span class="nf">:</span> <span class="kt">String</span> <span class="nf">-&gt;</span> <span class="kt">Html</span> <span class="kt">Msg</span>
+<div class="highlight"><pre><span></span><code><span class="nv">draggableItemView</span> <span class="nf">:</span> <span class="kt">String</span> <span class="nf">-&gt;</span> <span class="kt">Html</span> <span class="kt">Msg</span>
 <span class="nv">draggableItemView</span> <span class="nv">item</span> <span class="nf">=</span>
     <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span>
         <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;card fluid warning&quot;</span>
@@ -235,15 +231,14 @@ we can compose our list of different items. </p>
                     <span class="nf">|&gt;</span> <span class="nf">(::)</span> <span class="p">(</span><span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span> <span class="p">[]</span> <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span> <span class="s">&quot;Drop Zone&quot;</span> <span class="p">]))</span>
             <span class="p">]</span>
         <span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <h1>Add update messages</h1>
 <p>Next we need to setup some messages for handling actions in the application. These messages 
 will be passed by the event handlers we're going to setup in the next section.</p>
 <!-- https://ellie-app.com/yCzmNzPY7ga1 -->
 
-<div class="highlight"><pre><span></span><span class="kr">type</span> <span class="kt">Msg</span>
+<div class="highlight"><pre><span></span><code><span class="kr">type</span> <span class="kt">Msg</span>
     <span class="nf">=</span> <span class="kt">Drag</span> <span class="kt">String</span>
     <span class="nf">|</span> <span class="kt">DragEnd</span>
     <span class="nf">|</span> <span class="kt">DragOver</span>
@@ -272,8 +267,7 @@ will be passed by the event handlers we're going to setup in the next section.</
                         <span class="nf">|</span> <span class="nv">beingDragged</span> <span class="nf">=</span> <span class="kt">Nothing</span>
                         <span class="p">,</span> <span class="nv">items</span> <span class="nf">=</span> <span class="nv">item</span> <span class="nf">::</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">items</span> 
                     <span class="p">}</span>
-</pre></div>
-
+</code></pre></div>
 
 <h1>Add event handlers</h1>
 <p>Next we need to leverage the following events to achieve drag and drop functionality.</p>
@@ -307,7 +301,7 @@ will be passed by the event handlers we're going to setup in the next section.</
 <p>Handlers for these events aren't provided in <code>Html.Events</code>. Thankfully, these are fairly trivial to setup.</p>
 <!-- https://ellie-app.com/yCC93bXx2ma1 -->
 
-<div class="highlight"><pre><span></span><span class="kn">import </span><span class="nc">Html.Events</span> <span class="kr">as</span> <span class="kt">Events</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import </span><span class="nc">Html.Events</span> <span class="kr">as</span> <span class="kt">Events</span>
 <span class="kn">import </span><span class="nc">Json.Decode</span> <span class="kr">as</span> <span class="kt">Decode</span>
 
 
@@ -329,13 +323,12 @@ will be passed by the event handlers we're going to setup in the next section.</
 <span class="nv">onDrop</span> <span class="nv">msg</span> <span class="nf">=</span>
     <span class="kt">Events</span><span class="nf">.</span><span class="nv">preventDefaultOn</span> <span class="s">&quot;drop&quot;</span>
         <span class="nf">&lt;|</span> <span class="kt">Decode</span><span class="nf">.</span><span class="nv">succeed</span> <span class="p">(</span><span class="nv">msg</span><span class="p">,</span> <span class="kt">True</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Then all that's left now is for us to wire up the events in our <code>view</code>.</p>
 <!-- https://ellie-app.com/yGJLryTwL3a1 -->
 
-<div class="highlight"><pre><span></span><span class="nv">draggableItemView</span> <span class="nf">:</span> <span class="kt">String</span> <span class="nf">-&gt;</span> <span class="kt">Html</span> <span class="kt">Msg</span>
+<div class="highlight"><pre><span></span><code><span class="nv">draggableItemView</span> <span class="nf">:</span> <span class="kt">String</span> <span class="nf">-&gt;</span> <span class="kt">Html</span> <span class="kt">Msg</span>
 <span class="nv">draggableItemView</span> <span class="nv">item</span> <span class="nf">=</span>
     <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span>
         <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;card fluid warning&quot;</span>
@@ -378,8 +371,7 @@ will be passed by the event handlers we're going to setup in the next section.</
                     <span class="nf">|&gt;</span> <span class="nf">(::)</span> <span class="p">(</span><span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span> <span class="p">[]</span> <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span> <span class="s">&quot;Drop Zone&quot;</span> <span class="p">]))</span>
             <span class="p">]</span>
         <span class="p">]</span>
-</pre></div>
-
+</code></pre></div>
 
 <h1>Putting it all together</h1>
 <p>With everything in place now, you should have a solution like below that allows you to drag 

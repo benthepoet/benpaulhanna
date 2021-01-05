@@ -100,27 +100,24 @@ an Ubuntu system.</p>
 is somewhat akin to the functionality <code>nvm</code> and <code>npm</code> provide. Some of the most prominent features 
 stack provides are dependency installation, scaffolding for new projects, and GHC version management.</p>
 <p>To install stack, run the following command.</p>
-<div class="highlight"><pre><span></span>wget -qO- https://get.haskellstack.org/ <span class="p">|</span> sh
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>wget -qO- https://get.haskellstack.org/ <span class="p">|</span> sh
+</code></pre></div>
 
 <p>Once installed, the <code>stack</code> binary will be available to use in your terminal. </p>
 <h1>Install Emacs</h1>
 <p>Installing Emacs in Ubuntu is a fairly trivial task that can be performed with the following command.</p>
-<div class="highlight"><pre><span></span>sudo apt-get install emacs
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo apt-get install emacs
+</code></pre></div>
 
 <p>After installation, startup <code>emacs</code> at least once so that it initializes your <code>emacs.d</code> folder.</p>
 <h1>Install Intero</h1>
 <p>Now before we install <code>intero</code> we also need install <code>libtinfo-dev</code>, without this package 
 <code>intero</code> will fail to build with stack lts-11.</p>
-<div class="highlight"><pre><span></span>sudo apt-get install libtinfo-dev
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo apt-get install libtinfo-dev
+</code></pre></div>
 
 <p>Next place the following into <code>~/.emacs.d/init.el</code>.</p>
-<div class="highlight"><pre><span></span><span class="c1">;; If you don&#39;t have MELPA in your package archives:</span>
+<div class="highlight"><pre><span></span><code><span class="c1">;; If you don&#39;t have MELPA in your package archives:</span>
 <span class="p">(</span><span class="nb">require</span> <span class="ss">&#39;package</span><span class="p">)</span>
 <span class="p">(</span><span class="nv">add-to-list</span>
   <span class="ss">&#39;package-archives</span>
@@ -131,17 +128,15 @@ stack provides are dependency installation, scaffolding for new projects, and GH
 <span class="c1">;; Install Intero</span>
 <span class="p">(</span><span class="nv">package-install</span> <span class="ss">&#39;intero</span><span class="p">)</span>
 <span class="p">(</span><span class="nv">add-hook</span> <span class="ss">&#39;haskell-mode-hook</span> <span class="ss">&#39;intero-mode</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>With that file place, just open <code>emacs</code> in a terminal and <code>intero</code> should start installing.</p>
 <h1>Create a Test Project</h1>
 <p>To verify that everything is working, create a new project with <code>stack</code>.</p>
-<div class="highlight"><pre><span></span>stack new test-project
+<div class="highlight"><pre><span></span><code>stack new test-project
 <span class="nb">cd</span> test-project
 stack setup
-</pre></div>
-
+</code></pre></div>
 
 <p>Now open <code>src/Lib.hs</code> and modify the code. You should see type errors come up as you change 
 the file.</p>
