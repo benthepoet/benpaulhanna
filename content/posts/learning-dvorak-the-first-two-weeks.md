@@ -15,7 +15,7 @@ the keys in a manner that reduces overall hand movement and thus leads to more c
 typing. Those that switch to Dvorak often note that they're able to type faster and more 
 accurately.
 
-<img src="/images/learning-dvorak-the-first-two-weeks-00.svg" alt="Dvorak Layout" style="width: 100%;" />
+![Dvorak Layout](/images/learning-dvorak-the-first-two-weeks-00.svg)
 
 # Learning the Layout
 
