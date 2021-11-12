@@ -7,11 +7,12 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>About | Ben Hanna
+  <title>SDL2/C Primer | Ben Hanna
 </title>
-  <link rel="canonical" href="https://benpaulhanna.com/pages/about.html">
+  <link rel="canonical" href="https://benpaulhanna.com/drafts/sdl2c-primer.html">
 
   <link rel="alternate" type="application/atom+xml" href="https://benpaulhanna.com/feeds/all.atom.xml" title="Full Atom Feed">
+  <link rel="alternate" type="application/atom+xml" href="https://benpaulhanna.com/feeds/blog.atom.xml" title="Categories Atom Feed">
 
 
   <link rel="stylesheet" href="https://benpaulhanna.com/theme/css/bootstrap.min.css">
@@ -20,7 +21,7 @@
   <link rel="stylesheet" href="https://benpaulhanna.com/theme/css/style.css">
 
 
-<meta name="description" content="Welcome to my personal blog. My name is Ben Hanna and I currently work as a Senior Software Engineer at Salad Technologies. I don't just program professionally though. In fact it was my love of early computer and video games that made me want to become a programmer. In my …">
+<meta name="description" content="Ubuntu-based Linux To get started with SDL2 on an Ubuntu-based distribution is fairly easy. With the following command we'll install the necessary build tools (gcc, make) along with SDL2. sudo apt install build-essential libsdl2-2.0.0 libsdl2-dev Windows Windows requires a little more effort to setup but it isn't that …">
 <script>
   (function(i, s, o, g, r, a, m) {
     i['GoogleAnalyticsObject'] = r;
@@ -67,28 +68,66 @@
 
   <div class="main">
     <div class="container">
-      <h1>About
+      <h1>SDL2/C Primer
 </h1>
       <hr>
 <article class="article">
+  <header>
+    <ul class="list-inline">
+      <li class="list-inline-item text-muted" title="2021-01-06T22:00:00-05:00">
+        <i class="fa fa-clock-o"></i>
+        Wed 06 January 2021
+      </li>
+      <li class="list-inline-item">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="https://benpaulhanna.com/category/blog.html">Blog</a>
+      </li>
+    </ul>
+  </header>
   <div class="content">
-    <p>Welcome to my personal blog. My name is Ben Hanna and I currently work as a 
-Senior Software Engineer at Salad Technologies.</p>
-<p>I don't just program professionally though. In fact it was my love of early computer and video games 
-that made me want to become a programmer. In my downtime, particularly during winter, I like to work 
-on small game projects utilizing languages that range from Python all the way down to GameBoy assembly.</p>
-<div class="card" style="margin: auto; width: 75%; box-shadow: 2px 2px 2px rgba(0,0,0,0.25);">
-    <img src="/images/about-gameboy-asm.jpg" class="card-img-top" width="100%" />
-</div>
+    <h1>Ubuntu-based Linux</h1>
+<p>To get started with SDL2 on an Ubuntu-based distribution is fairly easy. With the following 
+command we'll install the necessary build tools (gcc, make) along with SDL2.</p>
+<div class="highlight"><pre><span></span><code>sudo apt install build-essential libsdl2-2.0.0 libsdl2-dev 
+</code></pre></div>
 
-<p><br></p>
-<p>For the rest of the year, when I'm not at the computer, you can find me outside tending to my gardens and 
-fruit trees. Permaculture is my greater passion and my goal is to one day start my own nursery.</p>
-<div class="card" style="margin: auto; width: 75%; box-shadow: 2px 2px 2px rgba(0,0,0,0.25);">
-    <img src="/images/about-permaculture.jpg" class="card-img-top" width="100%" />
-</div>
+<h1>Windows</h1>
+<p>Windows requires a little more effort to setup but it isn't that bad. The easiest way 
+to setup SDL2 for Windows is to use MSYS. MSYS is a collection of Unix tools for building 
+software that have been ported to Windows.</p>
+<p>To install MSYS you'll first want to install Chocolatey, a package manager for Windows. You can 
+find the instructions for that <a href="https://chocolatey.org/install">here</a>. Once Chocolatey is installed we 
+can install MSYS with the following command.</p>
+<div class="highlight"><pre><span></span><code>choco install msys2
+</code></pre></div>
+
+<p>After that go ahead and open an MSYS shell. From here we'll install the build tools and SDL2 into our MSYS 
+installation.</p>
+<div class="highlight"><pre><span></span><code>pacman -Syu
+pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-SDL2
+</code></pre></div>
+
+<p>Now if you open a PowerShell or Command Prompt you should see that commands like <code>gcc</code> and <code>make</code> are available.</p>
   </div>
 </article>
+<hr>
+<div id="disqus_thread"></div>
+<script>
+  var disqus_config = function() {
+    this.page.url = 'https://benpaulhanna.com/drafts/sdl2c-primer.html';
+    this.page.identifier = 'sdl2c-primer';
+  };
+  (function() {
+    var d = document;
+    var s = d.createElement('script');
+    s.src = '//benpaulhanna.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript class="text-muted">
+  Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
     </div>
   </div>
 
