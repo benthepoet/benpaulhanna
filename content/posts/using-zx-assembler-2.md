@@ -40,13 +40,16 @@ RAND USR 8192
 # Writing "HELLO WORLD"
 
 ```
+; Constant
 DFILE= 400C
 
        JR START
 
+; Defining data
 TEXT   DB 11
        DM "HELLO WORLD"
 
+; Label
 START  LD DE,(DFILE)
        INC DE
        LD BC,(TEXT)
