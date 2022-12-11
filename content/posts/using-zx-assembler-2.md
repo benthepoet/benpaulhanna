@@ -35,3 +35,22 @@ RAND USR 8192
 ```
 
 # Basic Instructions
+
+
+# Writing "HELLO WORLD"
+
+```
+DFILE= 400C
+
+       JR START
+
+TEXT   DB 11
+       DM "HELLO WORLD"
+
+START  LD DE,(DFILE)
+       INC DE
+       LD BC,(TEXT)
+       LD B,0
+       LD HL,TEXT+1
+       LDIR
+```
