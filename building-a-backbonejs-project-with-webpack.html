@@ -115,10 +115,10 @@ npm install --save-dev webpack-dev-server
 </code></pre></div>
 
 <p>Now let's setup a basic configuration in <code>webpack.config.js</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="kr">const</span> <span class="p">{</span> <span class="nx">resolve</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span> <span class="p">{</span> <span class="nx">resolve</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span>
 
-<span class="kr">const</span> <span class="nx">PUBLIC_PATH</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;public&#39;</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">SRC_PATH</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;src&#39;</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">PUBLIC_PATH</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;public&#39;</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">SRC_PATH</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;src&#39;</span><span class="p">);</span>
 
 <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
   <span class="nx">entry</span><span class="o">:</span> <span class="sb">`</span><span class="si">${</span><span class="nx">SRC_PATH</span><span class="si">}</span><span class="sb">/index.js`</span><span class="p">,</span>
@@ -147,7 +147,7 @@ npm install --save-dev webpack-dev-server
 
 <span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
   <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
-    <span class="c">&lt;!-- Using the &#39;async&#39; attribute will keep our script from blocking the page load. --&gt;</span>
+    <span class="cm">&lt;!-- Using the &#39;async&#39; attribute will keep our script from blocking the page load. --&gt;</span>
     <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;bundle.js&quot;</span> <span class="na">async</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
   <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
   <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
@@ -187,7 +187,7 @@ npm install --save-dev webpack-dev-server
 <span class="c1">// Execute after the DOM has loaded</span>
 <span class="nx">Backbone</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
   <span class="c1">// Create an instance of our view</span>
-  <span class="k">new</span> <span class="nx">AppView</span><span class="p">();</span>
+  <span class="ow">new</span> <span class="nx">AppView</span><span class="p">();</span>
 <span class="p">});</span>
 </code></pre></div>
 

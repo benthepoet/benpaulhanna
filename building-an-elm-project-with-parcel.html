@@ -120,14 +120,14 @@ will automatically resolve any dependencies contained within.</p>
 </code></pre></div>
 
 <p>Next let's create a simple Elm application and save it as <code>src/Main.elm</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import </span><span class="nc">Html</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nc">Html</span><span class="w"></span>
 
-<span class="kr">main </span><span class="nf">=</span>
-  <span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span> <span class="s">&quot;Hello World&quot;</span>
+<span class="kr">main </span><span class="nf">=</span><span class="w"></span>
+<span class="w">  </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span><span class="w"> </span><span class="s">&quot;Hello World&quot;</span><span class="w"></span>
 </code></pre></div>
 
 <p>And lastly we'll create <code>src/main.js</code> which is responsible for pulling in and initializing our Elm application.</p>
-<div class="highlight"><pre><span></span><code><span class="kr">const</span> <span class="p">{</span> <span class="nx">Elm</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./Main.elm&#39;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span> <span class="p">{</span> <span class="nx">Elm</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./Main.elm&#39;</span><span class="p">);</span>
 
 <span class="nx">Elm</span><span class="p">.</span><span class="nx">Main</span><span class="p">.</span><span class="nx">init</span><span class="p">({</span>
   <span class="nx">node</span><span class="o">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;main&#39;</span><span class="p">)</span>

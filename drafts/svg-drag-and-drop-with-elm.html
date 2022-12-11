@@ -89,82 +89,82 @@
 <p>In this article I'll demonstrate how you can implement drag and drop with SVG documents in Elm.</p>
 <h1>Getting Started</h1>
 <p>To start things off let's begin with an empty <code>Browser.sandbox</code>. We'll also need to install the <code>elm/json</code> and <code>elm/svg</code> packages.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">module </span><span class="nc">Main</span> <span class="nv">exposing</span> <span class="p">(</span><span class="nv">main</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">module</span><span class="w"> </span><span class="nc">Main</span><span class="w"> </span><span class="nv">exposing</span><span class="w"> </span><span class="p">(</span><span class="nv">main</span><span class="p">)</span><span class="w"></span>
 
-<span class="kn">import </span><span class="nc">Browser</span>
-<span class="kn">import </span><span class="nc">Svg</span> <span class="nv">exposing</span> <span class="p">(</span><span class="kt">Svg</span><span class="p">)</span>
-<span class="kn">import </span><span class="nc">Svg.Attributes</span> <span class="kr">as</span> <span class="kt">Attributes</span>
-
-
-<span class="kr">type</span> <span class="kt">Msg</span>
-    <span class="nf">=</span> <span class="kt">NoOp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nc">Browser</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nc">Svg</span><span class="w"> </span><span class="nv">exposing</span><span class="w"> </span><span class="p">(</span><span class="kt">Svg</span><span class="p">)</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nc">Svg.Attributes</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="kt">Attributes</span><span class="w"></span>
 
 
-<span class="nv">initialModel</span> <span class="nf">=</span> <span class="p">()</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="w">    </span><span class="nf">=</span><span class="w"> </span><span class="kt">NoOp</span><span class="w"></span>
 
 
-<span class="nv">update</span> <span class="nf">:</span> <span class="kt">Msg</span> <span class="nf">-&gt;</span> <span class="kt">Model</span> <span class="nf">-&gt;</span> <span class="kt">Model</span>
-<span class="nv">update</span> <span class="nv">msg</span> <span class="nv">model</span> <span class="nf">=</span> 
-    <span class="nv">model</span>
+<span class="nv">initialModel</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="p">()</span><span class="w"></span>
 
 
-<span class="nv">view</span> <span class="nf">:</span> <span class="kt">Model</span> <span class="nf">-&gt;</span> <span class="kt">Svg</span> <span class="kt">Msg</span>
-<span class="nv">view</span> <span class="nv">model</span> <span class="nf">=</span>
-    <span class="kt">Svg</span><span class="nf">.</span><span class="nv">svg</span> 
-        <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">width</span> <span class="s">&quot;400&quot;</span> 
-        <span class="p">,</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">height</span> <span class="s">&quot;400&quot;</span>
-        <span class="p">]</span>
-        <span class="p">[]</span>
+<span class="nv">update</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Msg</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Model</span><span class="w"></span>
+<span class="nv">update</span><span class="w"> </span><span class="nv">msg</span><span class="w"> </span><span class="nv">model</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span>
+<span class="w">    </span><span class="nv">model</span><span class="w"></span>
 
 
-<span class="kr">main </span><span class="nf">:</span> <span class="kt">Program</span> <span class="p">()</span> <span class="kt">Model</span> <span class="kt">Msg</span>
-<span class="kr">main </span><span class="nf">=</span>
-    <span class="kt">Browser</span><span class="nf">.</span><span class="nv">sandbox</span>
-        <span class="p">{</span> <span class="nv">init</span> <span class="nf">=</span> <span class="nv">initialModel</span>
-        <span class="p">,</span> <span class="nv">update</span> <span class="nf">=</span> <span class="nv">update</span>
-        <span class="p">,</span> <span class="nv">view</span> <span class="nf">=</span> <span class="nv">view</span>
-        <span class="p">}</span>
+<span class="nv">view</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Svg</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="nv">view</span><span class="w"> </span><span class="nv">model</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Svg</span><span class="nf">.</span><span class="nv">svg</span><span class="w"> </span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">width</span><span class="w"> </span><span class="s">&quot;400&quot;</span><span class="w"> </span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">height</span><span class="w"> </span><span class="s">&quot;400&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">[]</span><span class="w"></span>
+
+
+<span class="kr">main </span><span class="nf">:</span><span class="w"> </span><span class="kt">Program</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="kr">main </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Browser</span><span class="nf">.</span><span class="nv">sandbox</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nv">init</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">initialModel</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="nv">update</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">update</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="nv">view</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">view</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
 <p>Add a little bit of CSS so that we can actually see the boundaries of our <code>svg</code> element.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">svg</span> <span class="p">{</span>
-    <span class="k">background-color</span><span class="p">:</span> <span class="mh">#eee</span><span class="p">;</span>
-    <span class="k">border</span><span class="p">:</span> <span class="mi">2</span><span class="kt">px</span> <span class="kc">solid</span> <span class="mh">#000</span><span class="p">;</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nt">svg</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#eee</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">border</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="kt">px</span><span class="w"> </span><span class="kc">solid</span><span class="w"> </span><span class="mh">#000</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
 <p>At this we have our blank canvas and now we can start the real work.</p>
 <h1>Structuring our data</h1>
 <p>So before we get into the logic of the program, let's define what our model is going to look like.</p>
-<div class="highlight"><pre><span></span><code><span class="kr">type</span> <span class="kr">alias</span> <span class="kt">Document</span> <span class="nf">=</span>
-    <span class="p">{</span> <span class="nv">width</span> <span class="nf">:</span> <span class="kt">Int</span>
-    <span class="p">,</span> <span class="nv">height</span> <span class="nf">:</span> <span class="kt">Int</span>
-    <span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="kr">alias</span><span class="w"> </span><span class="kt">Document</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nv">width</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Int</span><span class="w"></span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="nv">height</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Int</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
 
-<span class="kr">type</span> <span class="kt">Pointer</span> 
-    <span class="nf">=</span> <span class="kt">Dragging</span>
-        <span class="p">{</span> <span class="nv">index</span> <span class="nf">:</span> <span class="kt">Int</span>
-        <span class="p">,</span> <span class="nv">dx</span> <span class="nf">:</span> <span class="kt">Int</span>
-        <span class="p">,</span> <span class="nv">dy</span> <span class="nf">:</span> <span class="kt">Int</span>
-        <span class="p">}</span>
-    <span class="nf">|</span> <span class="kt">Idle</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Pointer</span><span class="w"> </span>
+<span class="w">    </span><span class="nf">=</span><span class="w"> </span><span class="kt">Dragging</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nv">index</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Int</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="nv">dx</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Int</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="nv">dy</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Int</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nf">|</span><span class="w"> </span><span class="kt">Idle</span><span class="w"></span>
 
 
-<span class="kr">type</span> <span class="kt">Shape</span>
-    <span class="nf">=</span> <span class="kt">Circle</span>
-        <span class="p">{</span> <span class="nv">cx</span> <span class="nf">:</span> <span class="kt">Int</span>
-        <span class="p">,</span> <span class="nv">cy</span> <span class="nf">:</span> <span class="kt">Int</span>
-        <span class="p">,</span> <span class="nv">r</span> <span class="nf">:</span> <span class="kt">Int</span>
-        <span class="p">,</span> <span class="nv">fill</span> <span class="nf">:</span> <span class="kt">String</span>
-        <span class="p">}</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Shape</span><span class="w"></span>
+<span class="w">    </span><span class="nf">=</span><span class="w"> </span><span class="kt">Circle</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nv">cx</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Int</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="nv">cy</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Int</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="nv">r</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Int</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="nv">fill</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">String</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
 
 
-<span class="kr">type</span> <span class="kr">alias</span> <span class="kt">Model</span> <span class="nf">=</span>
-    <span class="p">{</span> <span class="nv">document</span> <span class="nf">:</span> <span class="kt">Document</span>
-    <span class="p">,</span> <span class="nv">pointer</span> <span class="nf">:</span> <span class="kt">Pointer</span>
-    <span class="p">,</span> <span class="nv">shapes</span> <span class="nf">:</span> <span class="kt">Array</span> <span class="kt">Shape</span>
-    <span class="p">}</span>
+<span class="kr">type</span><span class="w"> </span><span class="kr">alias</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nv">document</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Document</span><span class="w"></span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="nv">pointer</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Pointer</span><span class="w"></span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="nv">shapes</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Array</span><span class="w"> </span><span class="kt">Shape</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
 <p>We now have three key properties on our model.</p>
@@ -176,37 +176,37 @@
 <p>For the sake of simplicity we only have one type of shape, but in the end it'll
 be fairly trivial to add any ones.</p>
 <p>Now let's update our <code>initialModel</code> with some relevant test data.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">initialModel</span> <span class="nf">:</span> <span class="kt">Model</span>
-<span class="nv">initialModel</span> <span class="nf">=</span> 
-    <span class="p">{</span> <span class="nv">document</span> <span class="nf">=</span>
-        <span class="p">{</span> <span class="nv">width</span> <span class="nf">=</span> <span class="mi">400</span>
-        <span class="p">,</span> <span class="nv">height</span> <span class="nf">=</span> <span class="mi">400</span>
-        <span class="p">}</span>
-    <span class="p">,</span> <span class="nv">pointer</span> <span class="nf">=</span> <span class="kt">Idle</span>
-    <span class="p">,</span> <span class="nv">shapes</span> <span class="nf">=</span> 
-        <span class="kt">Array</span><span class="nf">.</span><span class="nv">fromList</span>
-            <span class="p">[</span> <span class="kt">Circle</span> 
-                <span class="p">{</span> <span class="nv">cx</span> <span class="nf">=</span> <span class="mi">50</span>
-                <span class="p">,</span> <span class="nv">cy</span> <span class="nf">=</span> <span class="mi">50</span>
-                <span class="p">,</span> <span class="nv">r</span> <span class="nf">=</span> <span class="mi">40</span> 
-                <span class="p">,</span> <span class="nv">fill</span> <span class="nf">=</span> <span class="s">&quot;yellow&quot;</span> 
-                <span class="p">}</span> 
-            <span class="p">,</span> <span class="kt">Circle</span> 
-                <span class="p">{</span> <span class="nv">cx</span> <span class="nf">=</span> <span class="mi">250</span>
-                <span class="p">,</span> <span class="nv">cy</span> <span class="nf">=</span> <span class="mi">250</span>
-                <span class="p">,</span> <span class="nv">r</span> <span class="nf">=</span> <span class="mi">20</span> 
-                <span class="p">,</span> <span class="nv">fill</span> <span class="nf">=</span> <span class="s">&quot;orange&quot;</span>
-                <span class="p">}</span> 
-            <span class="p">]</span>
-    <span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nv">initialModel</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Model</span><span class="w"></span>
+<span class="nv">initialModel</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nv">document</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nv">width</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="mi">400</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="nv">height</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="mi">400</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="nv">pointer</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="kt">Idle</span><span class="w"></span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="nv">shapes</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span>
+<span class="w">        </span><span class="kt">Array</span><span class="nf">.</span><span class="nv">fromList</span><span class="w"></span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Circle</span><span class="w"> </span>
+<span class="w">                </span><span class="p">{</span><span class="w"> </span><span class="nv">cx</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="mi">50</span><span class="w"></span>
+<span class="w">                </span><span class="p">,</span><span class="w"> </span><span class="nv">cy</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="mi">50</span><span class="w"></span>
+<span class="w">                </span><span class="p">,</span><span class="w"> </span><span class="nv">r</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="mi">40</span><span class="w"> </span>
+<span class="w">                </span><span class="p">,</span><span class="w"> </span><span class="nv">fill</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="s">&quot;yellow&quot;</span><span class="w"> </span>
+<span class="w">                </span><span class="p">}</span><span class="w"> </span>
+<span class="w">            </span><span class="p">,</span><span class="w"> </span><span class="kt">Circle</span><span class="w"> </span>
+<span class="w">                </span><span class="p">{</span><span class="w"> </span><span class="nv">cx</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="mi">250</span><span class="w"></span>
+<span class="w">                </span><span class="p">,</span><span class="w"> </span><span class="nv">cy</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="mi">250</span><span class="w"></span>
+<span class="w">                </span><span class="p">,</span><span class="w"> </span><span class="nv">r</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span>
+<span class="w">                </span><span class="p">,</span><span class="w"> </span><span class="nv">fill</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="s">&quot;orange&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="p">}</span><span class="w"> </span>
+<span class="w">            </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
 <h1>Add update messages</h1>
 <p>Let's define a few messages that we'll use in our <code>update</code> function.</p>
-<div class="highlight"><pre><span></span><code><span class="kr">type</span> <span class="kt">Msg</span>
-    <span class="nf">=</span> <span class="kt">MouseDown</span> <span class="kt">Int</span> <span class="kt">Int</span> <span class="kt">Int</span>
-    <span class="nf">|</span> <span class="kt">MouseMove</span> <span class="kt">Int</span> <span class="kt">Int</span>
-    <span class="nf">|</span> <span class="kt">MouseUp</span>
+<div class="highlight"><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="w">    </span><span class="nf">=</span><span class="w"> </span><span class="kt">MouseDown</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kt">Int</span><span class="w"></span>
+<span class="w">    </span><span class="nf">|</span><span class="w"> </span><span class="kt">MouseMove</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kt">Int</span><span class="w"></span>
+<span class="w">    </span><span class="nf">|</span><span class="w"> </span><span class="kt">MouseUp</span><span class="w"></span>
 </code></pre></div>
 
 <p>Here's how we going to handle each of the messages.</p>
@@ -216,72 +216,72 @@ be fairly trivial to add any ones.</p>
 <li><code>MouseUp</code> - This will fire to indicate that we've released the mouse button and are no longer dragging a shape.</li>
 </ul>
 <p>So let's modify our <code>update</code> function to reflect this logic.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">update</span> <span class="nf">:</span> <span class="kt">Msg</span> <span class="nf">-&gt;</span> <span class="kt">Model</span> <span class="nf">-&gt;</span> <span class="kt">Model</span>
-<span class="nv">update</span> <span class="nv">msg</span> <span class="nv">model</span> <span class="nf">=</span> 
-    <span class="kr">case</span> <span class="nv">msg</span> <span class="kr">of</span>
-        <span class="kt">MouseDown</span> <span class="nv">index</span> <span class="nv">x</span> <span class="nv">y</span> <span class="nf">-&gt;</span>
-            <span class="p">{</span> <span class="nv">model</span> <span class="nf">|</span> <span class="nv">pointer</span> <span class="nf">=</span> <span class="kt">Dragging</span> <span class="p">{</span> <span class="nv">index</span> <span class="nf">=</span> <span class="nv">index</span><span class="p">,</span> <span class="nv">dx</span> <span class="nf">=</span> <span class="nv">x</span><span class="p">,</span> <span class="nv">dy</span> <span class="nf">=</span> <span class="nv">y</span> <span class="p">}</span> <span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nv">update</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Msg</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Model</span><span class="w"></span>
+<span class="nv">update</span><span class="w"> </span><span class="nv">msg</span><span class="w"> </span><span class="nv">model</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">case</span><span class="w"> </span><span class="nv">msg</span><span class="w"> </span><span class="kr">of</span><span class="w"></span>
+<span class="w">        </span><span class="kt">MouseDown</span><span class="w"> </span><span class="nv">index</span><span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="nv">y</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="nv">model</span><span class="w"> </span><span class="nf">|</span><span class="w"> </span><span class="nv">pointer</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="kt">Dragging</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nv">index</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">index</span><span class="p">,</span><span class="w"> </span><span class="nv">dx</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">x</span><span class="p">,</span><span class="w"> </span><span class="nv">dy</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">y</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 
-        <span class="kt">MouseMove</span> <span class="nv">x</span> <span class="nv">y</span> <span class="nf">-&gt;</span>
-            <span class="kr">case</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">pointer</span> <span class="kr">of</span>
-                <span class="kt">Idle</span> <span class="nf">-&gt;</span>
-                    <span class="nv">model</span>
+<span class="w">        </span><span class="kt">MouseMove</span><span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="nv">y</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"></span>
+<span class="w">            </span><span class="kr">case</span><span class="w"> </span><span class="nv">model</span><span class="nf">.</span><span class="nv">pointer</span><span class="w"> </span><span class="kr">of</span><span class="w"></span>
+<span class="w">                </span><span class="kt">Idle</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"></span>
+<span class="w">                    </span><span class="nv">model</span><span class="w"></span>
 
-                <span class="kt">Dragging</span> <span class="p">{</span> <span class="nv">index</span><span class="p">,</span> <span class="nv">dx</span><span class="p">,</span> <span class="nv">dy</span> <span class="p">}</span> <span class="nf">-&gt;</span>
-                    <span class="kr">case</span> <span class="kt">Array</span><span class="nf">.</span><span class="nv">get</span> <span class="nv">index</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">shapes</span> <span class="kr">of</span>
-                        <span class="kt">Nothing</span> <span class="nf">-&gt;</span>
-                            <span class="nv">model</span>
+<span class="w">                </span><span class="kt">Dragging</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nv">index</span><span class="p">,</span><span class="w"> </span><span class="nv">dx</span><span class="p">,</span><span class="w"> </span><span class="nv">dy</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"></span>
+<span class="w">                    </span><span class="kr">case</span><span class="w"> </span><span class="kt">Array</span><span class="nf">.</span><span class="nv">get</span><span class="w"> </span><span class="nv">index</span><span class="w"> </span><span class="nv">model</span><span class="nf">.</span><span class="nv">shapes</span><span class="w"> </span><span class="kr">of</span><span class="w"></span>
+<span class="w">                        </span><span class="kt">Nothing</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"></span>
+<span class="w">                            </span><span class="nv">model</span><span class="w"></span>
 
-                        <span class="kt">Just</span> <span class="p">(</span><span class="kt">Circle</span> <span class="nv">attributes</span><span class="p">)</span> <span class="nf">-&gt;</span>
-                            <span class="kr">let</span>
-                                <span class="nv">shape</span> <span class="nf">=</span> <span class="kt">Circle</span> 
-                                            <span class="p">{</span> <span class="nv">attributes</span> 
-                                                <span class="nf">|</span> <span class="nv">cx</span> <span class="nf">=</span> <span class="nv">x</span> <span class="nf">-</span> <span class="nv">dx</span> <span class="nf">+</span> <span class="nv">attributes</span><span class="nf">.</span><span class="nv">cx</span>
-                                                <span class="p">,</span> <span class="nv">cy</span> <span class="nf">=</span> <span class="nv">y</span> <span class="nf">-</span> <span class="nv">dy</span> <span class="nf">+</span> <span class="nv">attributes</span><span class="nf">.</span><span class="nv">cy</span>
-                                            <span class="p">}</span>
-                            <span class="kr">in</span>
-                                <span class="p">{</span> <span class="nv">model</span> 
-                                    <span class="nf">|</span> <span class="nv">shapes</span> <span class="nf">=</span> <span class="kt">Array</span><span class="nf">.</span><span class="nv">set</span> <span class="nv">index</span> <span class="nv">shape</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">shapes</span> 
-                                    <span class="p">,</span> <span class="nv">pointer</span> <span class="nf">=</span> <span class="kt">Dragging</span> <span class="p">{</span> <span class="nv">index</span> <span class="nf">=</span> <span class="nv">index</span><span class="p">,</span> <span class="nv">dx</span> <span class="nf">=</span> <span class="nv">x</span><span class="p">,</span> <span class="nv">dy</span> <span class="nf">=</span> <span class="nv">y</span><span class="p">}</span>
-                                <span class="p">}</span>
+<span class="w">                        </span><span class="kt">Just</span><span class="w"> </span><span class="p">(</span><span class="kt">Circle</span><span class="w"> </span><span class="nv">attributes</span><span class="p">)</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"></span>
+<span class="w">                            </span><span class="kr">let</span><span class="w"></span>
+<span class="w">                                </span><span class="nv">shape</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="kt">Circle</span><span class="w"> </span>
+<span class="w">                                            </span><span class="p">{</span><span class="w"> </span><span class="nv">attributes</span><span class="w"> </span>
+<span class="w">                                                </span><span class="nf">|</span><span class="w"> </span><span class="nv">cx</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="nf">-</span><span class="w"> </span><span class="nv">dx</span><span class="w"> </span><span class="nf">+</span><span class="w"> </span><span class="nv">attributes</span><span class="nf">.</span><span class="nv">cx</span><span class="w"></span>
+<span class="w">                                                </span><span class="p">,</span><span class="w"> </span><span class="nv">cy</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">y</span><span class="w"> </span><span class="nf">-</span><span class="w"> </span><span class="nv">dy</span><span class="w"> </span><span class="nf">+</span><span class="w"> </span><span class="nv">attributes</span><span class="nf">.</span><span class="nv">cy</span><span class="w"></span>
+<span class="w">                                            </span><span class="p">}</span><span class="w"></span>
+<span class="w">                            </span><span class="kr">in</span><span class="w"></span>
+<span class="w">                                </span><span class="p">{</span><span class="w"> </span><span class="nv">model</span><span class="w"> </span>
+<span class="w">                                    </span><span class="nf">|</span><span class="w"> </span><span class="nv">shapes</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="kt">Array</span><span class="nf">.</span><span class="nv">set</span><span class="w"> </span><span class="nv">index</span><span class="w"> </span><span class="nv">shape</span><span class="w"> </span><span class="nv">model</span><span class="nf">.</span><span class="nv">shapes</span><span class="w"> </span>
+<span class="w">                                    </span><span class="p">,</span><span class="w"> </span><span class="nv">pointer</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="kt">Dragging</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nv">index</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">index</span><span class="p">,</span><span class="w"> </span><span class="nv">dx</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">x</span><span class="p">,</span><span class="w"> </span><span class="nv">dy</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">y</span><span class="p">}</span><span class="w"></span>
+<span class="w">                                </span><span class="p">}</span><span class="w"></span>
 
-        <span class="kt">MouseUp</span> <span class="nf">-&gt;</span>
-            <span class="p">{</span> <span class="nv">model</span> <span class="nf">|</span> <span class="nv">pointer</span> <span class="nf">=</span> <span class="kt">Idle</span> <span class="p">}</span>
+<span class="w">        </span><span class="kt">MouseUp</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="nv">model</span><span class="w"> </span><span class="nf">|</span><span class="w"> </span><span class="nv">pointer</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="kt">Idle</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
 <h1>Drawing shapes</h1>
 <p>Now we can get to drawing our document. Let's start off by creating a function that
 handles rendering a shape.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">shapeView</span> <span class="nf">:</span> <span class="kt">Int</span> <span class="nf">-&gt;</span> <span class="kt">Shape</span> <span class="nf">-&gt;</span> <span class="kt">Svg</span> <span class="kt">Msg</span>
-<span class="nv">shapeView</span> <span class="nv">index</span> <span class="p">(</span><span class="kt">Circle</span> <span class="nv">attributes</span><span class="p">)</span> <span class="nf">=</span>
-    <span class="kt">Svg</span><span class="nf">.</span><span class="nv">circle</span>
-        <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">cx</span> 
-            <span class="nf">&lt;|</span> <span class="kt">String</span><span class="nf">.</span><span class="nv">fromInt</span> <span class="nv">attributes</span><span class="nf">.</span><span class="nv">cx</span>
-        <span class="p">,</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">cy</span> 
-            <span class="nf">&lt;|</span> <span class="kt">String</span><span class="nf">.</span><span class="nv">fromInt</span> <span class="nv">attributes</span><span class="nf">.</span><span class="nv">cy</span>
-        <span class="p">,</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">r</span> 
-            <span class="nf">&lt;|</span> <span class="kt">String</span><span class="nf">.</span><span class="nv">fromInt</span> <span class="nv">attributes</span><span class="nf">.</span><span class="nv">r</span>
-        <span class="p">,</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">fill</span> <span class="nv">attributes</span><span class="nf">.</span><span class="nv">fill</span>
-        <span class="p">,</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">stroke</span> <span class="s">&quot;black&quot;</span>
-        <span class="p">,</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">strokeWidth</span> <span class="s">&quot;2&quot;</span>
-        <span class="p">,</span> <span class="nv">onMouseDown</span> <span class="nf">&lt;|</span> <span class="kt">MouseDown</span> <span class="nv">index</span>
-        <span class="p">]</span>
-        <span class="p">[]</span>
+<div class="highlight"><pre><span></span><code><span class="nv">shapeView</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Shape</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Svg</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="nv">shapeView</span><span class="w"> </span><span class="nv">index</span><span class="w"> </span><span class="p">(</span><span class="kt">Circle</span><span class="w"> </span><span class="nv">attributes</span><span class="p">)</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Svg</span><span class="nf">.</span><span class="nv">circle</span><span class="w"></span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">cx</span><span class="w"> </span>
+<span class="w">            </span><span class="nf">&lt;|</span><span class="w"> </span><span class="kt">String</span><span class="nf">.</span><span class="nv">fromInt</span><span class="w"> </span><span class="nv">attributes</span><span class="nf">.</span><span class="nv">cx</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">cy</span><span class="w"> </span>
+<span class="w">            </span><span class="nf">&lt;|</span><span class="w"> </span><span class="kt">String</span><span class="nf">.</span><span class="nv">fromInt</span><span class="w"> </span><span class="nv">attributes</span><span class="nf">.</span><span class="nv">cy</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">r</span><span class="w"> </span>
+<span class="w">            </span><span class="nf">&lt;|</span><span class="w"> </span><span class="kt">String</span><span class="nf">.</span><span class="nv">fromInt</span><span class="w"> </span><span class="nv">attributes</span><span class="nf">.</span><span class="nv">r</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">fill</span><span class="w"> </span><span class="nv">attributes</span><span class="nf">.</span><span class="nv">fill</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">stroke</span><span class="w"> </span><span class="s">&quot;black&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">strokeWidth</span><span class="w"> </span><span class="s">&quot;2&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="nv">onMouseDown</span><span class="w"> </span><span class="nf">&lt;|</span><span class="w"> </span><span class="kt">MouseDown</span><span class="w"> </span><span class="nv">index</span><span class="w"></span>
+<span class="w">        </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">[]</span><span class="w"></span>
 </code></pre></div>
 
 <p>And then let's update our <code>view</code> function to bring it in to the loop.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">view</span> <span class="nf">:</span> <span class="kt">Model</span> <span class="nf">-&gt;</span> <span class="kt">Svg</span> <span class="kt">Msg</span>
-<span class="nv">view</span> <span class="nv">model</span> <span class="nf">=</span>
-    <span class="kt">Svg</span><span class="nf">.</span><span class="nv">svg</span> 
-        <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">width</span> 
-            <span class="nf">&lt;|</span> <span class="kt">String</span><span class="nf">.</span><span class="nv">fromInt</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">document</span><span class="nf">.</span><span class="nv">width</span>
-        <span class="p">,</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">height</span> 
-            <span class="nf">&lt;|</span> <span class="kt">String</span><span class="nf">.</span><span class="nv">fromInt</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">document</span><span class="nf">.</span><span class="nv">height</span>
-        <span class="p">,</span> <span class="nv">onMouseMove</span> <span class="kt">MouseMove</span>
-        <span class="p">,</span> <span class="kt">Events</span><span class="nf">.</span><span class="nv">onMouseUp</span> <span class="kt">MouseUp</span>
-        <span class="p">]</span>
-        <span class="nf">&lt;|</span> <span class="kt">Array</span><span class="nf">.</span><span class="nv">toList</span> 
-        <span class="nf">&lt;|</span> <span class="kt">Array</span><span class="nf">.</span><span class="nv">indexedMap</span> <span class="nv">shapeView</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">shapes</span>
+<div class="highlight"><pre><span></span><code><span class="nv">view</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Svg</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="nv">view</span><span class="w"> </span><span class="nv">model</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Svg</span><span class="nf">.</span><span class="nv">svg</span><span class="w"> </span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">width</span><span class="w"> </span>
+<span class="w">            </span><span class="nf">&lt;|</span><span class="w"> </span><span class="kt">String</span><span class="nf">.</span><span class="nv">fromInt</span><span class="w"> </span><span class="nv">model</span><span class="nf">.</span><span class="nv">document</span><span class="nf">.</span><span class="nv">width</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">height</span><span class="w"> </span>
+<span class="w">            </span><span class="nf">&lt;|</span><span class="w"> </span><span class="kt">String</span><span class="nf">.</span><span class="nv">fromInt</span><span class="w"> </span><span class="nv">model</span><span class="nf">.</span><span class="nv">document</span><span class="nf">.</span><span class="nv">height</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="nv">onMouseMove</span><span class="w"> </span><span class="kt">MouseMove</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="kt">Events</span><span class="nf">.</span><span class="nv">onMouseUp</span><span class="w"> </span><span class="kt">MouseUp</span><span class="w"></span>
+<span class="w">        </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="nf">&lt;|</span><span class="w"> </span><span class="kt">Array</span><span class="nf">.</span><span class="nv">toList</span><span class="w"> </span>
+<span class="w">        </span><span class="nf">&lt;|</span><span class="w"> </span><span class="kt">Array</span><span class="nf">.</span><span class="nv">indexedMap</span><span class="w"> </span><span class="nv">shapeView</span><span class="w"> </span><span class="nv">model</span><span class="nf">.</span><span class="nv">shapes</span><span class="w"></span>
 </code></pre></div>
 
 <h1>Putting it all together</h1>

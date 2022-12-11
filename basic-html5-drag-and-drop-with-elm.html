@@ -96,56 +96,56 @@ that allows you to construct a list by dragging items onto it.</p>
 anything fancy.</p>
 <!-- https://ellie-app.com/yCv5t7PhHMa1 -->
 
-<div class="highlight"><pre><span></span><code><span class="kn">module </span><span class="nc">Main</span> <span class="nv">exposing</span> <span class="nf">(..)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">module</span><span class="w"> </span><span class="nc">Main</span><span class="w"> </span><span class="nv">exposing</span><span class="w"> </span><span class="nf">(..)</span><span class="w"></span>
 
-<span class="kn">import </span><span class="nc">Browser</span>
-<span class="kn">import </span><span class="nc">Html</span> <span class="nv">exposing</span> <span class="p">(</span><span class="kt">Html</span><span class="p">)</span>
-<span class="kn">import </span><span class="nc">Html.Attributes</span> <span class="kr">as</span> <span class="kt">Attributes</span>
-
-
-<span class="kr">main </span><span class="nf">:</span> <span class="kt">Program</span> <span class="p">()</span> <span class="kt">Model</span> <span class="kt">Msg</span>
-<span class="kr">main </span><span class="nf">=</span>
-    <span class="kt">Browser</span><span class="nf">.</span><span class="nv">sandbox</span>
-        <span class="p">{</span> <span class="nv">init</span> <span class="nf">=</span> <span class="nv">initialModel</span>
-        <span class="p">,</span> <span class="nv">update</span> <span class="nf">=</span> <span class="nv">update</span>
-        <span class="p">,</span> <span class="nv">view</span> <span class="nf">=</span> <span class="nv">view</span>
-        <span class="p">}</span>
+<span class="kn">import</span><span class="w"> </span><span class="nc">Browser</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nc">Html</span><span class="w"> </span><span class="nv">exposing</span><span class="w"> </span><span class="p">(</span><span class="kt">Html</span><span class="p">)</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nc">Html.Attributes</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="kt">Attributes</span><span class="w"></span>
 
 
-<span class="kr">type</span> <span class="kr">alias</span> <span class="kt">Model</span> <span class="nf">=</span>
-    <span class="p">{</span> <span class="nv">items</span> <span class="nf">:</span> <span class="kt">List</span> <span class="kt">String</span>
-    <span class="p">}</span>
+<span class="kr">main </span><span class="nf">:</span><span class="w"> </span><span class="kt">Program</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="kr">main </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Browser</span><span class="nf">.</span><span class="nv">sandbox</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nv">init</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">initialModel</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="nv">update</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">update</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="nv">view</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">view</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
 
 
-<span class="nv">initialModel</span> <span class="nf">:</span> <span class="kt">Model</span>
-<span class="nv">initialModel</span> <span class="nf">=</span> <span class="kt">Model</span> <span class="p">[]</span>
+<span class="kr">type</span><span class="w"> </span><span class="kr">alias</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nv">items</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">List</span><span class="w"> </span><span class="kt">String</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
 
-<span class="kr">type</span> <span class="kt">Msg</span> 
-    <span class="nf">=</span> <span class="kt">Noop</span>
+<span class="nv">initialModel</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Model</span><span class="w"></span>
+<span class="nv">initialModel</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
 
 
-<span class="nv">update</span> <span class="nf">:</span> <span class="kt">Msg</span> <span class="nf">-&gt;</span> <span class="kt">Model</span> <span class="nf">-&gt;</span> <span class="kt">Model</span>
-<span class="nv">update</span> <span class="nv">msg</span> <span class="nv">model</span> <span class="nf">=</span>
-    <span class="kr">case</span> <span class="nv">msg</span> <span class="kr">of</span>
-        <span class="kt">Noop</span> <span class="nf">-&gt;</span> 
-            <span class="nv">model</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Msg</span><span class="w"> </span>
+<span class="w">    </span><span class="nf">=</span><span class="w"> </span><span class="kt">Noop</span><span class="w"></span>
 
 
-<span class="nv">view</span> <span class="nf">:</span> <span class="kt">Model</span> <span class="nf">-&gt;</span> <span class="kt">Html</span> <span class="kt">Msg</span>
-<span class="nv">view</span> <span class="nv">model</span> <span class="nf">=</span>
-    <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span>
-        <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;container&quot;</span> <span class="p">]</span>
-        <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span> 
-            <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;row&quot;</span> <span class="p">]</span> 
-            <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span> 
-                <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;col-sm-6&quot;</span> <span class="p">]</span>
-                <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span> <span class="p">[]</span> <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span> <span class="s">&quot;Draggable&quot;</span> <span class="p">]</span> <span class="p">]</span>
-            <span class="p">,</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span> 
-                <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;col-sm-6&quot;</span> <span class="p">]</span>
-                <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span> <span class="p">[]</span> <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span> <span class="s">&quot;Drop Zone&quot;</span> <span class="p">]</span> <span class="p">]</span>
-            <span class="p">]</span>
-        <span class="p">]</span>
+<span class="nv">update</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Msg</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Model</span><span class="w"></span>
+<span class="nv">update</span><span class="w"> </span><span class="nv">msg</span><span class="w"> </span><span class="nv">model</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kr">case</span><span class="w"> </span><span class="nv">msg</span><span class="w"> </span><span class="kr">of</span><span class="w"></span>
+<span class="w">        </span><span class="kt">Noop</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span>
+<span class="w">            </span><span class="nv">model</span><span class="w"></span>
+
+
+<span class="nv">view</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Html</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="nv">view</span><span class="w"> </span><span class="nv">model</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"></span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;container&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"> </span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;row&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"> </span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"> </span>
+<span class="w">                </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;col-sm-6&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<span class="w">                </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span><span class="w"> </span><span class="s">&quot;Draggable&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<span class="w">            </span><span class="p">,</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"> </span>
+<span class="w">                </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;col-sm-6&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<span class="w">                </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span><span class="w"> </span><span class="s">&quot;Drop Zone&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<span class="w">            </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
 <p>For styling I'm using the <a href="https://minicss.org">mini.css</a> so you'll want to add the stylesheet for that.</p>
@@ -173,64 +173,64 @@ being dragged. I'm also going to add a list of draggable items to the model so t
 we can compose our list of different items. </p>
 <!-- https://ellie-app.com/yCwjh5zF5Ca1 -->
 
-<div class="highlight"><pre><span></span><code><span class="kr">type</span> <span class="kr">alias</span> <span class="kt">Model</span> <span class="nf">=</span>
-    <span class="p">{</span> <span class="nv">beingDragged</span> <span class="nf">:</span> <span class="kt">Maybe</span> <span class="kt">String</span>
-    <span class="p">,</span> <span class="nv">draggableItems</span><span class="nf">:</span> <span class="kt">List</span> <span class="kt">String</span>
-    <span class="p">,</span> <span class="nv">items</span> <span class="nf">:</span> <span class="kt">List</span> <span class="kt">String</span>
-    <span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="kr">alias</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nv">beingDragged</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="kt">String</span><span class="w"></span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="nv">draggableItems</span><span class="nf">:</span><span class="w"> </span><span class="kt">List</span><span class="w"> </span><span class="kt">String</span><span class="w"></span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="nv">items</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">List</span><span class="w"> </span><span class="kt">String</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
 
-<span class="nv">initialModel</span> <span class="nf">:</span> <span class="kt">Model</span>
-<span class="nv">initialModel</span> <span class="nf">=</span>
-    <span class="p">{</span> <span class="nv">beingDragged</span> <span class="nf">=</span> <span class="kt">Nothing</span>
-    <span class="p">,</span> <span class="nv">draggableItems</span> <span class="nf">=</span>
-        <span class="kt">List</span><span class="nf">.</span><span class="nv">range</span> <span class="mi">1</span> <span class="mi">5</span>
-            <span class="nf">|&gt;</span> <span class="kt">List</span><span class="nf">.</span><span class="nv">map</span> <span class="kt">Debug</span><span class="nf">.</span><span class="nv">toString</span>
-    <span class="p">,</span> <span class="nv">items</span> <span class="nf">=</span> <span class="p">[]</span>
-    <span class="p">}</span>
+<span class="nv">initialModel</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Model</span><span class="w"></span>
+<span class="nv">initialModel</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nv">beingDragged</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="kt">Nothing</span><span class="w"></span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="nv">draggableItems</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">        </span><span class="kt">List</span><span class="nf">.</span><span class="nv">range</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">5</span><span class="w"></span>
+<span class="w">            </span><span class="nf">|&gt;</span><span class="w"> </span><span class="kt">List</span><span class="nf">.</span><span class="nv">map</span><span class="w"> </span><span class="kt">Debug</span><span class="nf">.</span><span class="nv">toString</span><span class="w"></span>
+<span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="nv">items</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
 <p>Now let's update our <code>view</code> to render the draggable items.</p>
 <!-- https://ellie-app.com/yCyW9TXhW3a1 -->
 
-<div class="highlight"><pre><span></span><code><span class="nv">draggableItemView</span> <span class="nf">:</span> <span class="kt">String</span> <span class="nf">-&gt;</span> <span class="kt">Html</span> <span class="kt">Msg</span>
-<span class="nv">draggableItemView</span> <span class="nv">item</span> <span class="nf">=</span>
-    <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span>
-        <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;card fluid warning&quot;</span>
-        <span class="p">]</span> 
-        <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span> 
-            <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;section&quot;</span> <span class="p">]</span> 
-            <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span> <span class="nv">item</span> <span class="p">]</span> 
-        <span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="nv">draggableItemView</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Html</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="nv">draggableItemView</span><span class="w"> </span><span class="nv">item</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"></span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;card fluid warning&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">]</span><span class="w"> </span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"> </span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;section&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"> </span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span><span class="w"> </span><span class="nv">item</span><span class="w"> </span><span class="p">]</span><span class="w"> </span>
+<span class="w">        </span><span class="p">]</span><span class="w"></span>
 
 
-<span class="nv">itemView</span> <span class="nf">:</span> <span class="kt">String</span> <span class="nf">-&gt;</span> <span class="kt">Html</span> <span class="kt">Msg</span>
-<span class="nv">itemView</span> <span class="nv">item</span> <span class="nf">=</span>
-    <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span>
-        <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;card fluid error&quot;</span> <span class="p">]</span> 
-        <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span> 
-            <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;section&quot;</span> <span class="p">]</span> 
-            <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span> <span class="nv">item</span> <span class="p">]</span>
-        <span class="p">]</span>
+<span class="nv">itemView</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Html</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="nv">itemView</span><span class="w"> </span><span class="nv">item</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"></span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;card fluid error&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"> </span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"> </span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;section&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"> </span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span><span class="w"> </span><span class="nv">item</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">]</span><span class="w"></span>
 
 
-<span class="nv">view</span> <span class="nf">:</span> <span class="kt">Model</span> <span class="nf">-&gt;</span> <span class="kt">Html</span> <span class="kt">Msg</span>
-<span class="nv">view</span> <span class="nv">model</span> <span class="nf">=</span>
-    <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span>
-        <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;container&quot;</span> <span class="p">]</span>
-        <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span> 
-            <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;row&quot;</span> <span class="p">]</span> 
-            <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span> 
-                <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;col-sm-6&quot;</span> <span class="p">]</span>
-                <span class="nf">&lt;|</span> <span class="p">(</span><span class="kt">List</span><span class="nf">.</span><span class="nv">map</span> <span class="nv">draggableItemView</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">draggableItems</span>
-                    <span class="nf">|&gt;</span> <span class="nf">(::)</span> <span class="p">(</span><span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span> <span class="p">[]</span> <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span> <span class="s">&quot;Draggable&quot;</span> <span class="p">]))</span>
-            <span class="p">,</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span> 
-                <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;col-sm-6&quot;</span>
-                <span class="p">]</span>
-                <span class="nf">&lt;|</span> <span class="p">(</span><span class="kt">List</span><span class="nf">.</span><span class="nv">map</span> <span class="nv">itemView</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">items</span>
-                    <span class="nf">|&gt;</span> <span class="nf">(::)</span> <span class="p">(</span><span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span> <span class="p">[]</span> <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span> <span class="s">&quot;Drop Zone&quot;</span> <span class="p">]))</span>
-            <span class="p">]</span>
-        <span class="p">]</span>
+<span class="nv">view</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Html</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="nv">view</span><span class="w"> </span><span class="nv">model</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"></span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;container&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"> </span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;row&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"> </span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"> </span>
+<span class="w">                </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;col-sm-6&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<span class="w">                </span><span class="nf">&lt;|</span><span class="w"> </span><span class="p">(</span><span class="kt">List</span><span class="nf">.</span><span class="nv">map</span><span class="w"> </span><span class="nv">draggableItemView</span><span class="w"> </span><span class="nv">model</span><span class="nf">.</span><span class="nv">draggableItems</span><span class="w"></span>
+<span class="w">                    </span><span class="nf">|&gt;</span><span class="w"> </span><span class="nf">(::)</span><span class="w"> </span><span class="p">(</span><span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span><span class="w"> </span><span class="s">&quot;Draggable&quot;</span><span class="w"> </span><span class="p">]))</span><span class="w"></span>
+<span class="w">            </span><span class="p">,</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"> </span>
+<span class="w">                </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;col-sm-6&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="p">]</span><span class="w"></span>
+<span class="w">                </span><span class="nf">&lt;|</span><span class="w"> </span><span class="p">(</span><span class="kt">List</span><span class="nf">.</span><span class="nv">map</span><span class="w"> </span><span class="nv">itemView</span><span class="w"> </span><span class="nv">model</span><span class="nf">.</span><span class="nv">items</span><span class="w"></span>
+<span class="w">                    </span><span class="nf">|&gt;</span><span class="w"> </span><span class="nf">(::)</span><span class="w"> </span><span class="p">(</span><span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span><span class="w"> </span><span class="s">&quot;Drop Zone&quot;</span><span class="w"> </span><span class="p">]))</span><span class="w"></span>
+<span class="w">            </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
 <h1>Add update messages</h1>
@@ -238,35 +238,35 @@ we can compose our list of different items. </p>
 will be passed by the event handlers we're going to setup in the next section.</p>
 <!-- https://ellie-app.com/yCzmNzPY7ga1 -->
 
-<div class="highlight"><pre><span></span><code><span class="kr">type</span> <span class="kt">Msg</span>
-    <span class="nf">=</span> <span class="kt">Drag</span> <span class="kt">String</span>
-    <span class="nf">|</span> <span class="kt">DragEnd</span>
-    <span class="nf">|</span> <span class="kt">DragOver</span>
-    <span class="nf">|</span> <span class="kt">Drop</span>
+<div class="highlight"><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="w">    </span><span class="nf">=</span><span class="w"> </span><span class="kt">Drag</span><span class="w"> </span><span class="kt">String</span><span class="w"></span>
+<span class="w">    </span><span class="nf">|</span><span class="w"> </span><span class="kt">DragEnd</span><span class="w"></span>
+<span class="w">    </span><span class="nf">|</span><span class="w"> </span><span class="kt">DragOver</span><span class="w"></span>
+<span class="w">    </span><span class="nf">|</span><span class="w"> </span><span class="kt">Drop</span><span class="w"></span>
 
 
-<span class="nv">update</span> <span class="nf">:</span> <span class="kt">Msg</span> <span class="nf">-&gt;</span> <span class="kt">Model</span> <span class="nf">-&gt;</span> <span class="kt">Model</span>
-<span class="nv">update</span> <span class="nv">msg</span> <span class="nv">model</span> <span class="nf">=</span>
-    <span class="kr">case</span> <span class="nv">msg</span> <span class="kr">of</span>
-        <span class="kt">Drag</span> <span class="nv">item</span> <span class="nf">-&gt;</span>
-            <span class="p">{</span> <span class="nv">model</span> <span class="nf">|</span> <span class="nv">beingDragged</span> <span class="nf">=</span> <span class="kt">Just</span> <span class="nv">item</span> <span class="p">}</span>
+<span class="nv">update</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Msg</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Model</span><span class="w"></span>
+<span class="nv">update</span><span class="w"> </span><span class="nv">msg</span><span class="w"> </span><span class="nv">model</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kr">case</span><span class="w"> </span><span class="nv">msg</span><span class="w"> </span><span class="kr">of</span><span class="w"></span>
+<span class="w">        </span><span class="kt">Drag</span><span class="w"> </span><span class="nv">item</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="nv">model</span><span class="w"> </span><span class="nf">|</span><span class="w"> </span><span class="nv">beingDragged</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="kt">Just</span><span class="w"> </span><span class="nv">item</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 
-        <span class="kt">DragEnd</span> <span class="nf">-&gt;</span>
-            <span class="p">{</span> <span class="nv">model</span> <span class="nf">|</span> <span class="nv">beingDragged</span> <span class="nf">=</span> <span class="kt">Nothing</span> <span class="p">}</span>
+<span class="w">        </span><span class="kt">DragEnd</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="nv">model</span><span class="w"> </span><span class="nf">|</span><span class="w"> </span><span class="nv">beingDragged</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="kt">Nothing</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 
-        <span class="kt">DragOver</span> <span class="nf">-&gt;</span>
-            <span class="nv">model</span>
+<span class="w">        </span><span class="kt">DragOver</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"></span>
+<span class="w">            </span><span class="nv">model</span><span class="w"></span>
 
-        <span class="kt">Drop</span> <span class="nf">-&gt;</span>
-            <span class="kr">case</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">beingDragged</span> <span class="kr">of</span>
-                <span class="kt">Nothing</span> <span class="nf">-&gt;</span>
-                    <span class="nv">model</span>
+<span class="w">        </span><span class="kt">Drop</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"></span>
+<span class="w">            </span><span class="kr">case</span><span class="w"> </span><span class="nv">model</span><span class="nf">.</span><span class="nv">beingDragged</span><span class="w"> </span><span class="kr">of</span><span class="w"></span>
+<span class="w">                </span><span class="kt">Nothing</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"></span>
+<span class="w">                    </span><span class="nv">model</span><span class="w"></span>
 
-                <span class="kt">Just</span> <span class="nv">item</span> <span class="nf">-&gt;</span>
-                    <span class="p">{</span> <span class="nv">model</span>
-                        <span class="nf">|</span> <span class="nv">beingDragged</span> <span class="nf">=</span> <span class="kt">Nothing</span>
-                        <span class="p">,</span> <span class="nv">items</span> <span class="nf">=</span> <span class="nv">item</span> <span class="nf">::</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">items</span> 
-                    <span class="p">}</span>
+<span class="w">                </span><span class="kt">Just</span><span class="w"> </span><span class="nv">item</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">{</span><span class="w"> </span><span class="nv">model</span><span class="w"></span>
+<span class="w">                        </span><span class="nf">|</span><span class="w"> </span><span class="nv">beingDragged</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="kt">Nothing</span><span class="w"></span>
+<span class="w">                        </span><span class="p">,</span><span class="w"> </span><span class="nv">items</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">item</span><span class="w"> </span><span class="nf">::</span><span class="w"> </span><span class="nv">model</span><span class="nf">.</span><span class="nv">items</span><span class="w"> </span>
+<span class="w">                    </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
 <h1>Add event handlers</h1>
@@ -301,76 +301,76 @@ will be passed by the event handlers we're going to setup in the next section.</
 <p>Handlers for these events aren't provided in <code>Html.Events</code>. Thankfully, these are fairly trivial to setup.</p>
 <!-- https://ellie-app.com/yCC93bXx2ma1 -->
 
-<div class="highlight"><pre><span></span><code><span class="kn">import </span><span class="nc">Html.Events</span> <span class="kr">as</span> <span class="kt">Events</span>
-<span class="kn">import </span><span class="nc">Json.Decode</span> <span class="kr">as</span> <span class="kt">Decode</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nc">Html.Events</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="kt">Events</span><span class="w"></span>
+<span class="kn">import</span><span class="w"> </span><span class="nc">Json.Decode</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="kt">Decode</span><span class="w"></span>
 
 
-<span class="nv">onDragStart</span> <span class="nv">msg</span> <span class="nf">=</span>
-    <span class="kt">Events</span><span class="nf">.</span><span class="nv">on</span> <span class="s">&quot;dragstart&quot;</span> 
-        <span class="nf">&lt;|</span> <span class="kt">Decode</span><span class="nf">.</span><span class="nv">succeed</span> <span class="nv">msg</span>
+<span class="nv">onDragStart</span><span class="w"> </span><span class="nv">msg</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Events</span><span class="nf">.</span><span class="nv">on</span><span class="w"> </span><span class="s">&quot;dragstart&quot;</span><span class="w"> </span>
+<span class="w">        </span><span class="nf">&lt;|</span><span class="w"> </span><span class="kt">Decode</span><span class="nf">.</span><span class="nv">succeed</span><span class="w"> </span><span class="nv">msg</span><span class="w"></span>
 
 
-<span class="nv">onDragEnd</span> <span class="nv">msg</span> <span class="nf">=</span>
-    <span class="kt">Events</span><span class="nf">.</span><span class="nv">on</span> <span class="s">&quot;dragend&quot;</span>
-        <span class="nf">&lt;|</span> <span class="kt">Decode</span><span class="nf">.</span><span class="nv">succeed</span> <span class="nv">msg</span>
+<span class="nv">onDragEnd</span><span class="w"> </span><span class="nv">msg</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Events</span><span class="nf">.</span><span class="nv">on</span><span class="w"> </span><span class="s">&quot;dragend&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="nf">&lt;|</span><span class="w"> </span><span class="kt">Decode</span><span class="nf">.</span><span class="nv">succeed</span><span class="w"> </span><span class="nv">msg</span><span class="w"></span>
 
 
-<span class="nv">onDragOver</span> <span class="nv">msg</span> <span class="nf">=</span>
-    <span class="kt">Events</span><span class="nf">.</span><span class="nv">preventDefaultOn</span> <span class="s">&quot;dragover&quot;</span>
-        <span class="nf">&lt;|</span> <span class="kt">Decode</span><span class="nf">.</span><span class="nv">succeed</span> <span class="p">(</span><span class="nv">msg</span><span class="p">,</span> <span class="kt">True</span><span class="p">)</span>
+<span class="nv">onDragOver</span><span class="w"> </span><span class="nv">msg</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Events</span><span class="nf">.</span><span class="nv">preventDefaultOn</span><span class="w"> </span><span class="s">&quot;dragover&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="nf">&lt;|</span><span class="w"> </span><span class="kt">Decode</span><span class="nf">.</span><span class="nv">succeed</span><span class="w"> </span><span class="p">(</span><span class="nv">msg</span><span class="p">,</span><span class="w"> </span><span class="kt">True</span><span class="p">)</span><span class="w"></span>
 
 
-<span class="nv">onDrop</span> <span class="nv">msg</span> <span class="nf">=</span>
-    <span class="kt">Events</span><span class="nf">.</span><span class="nv">preventDefaultOn</span> <span class="s">&quot;drop&quot;</span>
-        <span class="nf">&lt;|</span> <span class="kt">Decode</span><span class="nf">.</span><span class="nv">succeed</span> <span class="p">(</span><span class="nv">msg</span><span class="p">,</span> <span class="kt">True</span><span class="p">)</span>
+<span class="nv">onDrop</span><span class="w"> </span><span class="nv">msg</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Events</span><span class="nf">.</span><span class="nv">preventDefaultOn</span><span class="w"> </span><span class="s">&quot;drop&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="nf">&lt;|</span><span class="w"> </span><span class="kt">Decode</span><span class="nf">.</span><span class="nv">succeed</span><span class="w"> </span><span class="p">(</span><span class="nv">msg</span><span class="p">,</span><span class="w"> </span><span class="kt">True</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
 <p>Then all that's left now is for us to wire up the events in our <code>view</code>.</p>
 <!-- https://ellie-app.com/yGJLryTwL3a1 -->
 
-<div class="highlight"><pre><span></span><code><span class="nv">draggableItemView</span> <span class="nf">:</span> <span class="kt">String</span> <span class="nf">-&gt;</span> <span class="kt">Html</span> <span class="kt">Msg</span>
-<span class="nv">draggableItemView</span> <span class="nv">item</span> <span class="nf">=</span>
-    <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span>
-        <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;card fluid warning&quot;</span>
-        <span class="p">,</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">draggable</span> <span class="s">&quot;true&quot;</span>
-        <span class="p">,</span> <span class="nv">onDragStart</span> <span class="nf">&lt;|</span> <span class="kt">Drag</span> <span class="nv">item</span>
-        <span class="p">,</span> <span class="nv">onDragEnd</span> <span class="kt">DragEnd</span> 
-        <span class="p">]</span> 
-        <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span> 
-            <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;section&quot;</span> <span class="p">]</span> 
-            <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span> <span class="nv">item</span> <span class="p">]</span> 
-        <span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="nv">draggableItemView</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Html</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="nv">draggableItemView</span><span class="w"> </span><span class="nv">item</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"></span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;card fluid warning&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">draggable</span><span class="w"> </span><span class="s">&quot;true&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="nv">onDragStart</span><span class="w"> </span><span class="nf">&lt;|</span><span class="w"> </span><span class="kt">Drag</span><span class="w"> </span><span class="nv">item</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="nv">onDragEnd</span><span class="w"> </span><span class="kt">DragEnd</span><span class="w"> </span>
+<span class="w">        </span><span class="p">]</span><span class="w"> </span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"> </span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;section&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"> </span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span><span class="w"> </span><span class="nv">item</span><span class="w"> </span><span class="p">]</span><span class="w"> </span>
+<span class="w">        </span><span class="p">]</span><span class="w"></span>
 
 
-<span class="nv">itemView</span> <span class="nf">:</span> <span class="kt">String</span> <span class="nf">-&gt;</span> <span class="kt">Html</span> <span class="kt">Msg</span>
-<span class="nv">itemView</span> <span class="nv">item</span> <span class="nf">=</span>
-    <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span>
-        <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;card fluid error&quot;</span> <span class="p">]</span> 
-        <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span> 
-            <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;section&quot;</span> <span class="p">]</span> 
-            <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span> <span class="nv">item</span> <span class="p">]</span>
-        <span class="p">]</span>
+<span class="nv">itemView</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Html</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="nv">itemView</span><span class="w"> </span><span class="nv">item</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"></span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;card fluid error&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"> </span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"> </span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;section&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"> </span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span><span class="w"> </span><span class="nv">item</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">]</span><span class="w"></span>
 
 
-<span class="nv">view</span> <span class="nf">:</span> <span class="kt">Model</span> <span class="nf">-&gt;</span> <span class="kt">Html</span> <span class="kt">Msg</span>
-<span class="nv">view</span> <span class="nv">model</span> <span class="nf">=</span>
-    <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span>
-        <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;container&quot;</span> <span class="p">]</span>
-        <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span> 
-            <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;row&quot;</span> <span class="p">]</span> 
-            <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span> 
-                <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;col-sm-6&quot;</span> <span class="p">]</span>
-                <span class="nf">&lt;|</span> <span class="p">(</span><span class="kt">List</span><span class="nf">.</span><span class="nv">map</span> <span class="nv">draggableItemView</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">draggableItems</span>
-                    <span class="nf">|&gt;</span> <span class="nf">(::)</span> <span class="p">(</span><span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span> <span class="p">[]</span> <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span> <span class="s">&quot;Draggable&quot;</span> <span class="p">]))</span>
-            <span class="p">,</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span> 
-                <span class="p">[</span> <span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span> <span class="s">&quot;col-sm-6&quot;</span>
-                <span class="p">,</span> <span class="nv">onDragOver</span> <span class="kt">DragOver</span>
-                <span class="p">,</span> <span class="nv">onDrop</span> <span class="kt">Drop</span>
-                <span class="p">]</span>
-                <span class="nf">&lt;|</span> <span class="p">(</span><span class="kt">List</span><span class="nf">.</span><span class="nv">map</span> <span class="nv">itemView</span> <span class="nv">model</span><span class="nf">.</span><span class="nv">items</span>
-                    <span class="nf">|&gt;</span> <span class="nf">(::)</span> <span class="p">(</span><span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span> <span class="p">[]</span> <span class="p">[</span> <span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span> <span class="s">&quot;Drop Zone&quot;</span> <span class="p">]))</span>
-            <span class="p">]</span>
-        <span class="p">]</span>
+<span class="nv">view</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Model</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Html</span><span class="w"> </span><span class="kt">Msg</span><span class="w"></span>
+<span class="nv">view</span><span class="w"> </span><span class="nv">model</span><span class="w"> </span><span class="nf">=</span><span class="w"></span>
+<span class="w">    </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"></span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;container&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"> </span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;row&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"> </span>
+<span class="w">            </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"> </span>
+<span class="w">                </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;col-sm-6&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<span class="w">                </span><span class="nf">&lt;|</span><span class="w"> </span><span class="p">(</span><span class="kt">List</span><span class="nf">.</span><span class="nv">map</span><span class="w"> </span><span class="nv">draggableItemView</span><span class="w"> </span><span class="nv">model</span><span class="nf">.</span><span class="nv">draggableItems</span><span class="w"></span>
+<span class="w">                    </span><span class="nf">|&gt;</span><span class="w"> </span><span class="nf">(::)</span><span class="w"> </span><span class="p">(</span><span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span><span class="w"> </span><span class="s">&quot;Draggable&quot;</span><span class="w"> </span><span class="p">]))</span><span class="w"></span>
+<span class="w">            </span><span class="p">,</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">div</span><span class="w"> </span>
+<span class="w">                </span><span class="p">[</span><span class="w"> </span><span class="kt">Attributes</span><span class="nf">.</span><span class="nv">class</span><span class="w"> </span><span class="s">&quot;col-sm-6&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="p">,</span><span class="w"> </span><span class="nv">onDragOver</span><span class="w"> </span><span class="kt">DragOver</span><span class="w"></span>
+<span class="w">                </span><span class="p">,</span><span class="w"> </span><span class="nv">onDrop</span><span class="w"> </span><span class="kt">Drop</span><span class="w"></span>
+<span class="w">                </span><span class="p">]</span><span class="w"></span>
+<span class="w">                </span><span class="nf">&lt;|</span><span class="w"> </span><span class="p">(</span><span class="kt">List</span><span class="nf">.</span><span class="nv">map</span><span class="w"> </span><span class="nv">itemView</span><span class="w"> </span><span class="nv">model</span><span class="nf">.</span><span class="nv">items</span><span class="w"></span>
+<span class="w">                    </span><span class="nf">|&gt;</span><span class="w"> </span><span class="nf">(::)</span><span class="w"> </span><span class="p">(</span><span class="kt">Html</span><span class="nf">.</span><span class="nv">h4</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span><span class="w"> </span><span class="s">&quot;Drop Zone&quot;</span><span class="w"> </span><span class="p">]))</span><span class="w"></span>
+<span class="w">            </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
 <h1>Putting it all together</h1>
