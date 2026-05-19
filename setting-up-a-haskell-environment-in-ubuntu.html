@@ -100,42 +100,42 @@ an Ubuntu system.</p>
 is somewhat akin to the functionality <code>nvm</code> and <code>npm</code> provide. Some of the most prominent features 
 stack provides are dependency installation, scaffolding for new projects, and GHC version management.</p>
 <p>To install stack, run the following command.</p>
-<div class="highlight"><pre><span></span><code>wget -qO- https://get.haskellstack.org/ <span class="p">|</span> sh
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>-qO-<span class="w"> </span>https://get.haskellstack.org/<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
 </code></pre></div>
 
 <p>Once installed, the <code>stack</code> binary will be available to use in your terminal. </p>
 <h1>Install Emacs</h1>
 <p>Installing Emacs in Ubuntu is a fairly trivial task that can be performed with the following command.</p>
-<div class="highlight"><pre><span></span><code>sudo apt-get install emacs
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>emacs
 </code></pre></div>
 
 <p>After installation, startup <code>emacs</code> at least once so that it initializes your <code>emacs.d</code> folder.</p>
 <h1>Install Intero</h1>
 <p>Now before we install <code>intero</code> we also need install <code>libtinfo-dev</code>, without this package 
 <code>intero</code> will fail to build with stack lts-11.</p>
-<div class="highlight"><pre><span></span><code>sudo apt-get install libtinfo-dev
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>libtinfo-dev
 </code></pre></div>
 
 <p>Next place the following into <code>~/.emacs.d/init.el</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">;; If you don&#39;t have MELPA in your package archives:</span>
-<span class="p">(</span><span class="nb">require</span> <span class="ss">&#39;package</span><span class="p">)</span>
+<span class="p">(</span><span class="nb">require</span><span class="w"> </span><span class="ss">&#39;package</span><span class="p">)</span>
 <span class="p">(</span><span class="nv">add-to-list</span>
-  <span class="ss">&#39;package-archives</span>
-  <span class="o">&#39;</span><span class="p">(</span><span class="s">&quot;melpa&quot;</span> <span class="o">.</span> <span class="s">&quot;http://melpa.org/packages/&quot;</span><span class="p">)</span> <span class="no">t</span><span class="p">)</span>
+<span class="w">  </span><span class="ss">&#39;package-archives</span>
+<span class="w">  </span><span class="o">&#39;</span><span class="p">(</span><span class="s">&quot;melpa&quot;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="s">&quot;http://melpa.org/packages/&quot;</span><span class="p">)</span><span class="w"> </span><span class="no">t</span><span class="p">)</span>
 <span class="p">(</span><span class="nv">package-initialize</span><span class="p">)</span>
 <span class="p">(</span><span class="nv">package-refresh-contents</span><span class="p">)</span>
 
 <span class="c1">;; Install Intero</span>
-<span class="p">(</span><span class="nv">package-install</span> <span class="ss">&#39;intero</span><span class="p">)</span>
-<span class="p">(</span><span class="nv">add-hook</span> <span class="ss">&#39;haskell-mode-hook</span> <span class="ss">&#39;intero-mode</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">package-install</span><span class="w"> </span><span class="ss">&#39;intero</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">add-hook</span><span class="w"> </span><span class="ss">&#39;haskell-mode-hook</span><span class="w"> </span><span class="ss">&#39;intero-mode</span><span class="p">)</span>
 </code></pre></div>
 
 <p>With that file place, just open <code>emacs</code> in a terminal and <code>intero</code> should start installing.</p>
 <h1>Create a Test Project</h1>
 <p>To verify that everything is working, create a new project with <code>stack</code>.</p>
-<div class="highlight"><pre><span></span><code>stack new test-project
-<span class="nb">cd</span> test-project
-stack setup
+<div class="highlight"><pre><span></span><code>stack<span class="w"> </span>new<span class="w"> </span>test-project
+<span class="nb">cd</span><span class="w"> </span>test-project
+stack<span class="w"> </span>setup
 </code></pre></div>
 
 <p>Now open <code>src/Lib.hs</code> and modify the code. You should see type errors come up as you change 

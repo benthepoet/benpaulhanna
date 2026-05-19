@@ -139,17 +139,17 @@
 <h3>Directives</h3>
 <p>The original assembler allows for implicit strings and bytes to be entered. Version 2 requires you to explicitly denote these using <code>DB</code> and <code>DW</code>. Directives <code>DM</code> (defining a byte string) and <code>DS</code> (reserving <em>n</em> bytes of space) have also been added. </p>
 <p>The labels in this example are arbitrary.</p>
-<div class="highlight"><pre><span></span><code><span class="p">;</span><span class="w"> </span><span class="n">Define</span><span class="w"> </span><span class="n">bytes</span><span class="w"></span>
-<span class="n">NUMS</span><span class="w">   </span><span class="n">DB</span><span class="w"> </span><span class="mi">0</span><span class="n">A</span><span class="p">,</span><span class="mi">1</span><span class="n">F</span><span class="p">,</span><span class="n">FF</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">;</span><span class="w"> </span><span class="n">Define</span><span class="w"> </span><span class="n">bytes</span>
+<span class="n">NUMS</span><span class="w">   </span><span class="n">DB</span><span class="w"> </span><span class="mi">0</span><span class="n">A</span><span class="p">,</span><span class="mi">1</span><span class="n">F</span><span class="p">,</span><span class="n">FF</span>
 
-<span class="p">;</span><span class="w"> </span><span class="n">Define</span><span class="w"> </span><span class="n">words</span><span class="w"></span>
-<span class="n">ADDRS</span><span class="w">  </span><span class="n">DW</span><span class="w"> </span><span class="mi">0010</span><span class="p">,</span><span class="mi">80</span><span class="n">CA</span><span class="w"></span>
+<span class="p">;</span><span class="w"> </span><span class="n">Define</span><span class="w"> </span><span class="n">words</span>
+<span class="n">ADDRS</span><span class="w">  </span><span class="n">DW</span><span class="w"> </span><span class="mi">0010</span><span class="p">,</span><span class="mi">80</span><span class="n">CA</span>
 
-<span class="p">;</span><span class="w"> </span><span class="n">Define</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">string</span><span class="w"></span>
-<span class="n">TEXT</span><span class="w">   </span><span class="n">DM</span><span class="w"> </span><span class="s2">&quot;HELLO&quot;</span><span class="w"></span>
+<span class="p">;</span><span class="w"> </span><span class="n">Define</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">string</span>
+<span class="n">TEXT</span><span class="w">   </span><span class="n">DM</span><span class="w"> </span><span class="s2">&quot;HELLO&quot;</span>
 
-<span class="p">;</span><span class="w"> </span><span class="n">Allocate</span><span class="w"> </span><span class="n">space</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">variable</span><span class="w"></span>
-<span class="n">HP</span><span class="w">     </span><span class="n">DS</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="p">;</span><span class="w"> </span><span class="n">Allocate</span><span class="w"> </span><span class="n">space</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">variable</span>
+<span class="n">HP</span><span class="w">     </span><span class="n">DS</span><span class="w"> </span><span class="mi">1</span>
 </code></pre></div>
 
 <h3>Constants</h3>

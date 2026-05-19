@@ -93,13 +93,13 @@ so that you don't need to manually manage <code>&lt;script&gt;</code> tags. And 
 as you would in a Node.js application.</p>
 <h1>Create the project</h1>
 <p>Starting from scratch let's first create a new folder and initialize <code>npm</code>.</p>
-<div class="highlight"><pre><span></span><code>mkdir my-backbone-app
-<span class="nb">cd</span> my-backbone-app
-npm init
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>my-backbone-app
+<span class="nb">cd</span><span class="w"> </span>my-backbone-app
+npm<span class="w"> </span>init
 </code></pre></div>
 
 <p>Next let's install <code>backbone</code> and it's dependencies, which are <code>jquery</code> and <code>underscore</code>.</p>
-<div class="highlight"><pre><span></span><code>npm install --save backbone jquery underscore
+<div class="highlight"><pre><span></span><code>npm<span class="w"> </span>install<span class="w"> </span>--save<span class="w"> </span>backbone<span class="w"> </span>jquery<span class="w"> </span>underscore
 </code></pre></div>
 
 <p>We're going to use the following folder structure.</p>
@@ -110,33 +110,33 @@ npm init
 <h1>Install and configure Webpack</h1>
 <p>We'll install <code>webpack</code> along with <code>webpack-dev-server</code>. The latter allows you 
 to run a local web server that will also watch your source files for changes.</p>
-<div class="highlight"><pre><span></span><code>npm install --save webpack webpack-cli
-npm install --save-dev webpack-dev-server
+<div class="highlight"><pre><span></span><code>npm<span class="w"> </span>install<span class="w"> </span>--save<span class="w"> </span>webpack<span class="w"> </span>webpack-cli
+npm<span class="w"> </span>install<span class="w"> </span>--save-dev<span class="w"> </span>webpack-dev-server
 </code></pre></div>
 
 <p>Now let's setup a basic configuration in <code>webpack.config.js</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="kd">const</span> <span class="p">{</span> <span class="nx">resolve</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">resolve</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span>
 
-<span class="kd">const</span> <span class="nx">PUBLIC_PATH</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;public&#39;</span><span class="p">);</span>
-<span class="kd">const</span> <span class="nx">SRC_PATH</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;src&#39;</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">PUBLIC_PATH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;public&#39;</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">SRC_PATH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;src&#39;</span><span class="p">);</span>
 
-<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="nx">entry</span><span class="o">:</span> <span class="sb">`</span><span class="si">${</span><span class="nx">SRC_PATH</span><span class="si">}</span><span class="sb">/index.js`</span><span class="p">,</span>
-  <span class="nx">output</span><span class="o">:</span> <span class="p">{</span>
-    <span class="nx">filename</span><span class="o">:</span> <span class="s1">&#39;bundle.js&#39;</span><span class="p">,</span>
-    <span class="nx">path</span><span class="o">:</span> <span class="nx">PUBLIC_PATH</span>
-  <span class="p">},</span>
-  <span class="nx">module</span><span class="o">:</span> <span class="p">{</span>
-    <span class="nx">rules</span><span class="o">:</span> <span class="p">[</span>
-      <span class="p">{</span>
-        <span class="nx">test</span><span class="o">:</span> <span class="sr">/\.(js)$/</span><span class="p">,</span>
-        <span class="nx">exclude</span><span class="o">:</span> <span class="sr">/node_modules/</span>
-      <span class="p">}</span>
-    <span class="p">]</span>
-  <span class="p">},</span>
-  <span class="nx">devServer</span><span class="o">:</span> <span class="p">{</span>
-    <span class="nx">contentBase</span><span class="o">:</span> <span class="nx">PUBLIC_PATH</span>
-  <span class="p">}</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">entry</span><span class="o">:</span><span class="w"> </span><span class="sb">`</span><span class="si">${</span><span class="nx">SRC_PATH</span><span class="si">}</span><span class="sb">/index.js`</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">output</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">filename</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;bundle.js&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="nx">PUBLIC_PATH</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">module</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">rules</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">test</span><span class="o">:</span><span class="w"> </span><span class="sr">/\.(js)$/</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">exclude</span><span class="o">:</span><span class="w"> </span><span class="sr">/node_modules/</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">devServer</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">contentBase</span><span class="o">:</span><span class="w"> </span><span class="nx">PUBLIC_PATH</span>
+<span class="w">  </span><span class="p">}</span>
 <span class="p">};</span>
 </code></pre></div>
 
@@ -158,41 +158,41 @@ npm install --save-dev webpack-dev-server
 <p>Now let's scaffold out a basic use of Backbone with <code>webpack</code>. </p>
 <p>First we'll create a view for our application in <code>src/app.view.js</code>;</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Import the Backbone module and its dependencies</span>
-<span class="kd">var</span> <span class="nx">Backbone</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">);</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">Backbone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">);</span>
 
 <span class="c1">// Declare our options we&#39;ll use to extend the base view</span>
-<span class="kd">var</span> <span class="nx">viewOptions</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="nx">el</span><span class="o">:</span> <span class="s1">&#39;body&#39;</span><span class="p">,</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">viewOptions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">el</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;body&#39;</span><span class="p">,</span>
 
-  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
-  <span class="p">},</span>
+<span class="w">  </span><span class="nx">initialize</span><span class="o">:</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+<span class="w">  </span><span class="p">},</span>
 
-  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s1">&#39;App Ready&#39;</span><span class="p">);</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="nx">render</span><span class="o">:</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s1">&#39;App Ready&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
 <span class="p">};</span>
 
 <span class="c1">// Export our extended view</span>
-<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">viewOptions</span><span class="p">);</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">viewOptions</span><span class="p">);</span>
 </code></pre></div>
 
 <p>Now let's create our entry module that bootstraps the application at <code>src/index.js</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Import the Backbone module and its dependencies</span>
-<span class="kd">var</span> <span class="nx">Backbone</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">);</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">Backbone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">);</span>
 
 <span class="c1">// Import our view</span>
-<span class="kd">var</span> <span class="nx">AppView</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./app.view&#39;</span><span class="p">);</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">AppView</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./app.view&#39;</span><span class="p">);</span>
 
 <span class="c1">// Execute after the DOM has loaded</span>
-<span class="nx">Backbone</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-  <span class="c1">// Create an instance of our view</span>
-  <span class="ow">new</span> <span class="nx">AppView</span><span class="p">();</span>
+<span class="nx">Backbone</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Create an instance of our view</span>
+<span class="w">  </span><span class="ow">new</span><span class="w"> </span><span class="nx">AppView</span><span class="p">();</span>
 <span class="p">});</span>
 </code></pre></div>
 
 <p>With all the base components stubbed out we can now start up the application.</p>
-<div class="highlight"><pre><span></span><code>npx webpack-dev-server
+<div class="highlight"><pre><span></span><code>npx<span class="w"> </span>webpack-dev-server
 </code></pre></div>
 
 <p>Navigate to <code>http://localhost:8080</code> in a browser and you should see the message displayed.</p>

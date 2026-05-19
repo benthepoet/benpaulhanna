@@ -88,7 +88,7 @@
     <h1>Ubuntu-based Linux</h1>
 <p>To get started with SDL2 on an Ubuntu-based distribution is fairly easy. With the following 
 command we'll install the necessary build tools (gcc, make) along with SDL2.</p>
-<div class="highlight"><pre><span></span><code>sudo apt install build-essential libsdl2-2.0.0 libsdl2-dev 
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>build-essential<span class="w"> </span>libsdl2-2.0.0<span class="w"> </span>libsdl2-dev<span class="w"> </span>
 </code></pre></div>
 
 <h1>Windows</h1>
@@ -98,13 +98,13 @@ software that have been ported to Windows.</p>
 <p>To install MSYS you'll first want to install Chocolatey, a package manager for Windows. You can 
 find the instructions for that <a href="https://chocolatey.org/install">here</a>. Once Chocolatey is installed we 
 can install MSYS with the following command.</p>
-<div class="highlight"><pre><span></span><code>choco install msys2
+<div class="highlight"><pre><span></span><code>choco<span class="w"> </span>install<span class="w"> </span>msys2
 </code></pre></div>
 
 <p>After that go ahead and open an MSYS shell. From here we'll install the build tools and SDL2 into our MSYS 
 installation.</p>
-<div class="highlight"><pre><span></span><code>pacman -Syu
-pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-SDL2
+<div class="highlight"><pre><span></span><code>pacman<span class="w"> </span>-Syu
+pacman<span class="w"> </span>-S<span class="w"> </span>mingw-w64-x86_64-toolchain<span class="w"> </span>mingw-w64-x86_64-SDL2
 </code></pre></div>
 
 <p>Now if you open a PowerShell or Command Prompt you should see that commands like <code>gcc</code> and <code>make</code> are available.</p>

@@ -91,19 +91,19 @@ officially supports <code>elm</code> assets.</p>
 <p>In this tutorial we'll setup a new project from scratch to demonstrate just how easy the process is.</p>
 <h1>Create the project</h1>
 <p>Starting from scratch let's first create a new folder and initialize <code>npm</code>.</p>
-<div class="highlight"><pre><span></span><code>mkdir my-elm-app
-<span class="nb">cd</span> my-elm-app
-npm init
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>my-elm-app
+<span class="nb">cd</span><span class="w"> </span>my-elm-app
+npm<span class="w"> </span>init
 </code></pre></div>
 
 <p>Next let's install <code>parcel</code>. Note this is only dependency we'll explicitly have to install. Development 
 dependencies like <code>elm</code> and <code>node-elm-compiler</code> will automatically be added to your <code>package.json</code> when you 
 run <code>parcel</code>.</p>
-<div class="highlight"><pre><span></span><code>npm install --save parcel
+<div class="highlight"><pre><span></span><code>npm<span class="w"> </span>install<span class="w"> </span>--save<span class="w"> </span>parcel
 </code></pre></div>
 
 <p>Let's create a new folder where we'll place all our source files (HTML, CSS, JavaScript, Elm).</p>
-<div class="highlight"><pre><span></span><code>mkdir src
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>src
 </code></pre></div>
 
 <p>The first file we'll create is <code>src/index.html</code>. This will serve as our entry point for the bundler. When run, <code>parcel</code>
@@ -120,23 +120,23 @@ will automatically resolve any dependencies contained within.</p>
 </code></pre></div>
 
 <p>Next let's create a simple Elm application and save it as <code>src/Main.elm</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nc">Html</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nc">Html</span>
 
-<span class="kr">main </span><span class="nf">=</span><span class="w"></span>
-<span class="w">  </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span><span class="w"> </span><span class="s">&quot;Hello World&quot;</span><span class="w"></span>
+<span class="kr">main </span><span class="nf">=</span>
+<span class="w">  </span><span class="kt">Html</span><span class="nf">.</span><span class="nv">text</span><span class="w"> </span><span class="s">&quot;Hello World&quot;</span>
 </code></pre></div>
 
 <p>And lastly we'll create <code>src/main.js</code> which is responsible for pulling in and initializing our Elm application.</p>
-<div class="highlight"><pre><span></span><code><span class="kd">const</span> <span class="p">{</span> <span class="nx">Elm</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./Main.elm&#39;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Elm</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./Main.elm&#39;</span><span class="p">);</span>
 
 <span class="nx">Elm</span><span class="p">.</span><span class="nx">Main</span><span class="p">.</span><span class="nx">init</span><span class="p">({</span>
-  <span class="nx">node</span><span class="o">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;main&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="nx">node</span><span class="o">:</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;main&#39;</span><span class="p">)</span>
 <span class="p">});</span>
 </code></pre></div>
 
 <h1>Serving for development</h1>
 <p>Now that all our files are in place, serving the project for development is quite easy.</p>
-<div class="highlight"><pre><span></span><code>npx parcel src/index.html
+<div class="highlight"><pre><span></span><code>npx<span class="w"> </span>parcel<span class="w"> </span>src/index.html
 </code></pre></div>
 
 <p>Then just navigate to the address presented in the terminal and you should see <code>Hello World</code> displayed.</p>
@@ -144,7 +144,7 @@ will automatically resolve any dependencies contained within.</p>
 Once it's up and running, you can make changes to any of the source files and the bundle will automatically be rebuilt.</p>
 <h1>Building for production</h1>
 <p>When you're ready to build the application for production all you do is run the following.</p>
-<div class="highlight"><pre><span></span><code>npx parcel build src/index.html
+<div class="highlight"><pre><span></span><code>npx<span class="w"> </span>parcel<span class="w"> </span>build<span class="w"> </span>src/index.html
 </code></pre></div>
 
 <p>Upon completion, the compiled production assets can be found in the <code>dist</code> folder.</p>
