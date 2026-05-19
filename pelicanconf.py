@@ -7,7 +7,7 @@ SITENAME = u'Ben Hanna'
 SITEURL = ''
 
 SITEIMAGE = '/images/header.jpg'
-SITESUBTITLE = 'Software Craftsman and Game Programming Enthusiast'
+SITESUBTITLE = 'Software Craftsman • Retro Homebrew Developer'
 
 PATH = 'content'
 
