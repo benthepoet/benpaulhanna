@@ -23,7 +23,8 @@ It’s written in Python with Tkinter — no extra dependencies. Main features:
 - Multiple assembly export formats tailored for TI-99 (including frame directories with labels).
 - Project save/load in JSON.
 
-[Insert screenshot or embed the demo GIF/video here]
+**Demo** (making a simple sprite animation)
+<blockquote class="twitter-tweet" data-media-max-width="560"><p lang="en" dir="ltr">Installed Grok Build and it&#39;s pretty amazing at iterating. It would&#39;ve taken me a lot longer to crank out a tool like this unassisted. So here&#39;s a video of where my TMS9918 sprite editor stands now. Full support for animations.<a href="https://t.co/74It8kO019">https://t.co/74It8kO019</a> <a href="https://t.co/DE8r9kLh7q">pic.twitter.com/DE8r9kLh7q</a></p>&mdash; Ben&#39;s Homebrew (@BenHomebrew) <a href="https://x.com/BenHomebrew/status/2067273826719731956?ref_src=twsrc%5Etfw">June 17, 2026</a></blockquote> <script async src="https://platform.x.com/widgets.js" charset="utf-8"></script>
 
 I’ve already been using it to prototype character animations and enemy sprites. Being able to quickly iterate and copy ready-to-use `BYTE` data straight into my assembly files has been a big time-saver.
 
