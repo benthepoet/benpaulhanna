@@ -9,7 +9,7 @@ it just works.
 
 In this article I'll demonstrate how setup a basic Backbone project using `parcel`.
 
-# Create the project
+### Create the project
 Starting from scratch let's first create a new folder and initialize `npm`.
 
 ```bash
@@ -28,7 +28,7 @@ We're going to use the following folder structure.
 
 * `src` - This is where we'll put all our JavaScript, HTML, and CSS.
 
-# Install Parcel
+### Install Parcel
 Since the main advantage of `parcel` is that it requires zero-configuration all we really 
 need to do use it is install `parcel-bundler`.
 
@@ -43,7 +43,7 @@ while serving it on a local HTTP server. The latter is similar to what is provid
 When you run `parcel` you just tell it what your entry file is (usually `index.html`) and then 
 it will automatically find any assets (i.e. scripts, stylesheets) that you're using and bundle them all together.
 
-# Create an application
+### Create an application
 Before we can load our application we need to create our shell. We'll save this file as 
 `src/index.html`.
 
@@ -109,7 +109,7 @@ npx parcel src/index.html --port 8080
 
 Navigate to `http://localhost:8080` in a browser and you should see the message displayed.
 
-# Wrapping up
+### Wrapping up
 
 Hopefully this article demonstrated how easy it is to use `parcel` with Backbone. If 
 you'd like to see a slightly more involved example with routing and templates then please see my 

@@ -13,7 +13,7 @@ that allows you to construct a list by dragging items onto it.
 
 To follow along with this tutorial I recommend building an application with [Ellie](https://ellie-app.com).
 
-# Getting Started
+### Getting Started
 
 To get things started we'll start with a `Browser.sandbox` since we we're not doing 
 anything fancy.
@@ -97,7 +97,7 @@ in order to drag an element. To address this we'll add an event listener on the 
 At this point running the application should display the shell that we've setup. Now we can move onto adding 
 in the fun stuff.
 
-# Create a list of draggable items
+### Create a list of draggable items
 
 First we need to add a new property to our `Model` for tracking the item that is 
 being dragged. I'm also going to add a list of draggable items to the model so that 
@@ -168,7 +168,7 @@ view model =
         ]
 ```
 
-# Add update messages
+### Add update messages
 
 Next we need to setup some messages for handling actions in the application. These messages 
 will be passed by the event handlers we're going to setup in the next section.
@@ -207,7 +207,7 @@ update msg model =
                     }
 ```
 
-# Add event handlers
+### Add event handlers
 
 Next we need to leverage the following events to achieve drag and drop functionality.
 
@@ -299,7 +299,7 @@ view model =
         ]
 ```
 
-# Putting it all together
+### Putting it all together
 
 With everything in place now, you should have a solution like below that allows you to drag 
 items from the left list onto the right list.

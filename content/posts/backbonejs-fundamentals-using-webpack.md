@@ -11,7 +11,7 @@ The main benefit to this is that `webpack` will bundle all your modules together
 so that you don't need to manually manage `<script>` tags. And on top of that you can require NPM packages 
 as you would in a Node.js application.
 
-# Create the project
+### Create the project
 Starting from scratch let's first create a new folder and initialize `npm`.
 
 ```bash
@@ -31,7 +31,7 @@ We're going to use the following folder structure.
 * `src` - This is where we'll put all our JavaScript.
 * `public` - This where we'll put any static files (index.html, assets).
 
-# Install and configure Webpack
+### Install and configure Webpack
 We'll install `webpack` along with `webpack-dev-server`. The latter allows you 
 to run a local web server that will also watch your source files for changes.
 
@@ -68,7 +68,7 @@ module.exports = {
 };
 ```
 
-# Create an application
+### Create an application
 Before we can load our application we need to create our shell. We'll save this file as 
 `public/index.html`.
 
@@ -134,7 +134,7 @@ npx webpack-dev-server
 
 Navigate to `http://localhost:8080` in a browser and you should see the message displayed.
 
-# Wrapping up
+### Wrapping up
 
 Hopefully this article gave you a good overview on how to use `webpack` with Backbone. If 
 you'd like to see a slightly more involved example with routing and templates then please see my 
