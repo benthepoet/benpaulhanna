@@ -27,12 +27,12 @@
 &lt;p&gt;If you’re doing any TMS9918-based development (TI-99, MSX, ColecoVision, etc.), feel free to try it out or fork it. The export templates are in the &lt;code&gt;formats/&lt;/code&gt; directory and easy to extend.&lt;/p&gt;
 &lt;h3&gt;What’s Next&lt;/h3&gt;
 &lt;p&gt;I’ll keep refining my workflow with this editor as the game progresses. Additionally I'm going to need to build a world/tileset editor next so stay tuned for that. In the meantime, back to coding the adventure itself.&lt;/p&gt;
-&lt;p&gt;What tools do you use for sprites and animation in your retro projects? Let me know in the comments or on X &lt;a href="https://x.com/BenHomebrew"&gt;@BenHomebrew&lt;/a&gt;.&lt;/p&gt;</content><category term="Blog"/><category term="TI-99"/><category term="Homebrew"/><category term="Grok"/></entry><entry><title>Using ZX Assembler on the TS1000</title><link href="https://benpaulhanna.com/using-zx-assembler-on-the-ts1000.html" rel="alternate"/><published>2022-12-11T13:04:00-05:00</published><updated>2022-12-11T13:04:00-05:00</updated><author><name>Ben Hanna</name></author><id>tag:benpaulhanna.com,2022-12-11:/using-zx-assembler-on-the-ts1000.html</id><summary type="html">&lt;h1&gt;Introduction&lt;/h1&gt;
-&lt;p&gt;It was a thrilling experience for me as a young boy to learn how to program using BASIC on an Apple IIe in the mid 90s. I remember spending hours sitting in front of the computer, staring at the green text on the black screen and typing in lines …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;What tools do you use for sprites and animation in your retro projects? Let me know in the comments or on X &lt;a href="https://x.com/BenHomebrew"&gt;@BenHomebrew&lt;/a&gt;.&lt;/p&gt;</content><category term="Blog"/><category term="TI-99"/><category term="Homebrew"/><category term="Grok"/></entry><entry><title>Using ZX Assembler on the TS1000</title><link href="https://benpaulhanna.com/using-zx-assembler-on-the-ts1000.html" rel="alternate"/><published>2022-12-11T13:04:00-05:00</published><updated>2022-12-11T13:04:00-05:00</updated><author><name>Ben Hanna</name></author><id>tag:benpaulhanna.com,2022-12-11:/using-zx-assembler-on-the-ts1000.html</id><summary type="html">&lt;h3&gt;Introduction&lt;/h3&gt;
+&lt;p&gt;It was a thrilling experience for me as a young boy to learn how to program using BASIC on an Apple IIe in the mid 90s. I remember spending hours sitting in front of the computer, staring at the green text on the black screen and typing in lines …&lt;/p&gt;</summary><content type="html">&lt;h3&gt;Introduction&lt;/h3&gt;
 &lt;p&gt;It was a thrilling experience for me as a young boy to learn how to program using BASIC on an Apple IIe in the mid 90s. I remember spending hours sitting in front of the computer, staring at the green text on the black screen and typing in lines of code. I was always amazed by how I could create simple programs that would allow me to do things like play games, solve math problems, or even create graphics and animations.&lt;/p&gt;
 &lt;p&gt;I've always had an affinity for such simple 8-bit computers and more recently I begin exploring and experimenting with the ZX81/TS1000. The TS1000 is an interesting machine to program for. As per the period it has it's own BASIC implementation which is quite capable but slower than most due to the system's cost-reduced design. Thus, to write software for the system that's performant as possible it's necessary use assembly language or machine code.&lt;/p&gt;
 &lt;p&gt;There's plenty of examples out there of how to assemble a program for the TS1000 using modern tools like VS Code and TASM, but I want a more authentic experience where I'm actually writing assembly and assembling on the system itself. There's a few assemblers that were created for the TS1000 back in the day, but the one I'm going to focus on is ZX Assembler by Artic Computing.&lt;/p&gt;
-&lt;h1&gt;The Assembler&lt;/h1&gt;
+&lt;h3&gt;The Assembler&lt;/h3&gt;
 &lt;p&gt;ZX Assembler is a fairly robust assembler for the TS1000 and has basic text navigation features, support for labels, and a monitor for inspecting memory as well as registers/flags. This assembler is loaded from cassette and occupies around 7K or memory, which is fairly significant amount of memory if you have the standard 16K RAM expansion.&lt;/p&gt;
 &lt;p&gt;Playing around with this version I noticed you'll occasionally get instances where the assembler will crash or memory gets into a bad state.&lt;/p&gt;
 &lt;p&gt;Eventually I happened to find out that a gentleman named Carlo Delhez had later revised this assembler and released it as ZX Assembler 2. Fixed in this version are many of the crashing issues and there are also some syntax updates. After playing around with this version for a fair bit of time I can say it's very robust and a pleasant experience to work with. This version can be found &lt;a href="https://web.archive.org/web/20120112020721if_/http://www.delhez.demon.nl/ZXA2V38.ZIP"&gt;here&lt;/a&gt;.&lt;/p&gt;
@@ -48,7 +48,7 @@
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;RAND USR 8192
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;h1&gt;Basic Instructions&lt;/h1&gt;
+&lt;h3&gt;Basic Instructions&lt;/h3&gt;
 &lt;p&gt;Most of what's written in the manual for the original ZX Assembler still applies but I'll quickly provide a crash course here. The manual is available &lt;a href="https://archive.org/details/international-publishing-software/mode/2up"&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;h3&gt;Main Prompt&lt;/h3&gt;
 &lt;ul&gt;
@@ -78,7 +78,6 @@
 &lt;li&gt;&lt;code&gt;O&lt;/code&gt; - Cursor up&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;L&lt;/code&gt; - Cursor down&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1&gt;ZX Assembler 2 Differences&lt;/h1&gt;
 &lt;h3&gt;Directives&lt;/h3&gt;
 &lt;p&gt;The original assembler allows for implicit strings and bytes to be entered. Version 2 requires you to explicitly denote these using &lt;code&gt;DB&lt;/code&gt; and &lt;code&gt;DW&lt;/code&gt;. Directives &lt;code&gt;DM&lt;/code&gt; (defining a byte string) and &lt;code&gt;DS&lt;/code&gt; (reserving &lt;em&gt;n&lt;/em&gt; bytes of space) have also been added. &lt;/p&gt;
 &lt;p&gt;The labels in this example are arbitrary.&lt;/p&gt;
@@ -100,7 +99,7 @@
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;LASTK=4025
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;h1&gt;Hello World&lt;/h1&gt;
+&lt;h3&gt;Hello World&lt;/h3&gt;
 &lt;p&gt;This example program will print the text &lt;code&gt;Hello World&lt;/code&gt; at the top left corner of the screen.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;; Constant
 DFILE=400C
@@ -121,22 +120,22 @@ START  LD DE,(DFILE)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Blog"/></entry><entry><title>Learning Dvorak: The First Two Weeks</title><link href="https://benpaulhanna.com/learning-dvorak-the-first-two-weeks.html" rel="alternate"/><published>2020-12-28T10:00:00-05:00</published><updated>2020-12-28T10:00:00-05:00</updated><author><name>Ben Hanna</name></author><id>tag:benpaulhanna.com,2020-12-28:/learning-dvorak-the-first-two-weeks.html</id><summary type="html">&lt;p&gt;Over the past couple years I've occasionally played with some of the tools for 
 learning the Dvorak keyboard layout. About two weeks ago I decided to make the switch 
 and see if I could improve my typing skills further.&lt;/p&gt;
-&lt;h1&gt;Introduction to Dvorak&lt;/h1&gt;
+&lt;h3&gt;Introduction to Dvorak&lt;/h3&gt;
 &lt;p&gt;The Dvorak keyboard layout was invented as an …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Over the past couple years I've occasionally played with some of the tools for 
 learning the Dvorak keyboard layout. About two weeks ago I decided to make the switch 
 and see if I could improve my typing skills further.&lt;/p&gt;
-&lt;h1&gt;Introduction to Dvorak&lt;/h1&gt;
+&lt;h3&gt;Introduction to Dvorak&lt;/h3&gt;
 &lt;p&gt;The Dvorak keyboard layout was invented as an alternative to the standard Qwerty layout that most are accustomed to. It rearranges 
 the keys in a manner that reduces overall hand movement and thus leads to more comfortable 
 typing. Those that switch to Dvorak often note that they're able to type faster and more 
 accurately.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Dvorak Layout" src="/images/learning-dvorak-the-first-two-weeks-00.svg"&gt;&lt;/p&gt;
-&lt;h1&gt;Learning the Layout&lt;/h1&gt;
+&lt;h3&gt;Learning the Layout&lt;/h3&gt;
 &lt;p&gt;I decided the best way for me to learn was to go cold turkey and make it my default layout on both my home and 
 work computers. Over the first few days I focused on using &lt;a href="https://learn.dvorak.nl/"&gt;Dvorak Keyboard Training&lt;/a&gt; and &lt;a href="https://www.typingclub.com/dvorak"&gt;Typing Club&lt;/a&gt; 
 to familarize myself with the locations of all the keys. Along with that I started practicing typing tests on &lt;a href="https://www.monkeytype.com"&gt;Monkeytype&lt;/a&gt; 
 and &lt;a href="https://10fastfingers.com"&gt;10 Fast Fingers&lt;/a&gt;.&lt;/p&gt;
-&lt;h1&gt;Pain Points&lt;/h1&gt;
+&lt;h3&gt;Pain Points&lt;/h3&gt;
 &lt;p&gt;From a programming perspective, the most jarring thing about the layout to me is the repositioning of punctuation characters. 
 These felt very awkward to type at first but slowly I'm getting better accustomed to their new locations. &lt;/p&gt;
 &lt;p&gt;Aside from that you basically have the vowels on your left hand and the consonants on your right. Dvorak tends to favor the right hand whereas Qwerty 
@@ -147,7 +146,7 @@ type in that layout but I'm seeing that the more time I spend with Dvorak the mo
 I had developed a bad habit of not using my pinky fingers on the top row when typing in Qwerty. Another defect I noticed being 
 corrected through training was that I was hitting the &lt;code&gt;B&lt;/code&gt; key (&lt;code&gt;X&lt;/code&gt; in Dvorak) with my right hand which is actually the responsibility of 
 the left hand.&lt;/p&gt;
-&lt;h1&gt;Current Progress&lt;/h1&gt;
+&lt;h3&gt;Current Progress&lt;/h3&gt;
 &lt;p&gt;I've been using &lt;a href="https://www.monkeytype.com"&gt;Monkeytype&lt;/a&gt; to benchmark my general speed and accuracy. I took a couple quick baseline 
 tests in Qwerty right at the beginning just so I have a target of where I need to work back to.&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/learning-dvorak-the-first-two-weeks-01.png" alt="Monkeytype" style="width: 100%;" /&gt;&lt;/p&gt;
@@ -193,7 +192,7 @@ In the end I really wanted to see my data structured more like this.&lt;/p&gt;
 
 &lt;p&gt;So I figured I'd stretch my mind and build an s-expression parser. Below is an account of how 
 I worked through the solution.&lt;/p&gt;
-&lt;h1&gt;Modeling the structure&lt;/h1&gt;
+&lt;h3&gt;Modeling the structure&lt;/h3&gt;
 &lt;p&gt;I'll admit I'm largely a self-taught programmer and don't have a formal background in computer science. Thus, 
 I tend to learn about data structures and algorithms when they're useful to a particular problem that I'm trying 
 to solve.&lt;/p&gt;
@@ -217,7 +216,7 @@ to solve.&lt;/p&gt;
 &lt;p&gt;In my program a parsed s-expression is a linked list consisting of &lt;code&gt;SNode&lt;/code&gt;. The &lt;code&gt;SNode&lt;/code&gt; struct is a tagged union 
 that either contains a value (&lt;code&gt;STRING&lt;/code&gt; or &lt;code&gt;SYMBOL&lt;/code&gt; to begin with) or another list of &lt;code&gt;SNode&lt;/code&gt;. This structure makes for a traversable 
 in-memory tree. &lt;/p&gt;
-&lt;h1&gt;Recursing the s-expression&lt;/h1&gt;
+&lt;h3&gt;Recursing the s-expression&lt;/h3&gt;
 &lt;p&gt;So for actually parsing out the expression I decided to utilize &lt;code&gt;fscanf&lt;/code&gt; as it allows for basic pattern matching.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;struct&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;SNode&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;parse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;FILE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;fp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
 &lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;SNode&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;tail&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
@@ -275,7 +274,7 @@ in-memory tree. &lt;/p&gt;
 
 &lt;p&gt;This worked fairly well. I did however notice later on that this iteration of the parser couldn't read empty strings correctly. I also 
 wanted to introduce the &lt;code&gt;FLOAT&lt;/code&gt; and &lt;code&gt;INTEGER&lt;/code&gt; data types as these currently just get tagged as &lt;code&gt;SYMBOL&lt;/code&gt;.&lt;/p&gt;
-&lt;h1&gt;Adding number data types&lt;/h1&gt;
+&lt;h3&gt;Adding number data types&lt;/h3&gt;
 &lt;p&gt;For basic number support I added &lt;code&gt;FLOAT&lt;/code&gt; and &lt;code&gt;INTEGER&lt;/code&gt; to the &lt;code&gt;SNodeType&lt;/code&gt; enumeration.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;enum&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SNodeType&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
 &lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="n"&gt;LIST&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
@@ -318,7 +317,7 @@ wanted to introduce the &lt;code&gt;FLOAT&lt;/code&gt; and &lt;code&gt;INTEGER&l
 
 &lt;p&gt;After that the parser was able to successfully tag number types. The value itself is still stored as a string though as 
 I figured the game should be responsible for handling that conversion.&lt;/p&gt;
-&lt;h1&gt;Fixing the empty string issue&lt;/h1&gt;
+&lt;h3&gt;Fixing the empty string issue&lt;/h3&gt;
 &lt;p&gt;Even though I'm never expecting my game to read an empty string in from an s-expression, I didn't want that to be a limitation 
 of the parser. To fix that issue meant I was going to have to abandon &lt;code&gt;fscanf&lt;/code&gt;. The limitation of using &lt;code&gt;fscanf&lt;/code&gt; for 
 reading strings is that its format pattern expects there to be at least one character between the quotes. With the case of the 
@@ -449,7 +448,7 @@ would wind up in the wrong list.&lt;/p&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;h1&gt;Deallocating memory&lt;/h1&gt;
+&lt;h3&gt;Deallocating memory&lt;/h3&gt;
 &lt;p&gt;The last thing I needed to do is write a recursive function for freeing the memory that is dynamically 
 allocated by the &lt;code&gt;SNode&lt;/code&gt; tree. This is how that looks.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;// Recursively free memory allocated by a node&lt;/span&gt;
@@ -476,7 +475,7 @@ allocated by the &lt;code&gt;SNode&lt;/code&gt; tree. This is how that looks.&lt
 &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;h1&gt;Wrapping up&lt;/h1&gt;
+&lt;h3&gt;Wrapping up&lt;/h3&gt;
 &lt;p&gt;In the end I'm really satisfied with how the parser turned out and I dissassembled the 
 solution down to a level where I could easily implement it in other languages if I need 
 to (or I'm just bored). If you'd like to use or fork the parser then please 
@@ -484,11 +483,11 @@ see my &lt;a href="https://github.com/benthepoet/c-sexpr-parser"&gt;c-sexpr-pars
 you start? Well, worry no more because &lt;code&gt;parcel&lt;/code&gt;, a zero-configuration bundler, now 
 officially supports &lt;code&gt;elm&lt;/code&gt; assets.&lt;/p&gt;
 &lt;p&gt;In this tutorial we'll setup a new project from scratch to demonstrate just how easy the process is.&lt;/p&gt;
-&lt;h1&gt;Create the …&lt;/h1&gt;</summary><content type="html">&lt;p&gt;Do you loathe setting up the same &lt;code&gt;webpack&lt;/code&gt; configuration for every new &lt;code&gt;elm&lt;/code&gt; project 
+&lt;h3&gt;Create the …&lt;/h3&gt;</summary><content type="html">&lt;p&gt;Do you loathe setting up the same &lt;code&gt;webpack&lt;/code&gt; configuration for every new &lt;code&gt;elm&lt;/code&gt; project 
 you start? Well, worry no more because &lt;code&gt;parcel&lt;/code&gt;, a zero-configuration bundler, now 
 officially supports &lt;code&gt;elm&lt;/code&gt; assets.&lt;/p&gt;
 &lt;p&gt;In this tutorial we'll setup a new project from scratch to demonstrate just how easy the process is.&lt;/p&gt;
-&lt;h1&gt;Create the project&lt;/h1&gt;
+&lt;h3&gt;Create the project&lt;/h3&gt;
 &lt;p&gt;Starting from scratch let's first create a new folder and initialize &lt;code&gt;npm&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir&lt;span class="w"&gt; &lt;/span&gt;my-elm-app
 &lt;span class="nb"&gt;cd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;my-elm-app
@@ -533,7 +532,7 @@ will automatically resolve any dependencies contained within.&lt;/p&gt;
 &lt;span class="p"&gt;});&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;h1&gt;Serving for development&lt;/h1&gt;
+&lt;h3&gt;Serving for development&lt;/h3&gt;
 &lt;p&gt;Now that all our files are in place, serving the project for development is quite easy.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;npx&lt;span class="w"&gt; &lt;/span&gt;parcel&lt;span class="w"&gt; &lt;/span&gt;src/index.html
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -541,13 +540,13 @@ will automatically resolve any dependencies contained within.&lt;/p&gt;
 &lt;p&gt;Then just navigate to the address presented in the terminal and you should see &lt;code&gt;Hello World&lt;/code&gt; displayed.&lt;/p&gt;
 &lt;p&gt;The initial load will take a little longer as it will install the dependencies for &lt;code&gt;elm&lt;/code&gt; and also initialize the &lt;code&gt;elm.json&lt;/code&gt; file.
 Once it's up and running, you can make changes to any of the source files and the bundle will automatically be rebuilt.&lt;/p&gt;
-&lt;h1&gt;Building for production&lt;/h1&gt;
+&lt;h3&gt;Building for production&lt;/h3&gt;
 &lt;p&gt;When you're ready to build the application for production all you do is run the following.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;npx&lt;span class="w"&gt; &lt;/span&gt;parcel&lt;span class="w"&gt; &lt;/span&gt;build&lt;span class="w"&gt; &lt;/span&gt;src/index.html
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Upon completion, the compiled production assets can be found in the &lt;code&gt;dist&lt;/code&gt; folder.&lt;/p&gt;
-&lt;h1&gt;Wrapping up&lt;/h1&gt;
+&lt;h3&gt;Wrapping up&lt;/h3&gt;
 &lt;p&gt;Hopefully this article gave you a good overview on how to use &lt;code&gt;parcel&lt;/code&gt; with &lt;code&gt;elm&lt;/code&gt;. The complete code for this tutorial is 
 available at my &lt;a href="https://github.com/benthepoet/elm-parcel-example"&gt;elm-parcel-example&lt;/a&gt; repository.&lt;/p&gt;</content><category term="Blog"/></entry><entry><title>Building a Backbone.js project with Parcel</title><link href="https://benpaulhanna.com/building-a-backbonejs-project-with-parcel.html" rel="alternate"/><published>2018-08-24T08:26:00-04:00</published><updated>2018-08-24T08:26:00-04:00</updated><author><name>Ben Hanna</name></author><id>tag:benpaulhanna.com,2018-08-24:/building-a-backbonejs-project-with-parcel.html</id><summary type="html">&lt;p&gt;Do you loathe configuring &lt;code&gt;webpack&lt;/code&gt; every time you setup a new application? Well, you may be 
 better served by &lt;code&gt;parcel&lt;/code&gt;, an alternative bundler that touts zero-configuration. Quite simply, 
@@ -1068,7 +1067,7 @@ but for me I've settled on Emacs with &lt;code&gt;intero&lt;/code&gt;. I went wi
 solid type-checking, an interactive REPL, and doesn't require a whole lot of configuration 
 to get going. With that said, I'll show you how to setup this environment in the context of 
 an Ubuntu system.&lt;/p&gt;
-&lt;h1&gt;Install Stack&lt;/h1&gt;
+&lt;h3&gt;Install Stack&lt;/h3&gt;
 &lt;p&gt;The first thing we need to install is stack. If you come from a Node.js background then stack 
 is somewhat akin to the functionality &lt;code&gt;nvm&lt;/code&gt; and &lt;code&gt;npm&lt;/code&gt; provide. Some of the most prominent features 
 stack provides are dependency installation, scaffolding for new projects, and GHC version management.&lt;/p&gt;
@@ -1077,13 +1076,13 @@ stack provides are dependency installation, scaffolding for new projects, and GH
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Once installed, the &lt;code&gt;stack&lt;/code&gt; binary will be available to use in your terminal. &lt;/p&gt;
-&lt;h1&gt;Install Emacs&lt;/h1&gt;
+&lt;h3&gt;Install Emacs&lt;/h3&gt;
 &lt;p&gt;Installing Emacs in Ubuntu is a fairly trivial task that can be performed with the following command.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;emacs
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;After installation, startup &lt;code&gt;emacs&lt;/code&gt; at least once so that it initializes your &lt;code&gt;emacs.d&lt;/code&gt; folder.&lt;/p&gt;
-&lt;h1&gt;Install Intero&lt;/h1&gt;
+&lt;h3&gt;Install Intero&lt;/h3&gt;
 &lt;p&gt;Now before we install &lt;code&gt;intero&lt;/code&gt; we also need install &lt;code&gt;libtinfo-dev&lt;/code&gt;, without this package 
 &lt;code&gt;intero&lt;/code&gt; will fail to build with stack lts-11.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;libtinfo-dev
@@ -1104,7 +1103,7 @@ stack provides are dependency installation, scaffolding for new projects, and GH
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;With that file place, just open &lt;code&gt;emacs&lt;/code&gt; in a terminal and &lt;code&gt;intero&lt;/code&gt; should start installing.&lt;/p&gt;
-&lt;h1&gt;Create a Test Project&lt;/h1&gt;
+&lt;h3&gt;Create a Test Project&lt;/h3&gt;
 &lt;p&gt;To verify that everything is working, create a new project with &lt;code&gt;stack&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;stack&lt;span class="w"&gt; &lt;/span&gt;new&lt;span class="w"&gt; &lt;/span&gt;test-project
 &lt;span class="nb"&gt;cd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;test-project

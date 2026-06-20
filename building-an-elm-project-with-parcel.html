@@ -89,7 +89,7 @@
 you start? Well, worry no more because <code>parcel</code>, a zero-configuration bundler, now 
 officially supports <code>elm</code> assets.</p>
 <p>In this tutorial we'll setup a new project from scratch to demonstrate just how easy the process is.</p>
-<h1>Create the project</h1>
+<h3>Create the project</h3>
 <p>Starting from scratch let's first create a new folder and initialize <code>npm</code>.</p>
 <div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>my-elm-app
 <span class="nb">cd</span><span class="w"> </span>my-elm-app
@@ -134,7 +134,7 @@ will automatically resolve any dependencies contained within.</p>
 <span class="p">});</span>
 </code></pre></div>
 
-<h1>Serving for development</h1>
+<h3>Serving for development</h3>
 <p>Now that all our files are in place, serving the project for development is quite easy.</p>
 <div class="highlight"><pre><span></span><code>npx<span class="w"> </span>parcel<span class="w"> </span>src/index.html
 </code></pre></div>
@@ -142,13 +142,13 @@ will automatically resolve any dependencies contained within.</p>
 <p>Then just navigate to the address presented in the terminal and you should see <code>Hello World</code> displayed.</p>
 <p>The initial load will take a little longer as it will install the dependencies for <code>elm</code> and also initialize the <code>elm.json</code> file.
 Once it's up and running, you can make changes to any of the source files and the bundle will automatically be rebuilt.</p>
-<h1>Building for production</h1>
+<h3>Building for production</h3>
 <p>When you're ready to build the application for production all you do is run the following.</p>
 <div class="highlight"><pre><span></span><code>npx<span class="w"> </span>parcel<span class="w"> </span>build<span class="w"> </span>src/index.html
 </code></pre></div>
 
 <p>Upon completion, the compiled production assets can be found in the <code>dist</code> folder.</p>
-<h1>Wrapping up</h1>
+<h3>Wrapping up</h3>
 <p>Hopefully this article gave you a good overview on how to use <code>parcel</code> with <code>elm</code>. The complete code for this tutorial is 
 available at my <a href="https://github.com/benthepoet/elm-parcel-example">elm-parcel-example</a> repository.</p>
   </div>

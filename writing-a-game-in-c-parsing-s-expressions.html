@@ -123,7 +123,7 @@ In the end I really wanted to see my data structured more like this.</p>
 
 <p>So I figured I'd stretch my mind and build an s-expression parser. Below is an account of how 
 I worked through the solution.</p>
-<h1>Modeling the structure</h1>
+<h3>Modeling the structure</h3>
 <p>I'll admit I'm largely a self-taught programmer and don't have a formal background in computer science. Thus, 
 I tend to learn about data structures and algorithms when they're useful to a particular problem that I'm trying 
 to solve.</p>
@@ -147,7 +147,7 @@ to solve.</p>
 <p>In my program a parsed s-expression is a linked list consisting of <code>SNode</code>. The <code>SNode</code> struct is a tagged union 
 that either contains a value (<code>STRING</code> or <code>SYMBOL</code> to begin with) or another list of <code>SNode</code>. This structure makes for a traversable 
 in-memory tree. </p>
-<h1>Recursing the s-expression</h1>
+<h3>Recursing the s-expression</h3>
 <p>So for actually parsing out the expression I decided to utilize <code>fscanf</code> as it allows for basic pattern matching.</p>
 <div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">SNode</span><span class="w"> </span><span class="o">*</span><span class="n">parse</span><span class="p">(</span><span class="kt">FILE</span><span class="w"> </span><span class="o">*</span><span class="n">fp</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">SNode</span><span class="w"> </span><span class="o">*</span><span class="n">tail</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
@@ -205,7 +205,7 @@ in-memory tree. </p>
 
 <p>This worked fairly well. I did however notice later on that this iteration of the parser couldn't read empty strings correctly. I also 
 wanted to introduce the <code>FLOAT</code> and <code>INTEGER</code> data types as these currently just get tagged as <code>SYMBOL</code>.</p>
-<h1>Adding number data types</h1>
+<h3>Adding number data types</h3>
 <p>For basic number support I added <code>FLOAT</code> and <code>INTEGER</code> to the <code>SNodeType</code> enumeration.</p>
 <div class="highlight"><pre><span></span><code><span class="k">enum</span><span class="w"> </span><span class="n">SNodeType</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">LIST</span><span class="p">,</span>
@@ -248,7 +248,7 @@ wanted to introduce the <code>FLOAT</code> and <code>INTEGER</code> data types a
 
 <p>After that the parser was able to successfully tag number types. The value itself is still stored as a string though as 
 I figured the game should be responsible for handling that conversion.</p>
-<h1>Fixing the empty string issue</h1>
+<h3>Fixing the empty string issue</h3>
 <p>Even though I'm never expecting my game to read an empty string in from an s-expression, I didn't want that to be a limitation 
 of the parser. To fix that issue meant I was going to have to abandon <code>fscanf</code>. The limitation of using <code>fscanf</code> for 
 reading strings is that its format pattern expects there to be at least one character between the quotes. With the case of the 
@@ -379,7 +379,7 @@ would wind up in the wrong list.</p>
 <span class="p">}</span>
 </code></pre></div>
 
-<h1>Deallocating memory</h1>
+<h3>Deallocating memory</h3>
 <p>The last thing I needed to do is write a recursive function for freeing the memory that is dynamically 
 allocated by the <code>SNode</code> tree. This is how that looks.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Recursively free memory allocated by a node</span>
@@ -406,7 +406,7 @@ allocated by the <code>SNode</code> tree. This is how that looks.</p>
 <span class="p">}</span>
 </code></pre></div>
 
-<h1>Wrapping up</h1>
+<h3>Wrapping up</h3>
 <p>In the end I'm really satisfied with how the parser turned out and I dissassembled the 
 solution down to a level where I could easily implement it in other languages if I need 
 to (or I'm just bored). If you'd like to use or fork the parser then please 
