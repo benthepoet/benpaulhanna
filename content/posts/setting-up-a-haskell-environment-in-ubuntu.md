@@ -13,7 +13,7 @@ solid type-checking, an interactive REPL, and doesn't require a whole lot of con
 to get going. With that said, I'll show you how to setup this environment in the context of 
 an Ubuntu system.
 
-# Install Stack
+### Install Stack
 
 The first thing we need to install is stack. If you come from a Node.js background then stack 
 is somewhat akin to the functionality `nvm` and `npm` provide. Some of the most prominent features 
@@ -27,7 +27,7 @@ wget -qO- https://get.haskellstack.org/ | sh
 
 Once installed, the `stack` binary will be available to use in your terminal. 
 
-# Install Emacs
+### Install Emacs
 
 Installing Emacs in Ubuntu is a fairly trivial task that can be performed with the following command.
 
@@ -37,7 +37,7 @@ sudo apt-get install emacs
 
 After installation, startup `emacs` at least once so that it initializes your `emacs.d` folder.
 
-# Install Intero
+### Install Intero
 
 Now before we install `intero` we also need install `libtinfo-dev`, without this package 
 `intero` will fail to build with stack lts-11.
@@ -64,7 +64,7 @@ Next place the following into `~/.emacs.d/init.el`.
 
 With that file place, just open `emacs` in a terminal and `intero` should start installing.
 
-# Create a Test Project
+### Create a Test Project
 
 To verify that everything is working, create a new project with `stack`.
 

@@ -2,7 +2,6 @@ Title: Writing a Game in C: Parsing S-expressions
 Category: Blog
 Date: 04-03-2019 12:49:00
 Modified: 04-03-2019 12:49:00
-Series: Writing a Game in C
 
 Over the past couple weeks I've been trying to work out how 
 I want to store my game configuration. At first I started playing with XML, which 
@@ -48,7 +47,7 @@ In the end I really wanted to see my data structured more like this.
 So I figured I'd stretch my mind and build an s-expression parser. Below is an account of how 
 I worked through the solution.
 
-# Modeling the structure 
+### Modeling the structure 
 I'll admit I'm largely a self-taught programmer and don't have a formal background in computer science. Thus, 
 I tend to learn about data structures and algorithms when they're useful to a particular problem that I'm trying 
 to solve.
@@ -76,7 +75,7 @@ In my program a parsed s-expression is a linked list consisting of `SNode`. The 
 that either contains a value (`STRING` or `SYMBOL` to begin with) or another list of `SNode`. This structure makes for a traversable 
 in-memory tree. 
 
-# Recursing the s-expression
+### Recursing the s-expression
 So for actually parsing out the expression I decided to utilize `fscanf` as it allows for basic pattern matching.
 
 ```c
@@ -137,7 +136,7 @@ struct SNode *parse(FILE *fp) {
 This worked fairly well. I did however notice later on that this iteration of the parser couldn't read empty strings correctly. I also 
 wanted to introduce the `FLOAT` and `INTEGER` data types as these currently just get tagged as `SYMBOL`.
 
-# Adding number data types
+### Adding number data types
 For basic number support I added `FLOAT` and `INTEGER` to the `SNodeType` enumeration.
 
 ```c
@@ -187,7 +186,7 @@ if (fscanf(fp, "%511[^()\t\r\n\v\f ]", buffer)) {
 After that the parser was able to successfully tag number types. The value itself is still stored as a string though as 
 I figured the game should be responsible for handling that conversion.
 
-# Fixing the empty string issue
+### Fixing the empty string issue
 Even though I'm never expecting my game to read an empty string in from an s-expression, I didn't want that to be a limitation 
 of the parser. To fix that issue meant I was going to have to abandon `fscanf`. The limitation of using `fscanf` for 
 reading strings is that its format pattern expects there to be at least one character between the quotes. With the case of the 
@@ -325,7 +324,7 @@ struct SNode *parse_sexpr_file(FILE *fp) {
 }
 ```
 
-# Deallocating memory
+### Deallocating memory
 The last thing I needed to do is write a recursive function for freeing the memory that is dynamically 
 allocated by the `SNode` tree. This is how that looks.
 
@@ -354,7 +353,7 @@ void snode_free(struct SNode *node) {
 }
 ```
 
-# Wrapping up
+### Wrapping up
 In the end I'm really satisfied with how the parser turned out and I dissassembled the 
 solution down to a level where I could easily implement it in other languages if I need 
 to (or I'm just bored). If you'd like to use or fork the parser then please 

@@ -2,9 +2,8 @@ Title: Using ZX Assembler on the TS1000
 Category: Blog
 Date: 12-11-2022 13:04:00
 Modified: 12-11-2022 13:04:00
-Series: TS1000 Progamming
 
-# Introduction
+### Introduction
 
 It was a thrilling experience for me as a young boy to learn how to program using BASIC on an Apple IIe in the mid 90s. I remember spending hours sitting in front of the computer, staring at the green text on the black screen and typing in lines of code. I was always amazed by how I could create simple programs that would allow me to do things like play games, solve math problems, or even create graphics and animations.
 
@@ -12,7 +11,7 @@ I've always had an affinity for such simple 8-bit computers and more recently I 
 
 There's plenty of examples out there of how to assemble a program for the TS1000 using modern tools like VS Code and TASM, but I want a more authentic experience where I'm actually writing assembly and assembling on the system itself. There's a few assemblers that were created for the TS1000 back in the day, but the one I'm going to focus on is ZX Assembler by Artic Computing.
 
-# The Assembler
+### The Assembler
 
 ZX Assembler is a fairly robust assembler for the TS1000 and has basic text navigation features, support for labels, and a monitor for inspecting memory as well as registers/flags. This assembler is loaded from cassette and occupies around 7K or memory, which is fairly significant amount of memory if you have the standard 16K RAM expansion.
 
@@ -36,7 +35,7 @@ After that type the following the command and you should be presented with the a
 RAND USR 8192
 ```
 
-# Basic Instructions
+### Basic Instructions
 
 Most of what's written in the manual for the original ZX Assembler still applies but I'll quickly provide a crash course here. The manual is available [here](https://archive.org/details/international-publishing-software/mode/2up).
 
@@ -69,8 +68,6 @@ The `Q` key backs out of commands. Pressing it twice at the main screen will exi
 * `O` - Cursor up
 * `L` - Cursor down
 
-# ZX Assembler 2 Differences
-
 ### Directives
 The original assembler allows for implicit strings and bytes to be entered. Version 2 requires you to explicitly denote these using `DB` and `DW`. Directives `DM` (defining a byte string) and `DS` (reserving *n* bytes of space) have also been added. 
 
@@ -97,7 +94,7 @@ Constants are assigned in the format `NAME=VALUE`. There must not be any spaces 
 LASTK=4025
 ```
 
-# Hello World
+### Hello World
 This example program will print the text `Hello World` at the top left corner of the screen.
 
 ```
