@@ -6,8 +6,6 @@ Series: TI-99 Game Development
 
 Hey everyone, Ben here. I’ve been working on a game for the TI-99/4A, and sprite editing for the TMS9918 has been one of the bigger early challenges. I wanted something that handled 8x8 and 16x16 sprites properly, stacking, animations with realistic frame timing, and clean exports to assembly data.
 
-I needed a proper tool for sprites and animations, so I built one with Grok over a couple of days instead of piecing something together for weeks.
-
 Existing tools didn’t quite fit my needs but I didn't exactly want to spend a week or two of effort into manually coding a tool, so I spent a couple of focused days iterating with Grok on a dedicated sprite editor. 
 
 ### The Tool
