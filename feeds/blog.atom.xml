@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ben Hanna - Blog</title><link href="https://benpaulhanna.com/" rel="alternate"/><link href="https://benpaulhanna.com/feeds/blog.atom.xml" rel="self"/><id>https://benpaulhanna.com/</id><updated>2022-12-11T13:04:00-05:00</updated><subtitle>Software Craftsman • Retro Homebrew Developer</subtitle><entry><title>Using ZX Assembler on the TS1000</title><link href="https://benpaulhanna.com/using-zx-assembler-on-the-ts1000.html" rel="alternate"/><published>2022-12-11T13:04:00-05:00</published><updated>2022-12-11T13:04:00-05:00</updated><author><name>Ben Hanna</name></author><id>tag:benpaulhanna.com,2022-12-11:/using-zx-assembler-on-the-ts1000.html</id><summary type="html">&lt;h1&gt;Introduction&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ben Hanna - Blog</title><link href="https://benpaulhanna.com/" rel="alternate"/><link href="https://benpaulhanna.com/feeds/blog.atom.xml" rel="self"/><id>https://benpaulhanna.com/</id><updated>2026-06-20T10:30:00-04:00</updated><subtitle>Software Craftsman • Retro Homebrew Developer</subtitle><entry><title>Building a TMS9918 Sprite Editor for My TI-99 Game with Grok</title><link href="https://benpaulhanna.com/building-a-tms9918-sprite-editor-for-my-ti-99-game-with-grok.html" rel="alternate"/><published>2026-06-20T10:30:00-04:00</published><updated>2026-06-20T10:30:00-04:00</updated><author><name>Ben Hanna</name></author><id>tag:benpaulhanna.com,2026-06-20:/building-a-tms9918-sprite-editor-for-my-ti-99-game-with-grok.html</id><summary type="html">&lt;p&gt;Hey everyone, Ben here. I’ve been working on a game for the TI-99/4A, and sprite editing for the TMS9918 has been one of the bigger early challenges. I wanted something that handled 8x8 and 16x16 sprites properly, stacking, animations with realistic frame timing, and clean exports to assembly …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Hey everyone, Ben here. I’ve been working on a game for the TI-99/4A, and sprite editing for the TMS9918 has been one of the bigger early challenges. I wanted something that handled 8x8 and 16x16 sprites properly, stacking, animations with realistic frame timing, and clean exports to assembly data.&lt;/p&gt;
+&lt;p&gt;I needed a proper tool for sprites and animations, so I built one with Grok over a couple of days instead of piecing something together for weeks.&lt;/p&gt;
+&lt;p&gt;Existing tools didn’t quite fit my needs but I didn't exactly want to spend a week or two of effort into manually coding a tool, so I spent a couple of focused days iterating with Grok on a dedicated sprite editor. &lt;/p&gt;
+&lt;h3&gt;The Tool&lt;/h3&gt;
+&lt;p&gt;You can find it here: &lt;a href="https://github.com/benthepoet/tms9918-sprite-editor"&gt;https://github.com/benthepoet/tms9918-sprite-editor&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;It’s written in Python with Tkinter — no extra dependencies. Main features:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Full TMS9918 16-color palette + transparency.&lt;/li&gt;
+&lt;li&gt;Toggle between 8x8 and 16x16 modes.&lt;/li&gt;
+&lt;li&gt;Sprite stacking with live composite preview.&lt;/li&gt;
+&lt;li&gt;Animation system with named sequences and per-frame durations.&lt;/li&gt;
+&lt;li&gt;Multiple assembly export formats tailored for TI-99 (including frame directories with labels).&lt;/li&gt;
+&lt;li&gt;Project save/load in JSON.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;[Insert screenshot or embed the demo GIF/video here]&lt;/p&gt;
+&lt;p&gt;I’ve already been using it to prototype character animations and enemy sprites. Being able to quickly iterate and copy ready-to-use &lt;code&gt;BYTE&lt;/code&gt; data straight into my assembly files has been a big time-saver.&lt;/p&gt;
+&lt;h3&gt;Built with Grok&lt;/h3&gt;
+&lt;p&gt;Grok Build made this whole thing possible in just a couple of days. I started by describing the overall vision — a desktop sprite editor tailored specifically for the TMS9918 with proper 8x8/16x16 support, stacking, animation timelines, and TI-99 assembly exports. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;First iteration&lt;/strong&gt; (after just a couple of minutes of prompting):&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/ti-99-sprite-editor-first-iteration.png" alt="Early iteration of the TMS9918 Sprite Editor" style="width: 100%;" /&gt;&lt;/p&gt;
+&lt;p&gt;It was already functional but had layout issues, basic controls, and missing polish.&lt;/p&gt;
+&lt;p&gt;From there it was a smooth iterative process: I’d point out issues (layout quirks, timing bugs, export format tweaks, missing features like frame editing, etc.), and Grok would quickly generate fixes or improvements.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Final version&lt;/strong&gt; (after a couple of focused days of back-and-forth):&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/ti-99-sprite-editor-final-iteration.png" alt="Final TMS9918 Sprite Editor" style="width: 100%;" /&gt;&lt;/p&gt;
+&lt;p&gt;Grok Build was super easy to use. It was quick to address feedback when I would point out issues, and it handled a lot of the Tkinter boilerplate while I focused on the retro-specific logic like sprite pattern ordering and hardware-timed animation previews. This back-and-forth felt very natural and let me stay in the flow instead of getting bogged down in UI scaffolding.&lt;/p&gt;
+&lt;p&gt;If you’re doing any TMS9918-based development (TI-99, MSX, ColecoVision, etc.), feel free to try it out or fork it. The export templates are in the &lt;code&gt;formats/&lt;/code&gt; directory and easy to extend.&lt;/p&gt;
+&lt;h3&gt;What’s Next&lt;/h3&gt;
+&lt;p&gt;I’ll keep refining my workflow with this editor as the game progresses. Additionally I'm going to need to build a world/tileset editor next so stay tuned for that. In the meantime, back to coding the adventure itself.&lt;/p&gt;
+&lt;p&gt;What tools do you use for sprites and animation in your retro projects? Let me know in the comments or on X &lt;a href="https://x.com/BenHomebrew"&gt;@BenHomebrew&lt;/a&gt;.&lt;/p&gt;</content><category term="Blog"/><category term="TI-99"/><category term="Homebrew"/><category term="Grok"/></entry><entry><title>Using ZX Assembler on the TS1000</title><link href="https://benpaulhanna.com/using-zx-assembler-on-the-ts1000.html" rel="alternate"/><published>2022-12-11T13:04:00-05:00</published><updated>2022-12-11T13:04:00-05:00</updated><author><name>Ben Hanna</name></author><id>tag:benpaulhanna.com,2022-12-11:/using-zx-assembler-on-the-ts1000.html</id><summary type="html">&lt;h1&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;It was a thrilling experience for me as a young boy to learn how to program using BASIC on an Apple IIe in the mid 90s. I remember spending hours sitting in front of the computer, staring at the green text on the black screen and typing in lines …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;It was a thrilling experience for me as a young boy to learn how to program using BASIC on an Apple IIe in the mid 90s. I remember spending hours sitting in front of the computer, staring at the green text on the black screen and typing in lines of code. I was always amazed by how I could create simple programs that would allow me to do things like play games, solve math problems, or even create graphics and animations.&lt;/p&gt;
 &lt;p&gt;I've always had an affinity for such simple 8-bit computers and more recently I begin exploring and experimenting with the ZX81/TS1000. The TS1000 is an interesting machine to program for. As per the period it has it's own BASIC implementation which is quite capable but slower than most due to the system's cost-reduced design. Thus, to write software for the system that's performant as possible it's necessary use assembly language or machine code.&lt;/p&gt;
@@ -525,12 +553,12 @@ available at my &lt;a href="https://github.com/benthepoet/elm-parcel-example"&gt
 better served by &lt;code&gt;parcel&lt;/code&gt;, an alternative bundler that touts zero-configuration. Quite simply, 
 it just works.&lt;/p&gt;
 &lt;p&gt;In this article I'll demonstrate how setup a basic Backbone project using &lt;code&gt;parcel&lt;/code&gt;.&lt;/p&gt;
-&lt;h1&gt;Create the project&lt;/h1&gt;
+&lt;h3&gt;Create the project&lt;/h3&gt;
 &lt;p&gt;Starting from scratch …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Do you loathe configuring &lt;code&gt;webpack&lt;/code&gt; every time you setup a new application? Well, you may be 
 better served by &lt;code&gt;parcel&lt;/code&gt;, an alternative bundler that touts zero-configuration. Quite simply, 
 it just works.&lt;/p&gt;
 &lt;p&gt;In this article I'll demonstrate how setup a basic Backbone project using &lt;code&gt;parcel&lt;/code&gt;.&lt;/p&gt;
-&lt;h1&gt;Create the project&lt;/h1&gt;
+&lt;h3&gt;Create the project&lt;/h3&gt;
 &lt;p&gt;Starting from scratch let's first create a new folder and initialize &lt;code&gt;npm&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir&lt;span class="w"&gt; &lt;/span&gt;my-backbone-app
 &lt;span class="nb"&gt;cd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;my-backbone-app
@@ -545,7 +573,7 @@ npm&lt;span class="w"&gt; &lt;/span&gt;init
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;src&lt;/code&gt; - This is where we'll put all our JavaScript, HTML, and CSS.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1&gt;Install Parcel&lt;/h1&gt;
+&lt;h3&gt;Install Parcel&lt;/h3&gt;
 &lt;p&gt;Since the main advantage of &lt;code&gt;parcel&lt;/code&gt; is that it requires zero-configuration all we really 
 need to do use it is install &lt;code&gt;parcel-bundler&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;npm&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;--save&lt;span class="w"&gt; &lt;/span&gt;parcel-bundler
@@ -556,7 +584,7 @@ while serving it on a local HTTP server. The latter is similar to what is provid
 &lt;code&gt;webpack-dev-server&lt;/code&gt; with &lt;code&gt;webpack&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;When you run &lt;code&gt;parcel&lt;/code&gt; you just tell it what your entry file is (usually &lt;code&gt;index.html&lt;/code&gt;) and then 
 it will automatically find any assets (i.e. scripts, stylesheets) that you're using and bundle them all together.&lt;/p&gt;
-&lt;h1&gt;Create an application&lt;/h1&gt;
+&lt;h3&gt;Create an application&lt;/h3&gt;
 &lt;p&gt;Before we can load our application we need to create our shell. We'll save this file as 
 &lt;code&gt;src/index.html&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="cp"&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
@@ -612,7 +640,7 @@ it will automatically find any assets (i.e. scripts, stylesheets) that you're us
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Navigate to &lt;code&gt;http://localhost:8080&lt;/code&gt; in a browser and you should see the message displayed.&lt;/p&gt;
-&lt;h1&gt;Wrapping up&lt;/h1&gt;
+&lt;h3&gt;Wrapping up&lt;/h3&gt;
 &lt;p&gt;Hopefully this article demonstrated how easy it is to use &lt;code&gt;parcel&lt;/code&gt; with Backbone. If 
 you'd like to see a slightly more involved example with routing and templates then please see my 
 &lt;a href="https://github.com/benthepoet/backbone-fundamentals-parcel"&gt;backbone-fundamentals-parcel&lt;/a&gt; 
@@ -625,7 +653,7 @@ functionality can be implemented in Elm.&lt;/p&gt;
 part of the HTML5 standard. To demonstrate this I'll show you how to build an application 
 that allows you to construct a list by dragging items onto it.&lt;/p&gt;
 &lt;p&gt;To follow along with this tutorial I recommend building an application with &lt;a href="https://ellie-app.com"&gt;Ellie&lt;/a&gt;.&lt;/p&gt;
-&lt;h1&gt;Getting Started&lt;/h1&gt;
+&lt;h3&gt;Getting Started&lt;/h3&gt;
 &lt;p&gt;To get things started we'll start with a &lt;code&gt;Browser.sandbox&lt;/code&gt; since we we're not doing 
 anything fancy.&lt;/p&gt;
 &lt;!-- https://ellie-app.com/yCv5t7PhHMa1 --&gt;
@@ -701,7 +729,7 @@ in order to drag an element. To address this we'll add an event listener on the 
 
 &lt;p&gt;At this point running the application should display the shell that we've setup. Now we can move onto adding 
 in the fun stuff.&lt;/p&gt;
-&lt;h1&gt;Create a list of draggable items&lt;/h1&gt;
+&lt;h3&gt;Create a list of draggable items&lt;/h3&gt;
 &lt;p&gt;First we need to add a new property to our &lt;code&gt;Model&lt;/code&gt; for tracking the item that is 
 being dragged. I'm also going to add a list of draggable items to the model so that 
 we can compose our list of different items. &lt;/p&gt;
@@ -767,7 +795,7 @@ we can compose our list of different items. &lt;/p&gt;
 &lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;h1&gt;Add update messages&lt;/h1&gt;
+&lt;h3&gt;Add update messages&lt;/h3&gt;
 &lt;p&gt;Next we need to setup some messages for handling actions in the application. These messages 
 will be passed by the event handlers we're going to setup in the next section.&lt;/p&gt;
 &lt;!-- https://ellie-app.com/yCzmNzPY7ga1 --&gt;
@@ -803,7 +831,7 @@ will be passed by the event handlers we're going to setup in the next section.&l
 &lt;span class="w"&gt;                    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;h1&gt;Add event handlers&lt;/h1&gt;
+&lt;h3&gt;Add event handlers&lt;/h3&gt;
 &lt;p&gt;Next we need to leverage the following events to achieve drag and drop functionality.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
@@ -907,7 +935,7 @@ will be passed by the event handlers we're going to setup in the next section.&l
 &lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;h1&gt;Putting it all together&lt;/h1&gt;
+&lt;h3&gt;Putting it all together&lt;/h3&gt;
 &lt;p&gt;With everything in place now, you should have a solution like below that allows you to drag 
 items from the left list onto the right list.&lt;/p&gt;
 &lt;iframe src="https://ellie-app.com/embed/8hrQSHMkpD6a1" style="width:100%; height:400px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"&gt;&lt;/iframe&gt;
@@ -921,7 +949,7 @@ you can do it with &lt;code&gt;webpack&lt;/code&gt;.&lt;/p&gt;
 The main benefit to this is that &lt;code&gt;webpack&lt;/code&gt; will bundle all your modules together in a single file 
 so that you don't need to manually manage &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt; tags. And on top of that you can require NPM packages 
 as you would in a Node.js application.&lt;/p&gt;
-&lt;h1&gt;Create the project&lt;/h1&gt;
+&lt;h3&gt;Create the project&lt;/h3&gt;
 &lt;p&gt;Starting from scratch let's first create a new folder and initialize &lt;code&gt;npm&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir&lt;span class="w"&gt; &lt;/span&gt;my-backbone-app
 &lt;span class="nb"&gt;cd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;my-backbone-app
@@ -937,7 +965,7 @@ npm&lt;span class="w"&gt; &lt;/span&gt;init
 &lt;li&gt;&lt;code&gt;src&lt;/code&gt; - This is where we'll put all our JavaScript.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;public&lt;/code&gt; - This where we'll put any static files (index.html, assets).&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1&gt;Install and configure Webpack&lt;/h1&gt;
+&lt;h3&gt;Install and configure Webpack&lt;/h3&gt;
 &lt;p&gt;We'll install &lt;code&gt;webpack&lt;/code&gt; along with &lt;code&gt;webpack-dev-server&lt;/code&gt;. The latter allows you 
 to run a local web server that will also watch your source files for changes.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;npm&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;--save&lt;span class="w"&gt; &lt;/span&gt;webpack&lt;span class="w"&gt; &lt;/span&gt;webpack-cli
@@ -970,7 +998,7 @@ npm&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&g
 &lt;span class="p"&gt;};&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;h1&gt;Create an application&lt;/h1&gt;
+&lt;h3&gt;Create an application&lt;/h3&gt;
 &lt;p&gt;Before we can load our application we need to create our shell. We'll save this file as 
 &lt;code&gt;public/index.html&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="cp"&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
@@ -1026,7 +1054,7 @@ npm&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&g
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Navigate to &lt;code&gt;http://localhost:8080&lt;/code&gt; in a browser and you should see the message displayed.&lt;/p&gt;
-&lt;h1&gt;Wrapping up&lt;/h1&gt;
+&lt;h3&gt;Wrapping up&lt;/h3&gt;
 &lt;p&gt;Hopefully this article gave you a good overview on how to use &lt;code&gt;webpack&lt;/code&gt; with Backbone. If 
 you'd like to see a slightly more involved example with routing and templates then please see my 
 &lt;a href="https://github.com/benthepoet/backbone-fundamentals-webpack"&gt;backbone-fundamentals-webpack&lt;/a&gt; 

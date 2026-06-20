@@ -68,8 +68,8 @@
 
   <div class="main">
     <div class="container">
-      <h1>Building a Backbone.js project with Parcel
-</h1>
+      <h2>Building a Backbone.js project with Parcel
+</h2>
       <hr>
 <article class="article">
   <header>
@@ -89,7 +89,7 @@
 better served by <code>parcel</code>, an alternative bundler that touts zero-configuration. Quite simply, 
 it just works.</p>
 <p>In this article I'll demonstrate how setup a basic Backbone project using <code>parcel</code>.</p>
-<h1>Create the project</h1>
+<h3>Create the project</h3>
 <p>Starting from scratch let's first create a new folder and initialize <code>npm</code>.</p>
 <div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>my-backbone-app
 <span class="nb">cd</span><span class="w"> </span>my-backbone-app
@@ -104,7 +104,7 @@ npm<span class="w"> </span>init
 <ul>
 <li><code>src</code> - This is where we'll put all our JavaScript, HTML, and CSS.</li>
 </ul>
-<h1>Install Parcel</h1>
+<h3>Install Parcel</h3>
 <p>Since the main advantage of <code>parcel</code> is that it requires zero-configuration all we really 
 need to do use it is install <code>parcel-bundler</code>.</p>
 <div class="highlight"><pre><span></span><code>npm<span class="w"> </span>install<span class="w"> </span>--save<span class="w"> </span>parcel-bundler
@@ -115,7 +115,7 @@ while serving it on a local HTTP server. The latter is similar to what is provid
 <code>webpack-dev-server</code> with <code>webpack</code>.</p>
 <p>When you run <code>parcel</code> you just tell it what your entry file is (usually <code>index.html</code>) and then 
 it will automatically find any assets (i.e. scripts, stylesheets) that you're using and bundle them all together.</p>
-<h1>Create an application</h1>
+<h3>Create an application</h3>
 <p>Before we can load our application we need to create our shell. We'll save this file as 
 <code>src/index.html</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
@@ -171,7 +171,7 @@ it will automatically find any assets (i.e. scripts, stylesheets) that you're us
 </code></pre></div>
 
 <p>Navigate to <code>http://localhost:8080</code> in a browser and you should see the message displayed.</p>
-<h1>Wrapping up</h1>
+<h3>Wrapping up</h3>
 <p>Hopefully this article demonstrated how easy it is to use <code>parcel</code> with Backbone. If 
 you'd like to see a slightly more involved example with routing and templates then please see my 
 <a href="https://github.com/benthepoet/backbone-fundamentals-parcel">backbone-fundamentals-parcel</a> 

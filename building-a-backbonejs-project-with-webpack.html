@@ -68,8 +68,8 @@
 
   <div class="main">
     <div class="container">
-      <h1>Building a Backbone.js project with Webpack
-</h1>
+      <h2>Building a Backbone.js project with Webpack
+</h2>
       <hr>
 <article class="article">
   <header>
@@ -91,7 +91,7 @@ you can do it with <code>webpack</code>.</p>
 The main benefit to this is that <code>webpack</code> will bundle all your modules together in a single file 
 so that you don't need to manually manage <code>&lt;script&gt;</code> tags. And on top of that you can require NPM packages 
 as you would in a Node.js application.</p>
-<h1>Create the project</h1>
+<h3>Create the project</h3>
 <p>Starting from scratch let's first create a new folder and initialize <code>npm</code>.</p>
 <div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>my-backbone-app
 <span class="nb">cd</span><span class="w"> </span>my-backbone-app
@@ -107,7 +107,7 @@ npm<span class="w"> </span>init
 <li><code>src</code> - This is where we'll put all our JavaScript.</li>
 <li><code>public</code> - This where we'll put any static files (index.html, assets).</li>
 </ul>
-<h1>Install and configure Webpack</h1>
+<h3>Install and configure Webpack</h3>
 <p>We'll install <code>webpack</code> along with <code>webpack-dev-server</code>. The latter allows you 
 to run a local web server that will also watch your source files for changes.</p>
 <div class="highlight"><pre><span></span><code>npm<span class="w"> </span>install<span class="w"> </span>--save<span class="w"> </span>webpack<span class="w"> </span>webpack-cli
@@ -140,7 +140,7 @@ npm<span class="w"> </span>install<span class="w"> </span>--save-dev<span class=
 <span class="p">};</span>
 </code></pre></div>
 
-<h1>Create an application</h1>
+<h3>Create an application</h3>
 <p>Before we can load our application we need to create our shell. We'll save this file as 
 <code>public/index.html</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
@@ -196,7 +196,7 @@ npm<span class="w"> </span>install<span class="w"> </span>--save-dev<span class=
 </code></pre></div>
 
 <p>Navigate to <code>http://localhost:8080</code> in a browser and you should see the message displayed.</p>
-<h1>Wrapping up</h1>
+<h3>Wrapping up</h3>
 <p>Hopefully this article gave you a good overview on how to use <code>webpack</code> with Backbone. If 
 you'd like to see a slightly more involved example with routing and templates then please see my 
 <a href="https://github.com/benthepoet/backbone-fundamentals-webpack">backbone-fundamentals-webpack</a> 

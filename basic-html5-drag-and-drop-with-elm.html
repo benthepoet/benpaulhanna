@@ -68,8 +68,8 @@
 
   <div class="main">
     <div class="container">
-      <h1>Basic HTML5 Drag and Drop with Elm
-</h1>
+      <h2>Basic HTML5 Drag and Drop with Elm
+</h2>
       <hr>
 <article class="article">
   <header>
@@ -91,7 +91,7 @@ functionality can be implemented in Elm.</p>
 part of the HTML5 standard. To demonstrate this I'll show you how to build an application 
 that allows you to construct a list by dragging items onto it.</p>
 <p>To follow along with this tutorial I recommend building an application with <a href="https://ellie-app.com">Ellie</a>.</p>
-<h1>Getting Started</h1>
+<h3>Getting Started</h3>
 <p>To get things started we'll start with a <code>Browser.sandbox</code> since we we're not doing 
 anything fancy.</p>
 <!-- https://ellie-app.com/yCv5t7PhHMa1 -->
@@ -167,7 +167,7 @@ in order to drag an element. To address this we'll add an event listener on the 
 
 <p>At this point running the application should display the shell that we've setup. Now we can move onto adding 
 in the fun stuff.</p>
-<h1>Create a list of draggable items</h1>
+<h3>Create a list of draggable items</h3>
 <p>First we need to add a new property to our <code>Model</code> for tracking the item that is 
 being dragged. I'm also going to add a list of draggable items to the model so that 
 we can compose our list of different items. </p>
@@ -233,7 +233,7 @@ we can compose our list of different items. </p>
 <span class="w">        </span><span class="p">]</span>
 </code></pre></div>
 
-<h1>Add update messages</h1>
+<h3>Add update messages</h3>
 <p>Next we need to setup some messages for handling actions in the application. These messages 
 will be passed by the event handlers we're going to setup in the next section.</p>
 <!-- https://ellie-app.com/yCzmNzPY7ga1 -->
@@ -269,7 +269,7 @@ will be passed by the event handlers we're going to setup in the next section.</
 <span class="w">                    </span><span class="p">}</span>
 </code></pre></div>
 
-<h1>Add event handlers</h1>
+<h3>Add event handlers</h3>
 <p>Next we need to leverage the following events to achieve drag and drop functionality.</p>
 <table>
 <thead>
@@ -373,7 +373,7 @@ will be passed by the event handlers we're going to setup in the next section.</
 <span class="w">        </span><span class="p">]</span>
 </code></pre></div>
 
-<h1>Putting it all together</h1>
+<h3>Putting it all together</h3>
 <p>With everything in place now, you should have a solution like below that allows you to drag 
 items from the left list onto the right list.</p>
 <iframe src="https://ellie-app.com/embed/8hrQSHMkpD6a1" style="width:100%; height:400px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
